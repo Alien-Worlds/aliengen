@@ -1,0 +1,30 @@
+{
+  "name": "aliengen",
+  "version": "0.0.1",
+  "description": "",
+  "main": "build/aliengen.js",
+  "bin": {
+    "aliengen": "./bin/aliengen-macos"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alien-Worlds/aliengen.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alien-Worlds/aliengen/issues"
+  },
+  "homepage": "https://github.com/Alien-Worlds/aliengen#readme",
+  "scripts": {
+    "build": "tsc && pkg ./build/aliengen.js --out-path ./bin --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --public",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "commander": "^8.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.1",
+    "typescript": "^4.5.4"
+  }
+}
