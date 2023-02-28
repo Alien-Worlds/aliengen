@@ -21,7 +21,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "commander": "^8.3.0"
+    "commander": "^8.3.0",
+    "eosjs": "^22.1.0"
   },
   "devDependencies": {
     "@types/node": "^18.14.1",
