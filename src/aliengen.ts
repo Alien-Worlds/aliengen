@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
-import commander from "commander";
 import * as Actions from "./actions";
 
+import commander from "commander";
+import { version } from "../package.json";
 const program = new commander.Command();
 const abi = program.command("abi");
 const api = program.command("api");
 
-program.version("1.0.0").description("AlienGen");
+program.version(version).description("AlienGen");
 
 abi
   .command("hex-to-code")
