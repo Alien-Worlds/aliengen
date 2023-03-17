@@ -11,9 +11,12 @@
     "emitDecoratorMetadata": true,
     "outDir": "build",
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "node_modules",
-    "build"
+    "build",
+    "bin"
   ]
 }

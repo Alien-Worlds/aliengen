@@ -101,3 +101,8 @@ export const typesMap = new Map<string, object>([
   ["checksum512", { typeScript: ["string"], mongo: ["string"] }],
   ["variant", { typeScript: ["Array<unknown>"], mongo: ["Array<unknown>"] }],
 ]);
+
+export enum SupportedFormat {
+  JSON = 'json',
+  HEX = 'hex'
+}

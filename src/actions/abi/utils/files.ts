@@ -1,8 +1,9 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync } from "fs";
+
 import { JsonFile } from "../types/abi.types";
 
-export const createTargetPath = (path: string) => {
+export const ensurePathExists = (path: string) => {
   const targetDirPath = dirname(path);
   if (!existsSync(targetDirPath)) {
     mkdirSync(targetDirPath, { recursive: true });
