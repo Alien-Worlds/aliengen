@@ -65,43 +65,6 @@ export type JsonFile<T = unknown> = {
   content: T;
 };
 
-export const typesMap = new Map<string, object>([
-  ["bytes", { typeScript: ["Bytes"], mongo: ["Binary"] }],
-  ["bool", { typeScript: ["boolean"], mongo: ["boolean"] }],
-  ["asset", { typeScript: ["Asset"], mongo: ["object"] }],
-  ["symbol", { typeScript: ["Symbol"], mongo: ["object"] }],
-  ["extension", { typeScript: ["Extension"], mongo: ["object"] }],
-  ["name", { typeScript: ["string"], mongo: ["string"] }],
-  ["int8", { typeScript: ["number"], mongo: ["number"] }],
-  ["int16", { typeScript: ["number"], mongo: ["number"] }],
-  ["int32", { typeScript: ["number"], mongo: ["number"] }],
-  ["int64", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["int128", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["int256", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["int8_t", { typeScript: ["number"], mongo: ["number"] }],
-  ["int16_t", { typeScript: ["number"], mongo: ["number"] }],
-  ["int32_t", { typeScript: ["number"], mongo: ["number"] }],
-  ["int64_t", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["int128_t", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["int256_t", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["uint8", { typeScript: ["number"], mongo: ["number"] }],
-  ["uint16", { typeScript: ["number"], mongo: ["number"] }],
-  ["uint32", { typeScript: ["number"], mongo: ["number"] }],
-  ["uint64", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["uint128", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["uint256", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["uint8_t", { typeScript: ["number"], mongo: ["number"] }],
-  ["uint16_t", { typeScript: ["number"], mongo: ["number"] }],
-  ["uint32_t", { typeScript: ["number"], mongo: ["number"] }],
-  ["uint64_t", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["uint128_t", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["uint256_t", { typeScript: ["bigint"], mongo: ["Long"] }],
-  ["checksum160", { typeScript: ["string"], mongo: ["string"] }],
-  ["checksum256", { typeScript: ["string"], mongo: ["string"] }],
-  ["checksum512", { typeScript: ["string"], mongo: ["string"] }],
-  ["variant", { typeScript: ["Array<unknown>"], mongo: ["Array<unknown>"] }],
-]);
-
 export enum SupportedFormat {
   JSON = 'json',
   HEX = 'hex'

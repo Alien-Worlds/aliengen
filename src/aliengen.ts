@@ -29,6 +29,22 @@ abi
     });
 
 abi
+    .command("generate")
+    .addOption(new commander.Option("-c, --contract <value>", "contract name").conflicts('source'))
+    .option("-s, --source <value>", "downloaded contract ABI path to file or directory containing multiple ABIs")
+    .option("-o, --out <value>", "output path", './generated')
+    .option("-f, --force", "overwrite existing files", false)
+    .description("Download contract ABI in JSON/Hex format and save it locally.")
+    .action((options) => {
+        Actions.Abi.generate({
+            contractName: options.contract,
+            source: options.source,
+            outputPath: options.out,
+            force: options.force,
+        });
+    });
+
+abi
     .command("hex-to-code")
     .option("-c, --contract", "contract name")
     .option("-s, --source", "hex file path")

@@ -1,0 +1,24 @@
+{{! template for action dtos e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts }}
+import { MongoDB } from '@alien-worlds/api-core';
+
+{{#each imports}}
+import { {{#each .}}{{.}}{{#unless @last}}, {{/unless}}{{/each}} } from '{{ @key }}';
+{{/each}}
+/**
+* Actions / Documents
+*/
+
+export type {{actionName}}Document = {
+    _id?: MongoDB.ObjectId;
+{{#each props}}
+    {{this.key}}?: {{this.entityType.name}};
+{{/each}}
+    [key: string]: unknown;
+};
+
+export type {{actionName}}Struct = {
+{{#each props}}
+    {{this.key}}?: {{this.structType.name}};
+{{/each}}
+    [key: string]: unknown;
+};
