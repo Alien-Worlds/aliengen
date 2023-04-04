@@ -7,7 +7,12 @@ export const ensurePathExists = (path: string) => {
   const targetDirPath = dirname(path);
   if (!existsSync(targetDirPath)) {
     mkdirSync(targetDirPath, { recursive: true });
+    console.info(`Created dir ${targetDirPath}`)
   }
+};
+
+export const fileOrDirExists = (fileOrDir: string) => {
+  return fileOrDir ? existsSync(fileOrDir) : false;
 };
 
 export const walk = (dir: string): string[] =>

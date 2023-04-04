@@ -1,6 +1,7 @@
 import { Abi, Action, Field } from "../types/abi.types";
 import { paramCase, pascalCase } from "change-case";
 
+import { FileTransport } from "./transport/file.transport";
 import { ParsedAction } from "./generate.types";
 import TemplateEngine from "./template-engine";
 import { ensurePathExists } from "../utils/files";
@@ -56,10 +57,10 @@ export const generateContractActions = (
 
     // TODO: overwrite files only if `force` flag is true
 
+    const ft = new FileTransport();
     generatedOutput.forEach((out, name) => {
         const outputPath = path.join(path.format(dtosDir), `${name}.dto.ts`);
-        ensurePathExists(outputPath);
-        fs.writeFileSync(outputPath, out);
+        ft.writeOutput(out, { outputPath, overwrite: force })
     })
 };
 
