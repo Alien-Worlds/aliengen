@@ -1,12 +1,7 @@
 {{! template for action dtos e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts }}
+{{> warn-do-not-edit}}
 import { MongoDB } from '@alien-worlds/api-core';
-
-{{#each imports}}
-import { {{#each .}}{{.}}{{#unless @last}}, {{/unless}}{{/each}} } from '{{ @key }}';
-{{/each}}
-/**
-* Actions / Documents
-*/
+{{> imports}}
 
 export type {{actionName}}Document = {
     _id?: MongoDB.ObjectId;

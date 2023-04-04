@@ -1,0 +1,4 @@
+{{! partial template for imports }}
+{{#each imports}}
+import { {{#each .}}{{.}}{{#unless @last}}, {{/unless}}{{/each}} } from '{{ @key }}';
+{{/each}}

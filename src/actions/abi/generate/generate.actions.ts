@@ -4,8 +4,6 @@ import { paramCase, pascalCase } from "change-case";
 import { FileTransport } from "./transport/file.transport";
 import { ParsedAction } from "./generate.types";
 import TemplateEngine from "./template-engine";
-import { ensurePathExists } from "../utils/files";
-import fs from "fs";
 import { getMappedType } from "../types/mapping.types";
 import path from "path";
 
@@ -41,7 +39,6 @@ export const generateContractActions = (
             }
         })
 
-
         let tmplOutput: string = TemplateEngine.GenerateTemplateOutput(dtosTemplateFile, {
             actionName: pascalCase(name),
             props,
@@ -54,8 +51,6 @@ export const generateContractActions = (
 
     // write to file e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts
     const dtosDir = path.parse(`${baseDir}/contracts/${paramCase(contract)}/actions/data/dtos`)
-
-    // TODO: overwrite files only if `force` flag is true
 
     const ft = new FileTransport();
     generatedOutput.forEach((out, name) => {
