@@ -1,7 +1,8 @@
-import Handlebars from "handlebars";
-import config from "../../../config";
-import path from "path";
 import { readFileSync } from "fs";
+import Handlebars from "handlebars";
+import path from "path";
+
+import config from "../../../config";
 import { walk } from "../utils/files";
 
 export default class TemplateEngine {
@@ -15,7 +16,7 @@ export default class TemplateEngine {
     }
 };
 
-export const registerTemplates = function (): void {
+function registerTemplates(): void {
     const partialTemplatesDir = path.parse(path.join(process.cwd(), config.templatesDir, 'partials'));
     const partialTmpls = walk(path.format(partialTemplatesDir));
 

@@ -3,17 +3,30 @@
 import { MongoDB } from '@alien-worlds/api-core';
 {{> imports}}
 
-export type {{actionName}}Document = {
+/**
+ * Actions / Documents
+ */
+
+{{#each documents}}
+export type {{name}} = {
     _id?: MongoDB.ObjectId;
 {{#each props}}
-    {{this.key}}?: {{this.entityType.name}};
+    {{this.key}}?: {{this.type.name}};
 {{/each}}
     [key: string]: unknown;
 };
 
-export type {{actionName}}Struct = {
+{{/each}}
+/**
+ * Action Structs / MongoDB Subdocuments
+ */
+
+{{#each structs}}
+export type {{name}} = {
 {{#each props}}
-    {{this.key}}?: {{this.structType.name}};
+    {{this.key}}?: {{this.type.name}};
 {{/each}}
     [key: string]: unknown;
 };
+
+{{/each}}

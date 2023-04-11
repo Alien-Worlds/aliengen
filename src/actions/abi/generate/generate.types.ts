@@ -9,9 +9,23 @@ export type GenerateOptions = {
 
 export type ParsedAction = {
     name: string;
-    props: {
-        key: string;
-        entityType: MappedDatatype;
-        structType: MappedDatatype;
-    }[];
+    types: ParsedAbiType[];
+};
+
+export type ParsedAbiType = {
+    artifactType: ArtifactType;
+    name: string;
+    props: TypeProp[]
+}
+
+export enum ArtifactType {
+    Document = 'Document',
+    SubDocument = 'SubDocument',
+    Struct = 'Struct',
+    SubStruct = 'SubStruct'
+}
+
+type TypeProp = {
+    key: string;
+    type: MappedDatatype;
 }

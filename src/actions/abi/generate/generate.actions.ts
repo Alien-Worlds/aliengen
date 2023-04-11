@@ -1,11 +1,14 @@
-import { Abi, Action, Field } from "../types/abi.types";
 import { paramCase, pascalCase } from "change-case";
-
-import { FileTransport } from "./transport/file.transport";
-import { ParsedAction } from "./generate.types";
-import TemplateEngine from "./template-engine";
-import { getMappedType } from "../types/mapping.types";
 import path from "path";
+
+import Logger from "../../../logger";
+import { Abi, Action } from "../types/abi.types";
+import { getMappedType } from "../types/mapping.types";
+import { ArtifactType, ParsedAbiType, ParsedAction } from "./generate.types";
+import TemplateEngine from "./template-engine";
+import { FileTransport } from "./transport/file.transport";
+
+const logger = Logger.getLogger();
 
 export const generateContractActions = (
     abi: Abi,
@@ -14,34 +17,31 @@ export const generateContractActions = (
     force: boolean,
 ): void => {
     const dtosTemplateFile = 'dtos.hbs';
-    const parsedActions: Map<string, ParsedAction> = new Map<string, ParsedAction>();
 
-    const generatedOutput: Map<string, string> = new Map<string, string>();
-
+    const generatedOutput: Map<string, string> = new Map();
 
     abi.actions.forEach((action: Action) => {
-        parsedActions.set(action.name, parseAbiAction(abi, action));
-    })
+        const parsedAction = parseAbiAction(abi, action);
 
-    parsedActions.forEach((action: ParsedAction) => {
-        const imports: Map<string, Set<string>> = new Map<string, Set<string>>();
-        const { props, name } = action;
+        const { name, types } = parsedAction;
+        const imports: Map<string, Set<string>> = new Map();
 
-        props.forEach(prop => {
-            const { entityType, structType } = prop;
-
-            if (entityType.requiresImport) {
-                imports.set(entityType.importRef, (imports.get(entityType.importRef) || new Set<string>()).add(entityType.name))
-            }
-
-            if (structType.requiresImport) {
-                imports.set(structType.importRef, (imports.get(structType.importRef) || new Set<string>()).add(structType.name))
-            }
+        types.forEach(tp => {
+            tp.props.forEach(prop => {
+                if (prop.type.requiresImport) {
+                    imports.set(prop.type.importRef, (imports.get(prop.type.importRef) || new Set<string>()).add(prop.type.name))
+                }
+            })
         })
 
         let tmplOutput: string = TemplateEngine.GenerateTemplateOutput(dtosTemplateFile, {
             actionName: pascalCase(name),
-            props,
+            documents: types.filter(tp => [ArtifactType.Document].includes(tp.artifactType)),
+            structs: types.filter(tp => [
+                ArtifactType.SubDocument,
+                ArtifactType.Struct,
+                ArtifactType.SubStruct
+            ].includes(tp.artifactType)),
             imports: Object.fromEntries(imports),
         })
 
@@ -62,23 +62,89 @@ export const generateContractActions = (
 function parseAbiAction(abi: Abi, action: Action): ParsedAction {
     const { name, type } = action;
 
-    let props = [];
+    let result: ParsedAction = {
+        name,
+        types: [],
+    };
 
-    const typeOfStruct = abi.structs.find((st) => (st.name == type));
-    typeOfStruct?.fields.forEach((field: Field) => {
-        const structType = getMappedType(field.type, "mongo");
-        const entityType = getMappedType(field.type, "typescript");
+    const actionType = abi.structs.find((st) => (st.name == type));
 
-        props.push({
+    result.types = parseAbiStruct(abi, actionType.name, ArtifactType.Document);
+    result.types = result.types.concat(parseAbiStruct(abi, actionType.name, ArtifactType.Struct));
+
+    return result;
+}
+
+function parseAbiStruct(abi: Abi, structName: string, artifactType: ArtifactType): ParsedAbiType[] {
+    let collectiveTypes: Map<string, ParsedAbiType> = new Map();
+    let poolOfTypesToGen: string[] = [structName];
+
+    let parsedType: ParsedAbiType;
+    do {
+        parsedType = parseAbiStructWorker(abi, poolOfTypesToGen[poolOfTypesToGen.length - 1], artifactType);
+
+        collectiveTypes.set(poolOfTypesToGen[poolOfTypesToGen.length - 1], parsedType);
+        poolOfTypesToGen = poolOfTypesToGen.slice(0, poolOfTypesToGen.length - 1)
+
+        const subTypesToGen = getSubTypesToGen(parsedType, collectiveTypes);
+        if (subTypesToGen.length) {
+            poolOfTypesToGen.push(...subTypesToGen.map(st => st.type.sourceName))
+        }
+    }
+    while (poolOfTypesToGen.length);
+
+    return Array.from(collectiveTypes.values());
+}
+
+function parseAbiStructWorker(abi: Abi, structName: string, artifactType: ArtifactType): ParsedAbiType {
+    let output: ParsedAbiType = {
+        artifactType,
+        name: generateTypeName(structName, artifactType),
+        props: [],
+    };
+
+    const struct = abi.structs.find(st => st.name == structName);
+    if (!struct) {
+        logger.error(`struct ${structName} not found in ABI`, 'abi.generate')
+    }
+
+    struct?.fields.forEach(field => {
+        const mappedType = getMappedType(field.type,
+            [ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType) ?
+                'typescript' :
+                'mongo'
+        );
+
+        output.props.push({
             key: field.name,
-            structType,
-            entityType,
+            type: mappedType,
         })
     })
 
-    return {
-        name,
-        props,
-    }
+    return output;
 }
 
+function getSubTypesToGen(subType: ParsedAbiType, availableTypes: Map<string, ParsedAbiType>) {
+    return subType.props.filter(prop => prop.type.requiresCodeGen).filter(prop => !availableTypes.has(prop.type.sourceName)).reverse()
+}
+
+function generateTypeName(structName: string, artifiactType: ArtifactType) {
+    let output = pascalCase(structName);
+
+    switch (artifiactType) {
+        case ArtifactType.Document:
+            output += 'Document';
+            break;
+        case ArtifactType.SubDocument:
+            output += 'SubDocument';
+            break;
+        case ArtifactType.Struct:
+            output += 'Struct';
+            break;
+        case ArtifactType.SubStruct:
+            output += 'SubStruct';
+            break;
+    }
+
+    return output;
+}
