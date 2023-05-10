@@ -1,12 +1,18 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
 import { dirname, join } from "path";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync } from "fs";
+
 import { JsonFile } from "../types/abi.types";
 
-export const createTargetPath = (path: string) => {
+export const ensurePathExists = (path: string) => {
   const targetDirPath = dirname(path);
   if (!existsSync(targetDirPath)) {
     mkdirSync(targetDirPath, { recursive: true });
+    console.info(`Created dir ${targetDirPath}`)
   }
+};
+
+export const fileOrDirExists = (fileOrDir: string) => {
+  return fileOrDir ? existsSync(fileOrDir) : false;
 };
 
 export const walk = (dir: string): string[] =>
