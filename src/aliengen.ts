@@ -8,7 +8,7 @@ import commander from "commander";
 import { version } from "../package.json";
 
 const logger = Logger.getLogger({
-    minLevel: LogLevel.Debug
+    minLevel: LogLevel.Debug,
 });
 
 const program = new commander.Command();

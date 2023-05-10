@@ -29,5 +29,5 @@ export const download = async (
   ensurePathExists(path.format(outPath))
 
   fs.writeFileSync(path.format(outPath), JSON.stringify(abi, null, 2));
-  logger.info(`Downloaded contract ABI for '${contractName}' at ${path.resolve(downloadPath)}`, 'abi.download', `💾`);
+  logger.info(`Downloaded ABI for '${contractName}' at ${path.resolve(downloadPath)}`, `💾`);
 };

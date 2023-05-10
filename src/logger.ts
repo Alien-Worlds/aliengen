@@ -1,6 +1,7 @@
 export default class Logger {
     static logger: Logger;
     private minLevel: number;
+
     private readonly levels: { [key: string]: number } = {
         'trace': 1,
         'debug': 2,
@@ -15,28 +16,32 @@ export default class Logger {
 
     public static getLogger(options?: LogOptions): Logger {
         if (!Logger.logger) {
-            Logger.logger = new Logger(options || {
-                minLevel: LogLevel.Trace,
-            });
+            let opts: LogOptions = {
+                // defaults
+                minLevel: LogLevel.Info,
+                ...options,
+            };
+
+            Logger.logger = new Logger(opts);
         }
 
         return Logger.logger;
     }
 
-    public trace(message: string, module?: string, icon?: string): void {
-        this.log({ level: LogLevel.Trace, message, module, icon, });
+    public trace(message: string, icon?: string): void {
+        this.log({ level: LogLevel.Trace, message, icon, });
     }
-    public debug(message: string, module?: string, icon?: string): void {
-        this.log({ level: LogLevel.Debug, message, module, icon, });
+    public debug(message: string, icon?: string): void {
+        this.log({ level: LogLevel.Debug, message, icon, });
     }
-    public info(message: string, module?: string, icon?: string): void {
-        this.log({ level: LogLevel.Info, message, module, icon, });
+    public info(message: string, icon?: string): void {
+        this.log({ level: LogLevel.Info, message, icon, });
     }
-    public warn(message: string, module?: string, icon?: string): void {
-        this.log({ level: LogLevel.Warn, message, module, icon, });
+    public warn(message: string, icon?: string): void {
+        this.log({ level: LogLevel.Warn, message, icon, });
     }
-    public error(message: string, module?: string, icon?: string): void {
-        this.log({ level: LogLevel.Error, message, module, icon, });
+    public error(message: string, icon?: string): void {
+        this.log({ level: LogLevel.Error, message, icon, });
     }
 
     private log(data: LogEntry) {
@@ -68,11 +73,11 @@ export default class Logger {
     }
 
     private buildText(data: LogEntry): string {
-        const { message, module, icon } = data;
         let text = '';
 
+        const { message, icon } = data;
+
         if (icon) { text += `${icon} `; }
-        if (module) { text += `[${module}] `; }
         text += `${message}`;
 
         return text;
@@ -94,13 +99,13 @@ export default class Logger {
 };
 
 export interface LogOptions {
-    minLevel: LogLevel;
+    minLevel?: LogLevel;
 }
 
 export interface LogEntry {
     level: LogLevel;
     message: string;
-    module: string;
+    module?: string;
     icon?: string;
 }
 

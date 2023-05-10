@@ -1,7 +1,7 @@
-import { FileTransportOptions, Transport } from "./transport";
-import { ensurePathExists, fileOrDirExists } from "../../utils/files";
+import { Transport, TransportOptions } from "./transport";
+import { ensurePathExists, fileOrDirExists } from "../actions/abi/utils/files";
 
-import Logger from "../../../../logger";
+import Logger from "../logger";
 import fs from "fs";
 
 const logger = Logger.getLogger();
@@ -11,13 +11,13 @@ export class FileTransport implements Transport {
         const { outputPath, overwrite = false } = options;
         try {
             if (!overwrite && fileOrDirExists(outputPath)) {
-                logger.info(`skipped ${outputPath}`, 'abi.generate', `🔵`);
+                logger.info(`skipped ${outputPath}`, `🔵`);
                 return true;
             }
 
             ensurePathExists(outputPath);
             fs.writeFileSync(outputPath, data);
-            logger.info(`created ${outputPath}`, 'abi.generate', `🟢`);
+            logger.info(`created ${outputPath}`, `🟢`);
         }
         catch (ex) {
             logger.error(ex)
@@ -26,4 +26,9 @@ export class FileTransport implements Transport {
 
         return true;
     }
+}
+
+interface FileTransportOptions extends TransportOptions {
+    outputPath: string;
+    overwrite?: boolean;
 }
