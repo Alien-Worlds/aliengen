@@ -1,13 +1,16 @@
-import { Abi, SupportedFormat } from "../types/abi.types";
+import { Abi, JsonFile, SupportedFormat } from "../types/abi.types";
 
 import { GenerateOptions } from "./generate.types";
+import Logger from "../../../logger";
 import config from "../../../config";
 import { download } from "../download/download";
 import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
-import { generateContractActions } from "./generate.actions";
+import { generateActionDtos } from "./actions/dtos.actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
+
+const logger = Logger.getLogger();
 
 export const generate = async (
   options: GenerateOptions
@@ -17,20 +20,22 @@ export const generate = async (
 
   try {
     if (existsSync(source)) {
-      const abis = readJsonFiles<Abi>(source);
+      const files: JsonFile<Abi>[] = readJsonFiles<Abi>(source);
 
-      for (const abi of abis) {
-        generateContractActions(
-          abi.content,
-          contractName || extractDataFromAbiJsonFilename(abi.path).contract,
-          outputPath || path.dirname(abi.path),
+      for (const abiFile of files) {
+        generateActions(
+          abiFile.content,
+          contractName || extractDataFromAbiJsonFilename(abiFile.path).contract,
+          outputPath || path.dirname(abiFile.path),
           force,
-        );
+        )
       }
     } else {
-      console.log("wrong jsonPath");
+      logger.error(`invalid source path ${source}`)
     }
-  } catch (error) { }
+  } catch (error) {
+    logger.error(error)
+  }
 };
 
 async function downloadContractIfSrcNotProvided(options: GenerateOptions): Promise<string> {
@@ -52,4 +57,8 @@ async function downloadContractIfSrcNotProvided(options: GenerateOptions): Promi
   }
 
   return source;
+}
+
+async function generateActions(abi: Abi, contractName: string, outputPath: string, force: boolean) {
+  generateActionDtos(abi, contractName, outputPath, force);
 }

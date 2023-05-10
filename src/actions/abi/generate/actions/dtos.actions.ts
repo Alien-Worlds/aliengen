@@ -1,16 +1,16 @@
+import { Abi, Action } from "../../types/abi.types";
+import { ArtifactType, ParsedAbiType, ParsedAction } from "../generate.types";
 import { paramCase, pascalCase } from "change-case";
-import path from "path";
 
-import Logger from "../../../logger";
-import { Abi, Action } from "../types/abi.types";
-import { getMappedType } from "../types/mapping.types";
-import { ArtifactType, ParsedAbiType, ParsedAction } from "./generate.types";
-import TemplateEngine from "./template-engine";
-import { FileTransport } from "./transport/file.transport";
+import { FileTransport } from "../../../../transport/file.transport";
+import Logger from "../../../../logger";
+import TemplateEngine from "../template-engine";
+import { getMappedType } from "../../types/mapping.types";
+import path from "path";
 
 const logger = Logger.getLogger();
 
-export const generateContractActions = (
+export const generateActionDtos = (
     abi: Abi,
     contract: string,
     baseDir: string,
@@ -105,7 +105,7 @@ function parseAbiStructWorker(abi: Abi, structName: string, artifactType: Artifa
 
     const struct = abi.structs.find(st => st.name == structName);
     if (!struct) {
-        logger.error(`struct ${structName} not found in ABI`, 'abi.generate')
+        logger.error(`struct ${structName} not found in ABI`)
     }
 
     struct?.fields.forEach(field => {
