@@ -1,6 +1,7 @@
 import { Abi, JsonFile, SupportedFormat } from "../types/abi.types";
+import { GenerateOptions, GeneratedOutput } from "./generate.types";
 
-import { GenerateOptions } from "./generate.types";
+import { FileTransport } from "../../../transport/file.transport";
 import Logger from "../../../logger";
 import config from "../../../config";
 import { download } from "../download/download";
@@ -22,14 +23,19 @@ export const generate = async (
     if (existsSync(source)) {
       const files: JsonFile<Abi>[] = readJsonFiles<Abi>(source);
 
+      let output: GeneratedOutput[] = [];
+
       for (const abiFile of files) {
-        generateActions(
+        const actionsOutput = generateActions(
           abiFile.content,
           contractName || extractDataFromAbiJsonFilename(abiFile.path).contract,
           outputPath || path.dirname(abiFile.path),
-          force,
         )
+
+        output = output.concat(actionsOutput);
       }
+
+      await transportOutput(output, force);
     } else {
       logger.error(`invalid source path ${source}`)
     }
@@ -59,6 +65,23 @@ async function downloadContractIfSrcNotProvided(options: GenerateOptions): Promi
   return source;
 }
 
-async function generateActions(abi: Abi, contractName: string, outputPath: string, force: boolean) {
-  generateActionDtos(abi, contractName, outputPath, force);
+function generateActions(abi: Abi, contractName: string, outputPath: string): GeneratedOutput[] {
+  let output: GeneratedOutput[] = [];
+
+  output = output.concat(generateActionDtos(abi, contractName, outputPath));
+
+  return output;
+}
+
+async function transportOutput(output: GeneratedOutput[], overwrite: boolean): Promise<boolean> {
+  const transport = new FileTransport();
+
+  output.forEach((out) => {
+    transport.writeOutput(out.content, {
+      outputPath: out.filePath,
+      overwrite,
+    });
+  })
+
+  return true;
 }

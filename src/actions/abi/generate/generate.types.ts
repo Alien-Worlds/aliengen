@@ -29,3 +29,9 @@ type TypeProp = {
     key: string;
     type: MappedDatatype;
 }
+
+export type GeneratedOutput = {
+    filePath: string;
+    overwrite?: boolean;
+    content: string;
+}
