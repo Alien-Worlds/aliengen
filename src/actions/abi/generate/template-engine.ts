@@ -1,8 +1,7 @@
-import { readFileSync } from "fs";
 import Handlebars from "handlebars";
-import path from "path";
-
 import config from "../../../config";
+import path from "path";
+import { readFileSync } from "fs";
 import { walk } from "../utils/files";
 
 export default class TemplateEngine {
