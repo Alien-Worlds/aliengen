@@ -1,3 +1,5 @@
+import { camelCase, paramCase, pascalCase } from "change-case";
+
 import Handlebars from "handlebars";
 import config from "../../../config";
 import path from "path";
@@ -15,6 +17,12 @@ export default class TemplateEngine {
     }
 };
 
+function registerHelpers(): void {
+    Handlebars.registerHelper({
+        camelCase, paramCase, pascalCase
+    });
+};
+
 function registerTemplates(): void {
     const partialTemplatesDir = path.parse(path.join(process.cwd(), config.templatesDir, 'partials'));
     const partialTmpls = walk(path.format(partialTemplatesDir));
@@ -25,4 +33,5 @@ function registerTemplates(): void {
     })
 };
 
+registerHelpers();
 registerTemplates();

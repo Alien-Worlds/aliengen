@@ -1,0 +1,13 @@
+{{! template for action enums e.g. src/contracts/dao-worlds/actions/domain/enums.ts }}
+{{> warn-do-not-edit}}
+
+/**
+ * @enum
+ * @readonly
+ * @description {{pascalCase contract}} Action Names
+ */
+export enum {{pascalCase contract}}ActionName {
+{{#each actions}}
+    {{pascalCase .}} = '{{ . }}',
+{{/each}}
+};

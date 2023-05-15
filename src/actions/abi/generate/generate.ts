@@ -9,6 +9,7 @@ import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
 import { generateActionDtos } from "./actions/dtos.actions";
 import { generateActionEntities } from "./actions/entities.actions";
+import { generateActionEnums } from "./actions/enums.actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
 
@@ -67,10 +68,11 @@ async function downloadContractIfSrcNotProvided(options: GenerateOptions): Promi
 }
 
 function generateActions(abi: Abi, contractName: string, outputPath: string): GeneratedOutput[] {
-  let output: GeneratedOutput[] = [];
-
-  output = output.concat(generateActionDtos(abi, contractName, outputPath));
-  output = output.concat(generateActionEntities(abi, contractName, outputPath));
+  let output: GeneratedOutput[] = [].concat(
+    generateActionDtos(abi, contractName, outputPath),
+    generateActionEntities(abi, contractName, outputPath),
+    generateActionEnums(abi, contractName, outputPath),
+  );
 
   return output;
 }
