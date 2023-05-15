@@ -8,6 +8,7 @@ import { download } from "../download/download";
 import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
 import { generateActionDtos } from "./actions/dtos.actions";
+import { generateActionEntities } from "./actions/entities.actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
 
@@ -69,6 +70,7 @@ function generateActions(abi: Abi, contractName: string, outputPath: string): Ge
   let output: GeneratedOutput[] = [];
 
   output = output.concat(generateActionDtos(abi, contractName, outputPath));
+  output = output.concat(generateActionEntities(abi, contractName, outputPath));
 
   return output;
 }
