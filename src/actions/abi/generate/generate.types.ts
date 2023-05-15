@@ -13,7 +13,7 @@ export type ParsedAction = {
 };
 
 export type ParsedAbiType = {
-    artifactType: ArtifactType;
+    artifactType?: ArtifactType;
     name: string;
     props: TypeProp[]
 }
@@ -22,7 +22,7 @@ export enum ArtifactType {
     Document = 'Document',
     SubDocument = 'SubDocument',
     Struct = 'Struct',
-    SubStruct = 'SubStruct'
+    SubStruct = 'SubStruct',
 }
 
 type TypeProp = {

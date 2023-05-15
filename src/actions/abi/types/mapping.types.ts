@@ -24,7 +24,7 @@ export const getMappedType = (sourceType: string, targetTechnology: TargetTech):
     }
 }
 
-export const generateCustomTypeName = (sourceType: string, artifactType: ArtifactType): MappedDatatype => {
+export const generateCustomTypeName = (sourceType: string, artifactType?: ArtifactType): MappedDatatype => {
     let typeKey = sourceType, isArrayType = false;
 
     if (sourceType.endsWith("[]")) {
@@ -35,7 +35,7 @@ export const generateCustomTypeName = (sourceType: string, artifactType: Artifac
     let suffix = '';
     if ([ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType)) {
         suffix = ArtifactType.SubDocument;
-    } else {
+    } else if ([ArtifactType.Struct, ArtifactType.SubStruct].includes(artifactType)) {
         suffix = ArtifactType.SubStruct;
     }
 
@@ -49,7 +49,6 @@ export const generateCustomTypeName = (sourceType: string, artifactType: Artifac
 export const typesMap = new Map<string, MappedType>([
     ["bytes", { typescript: ["Bytes"], mongo: ["Binary"] }],
     ["bool", { typescript: ["boolean"], mongo: ["boolean"] }],
-    ["asset", { typescript: ["Asset"], mongo: ["object"] }],
     ["symbol", { typescript: ["Symbol"], mongo: ["object"] }],
     ["extension", { typescript: ["Extension"], mongo: ["object"] }],
     ["name", { typescript: ["string"], mongo: ["string"] }],
@@ -85,7 +84,7 @@ export const typesMap = new Map<string, MappedType>([
 ]);
 
 export const commonEosTypesMap = new Map<string, MappedType>([
-    // TODO: think about defining common eos types in an independent git repository
+    ["asset", { typescript: ["Asset"], mongo: ["object"] }],
 ]);
 
 export type MappedType = {
