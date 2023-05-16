@@ -85,6 +85,9 @@ function generateActions(abi: Abi, contractName: string, outputPath: string): Ge
 
     // IOC config
     generateActionIocConfig(contractName, outputPath),
+
+    // Exports
+    generateActionExports(contractName, outputPath),
   );
 
   return output;
