@@ -1,7 +1,7 @@
 import { Abi, Action } from "../../types/abi.types";
 import { ArtifactType, GeneratedOutput, ParsedAbiType, ParsedAction } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
-import { dtosTemplate, exportsTemplate } from '../templates';
+import { collectiveDataTypeTemplate, dtosTemplate, exportsTemplate } from '../templates';
 import { paramCase, pascalCase } from "change-case";
 
 import Logger from "../../../../logger";
@@ -24,9 +24,14 @@ export const generateActionDtos = (
         dtos.set(action.name, dtoContent);
     })
 
-    const exportsContent = generateExportsContent(dtos);
+    const collectiveTypeContent = generateCollectiveDataType(dtos);
 
-    return createOutput(contract, dtos, exportsContent, baseDir);
+    const exportsContent = generateExportsContent([
+        getCollectiveDataTypeFilename(contract),
+        ...Array.from(dtos.keys()),
+    ]);
+
+    return createOutput(contract, dtos, collectiveTypeContent, exportsContent, baseDir);
 };
 
 const generateDtoContent = (parsedAction: ParsedAction) => {
@@ -57,14 +62,27 @@ const generateDtoContent = (parsedAction: ParsedAction) => {
     return TemplateEngine.GenerateTemplateOutput(dtosTemplate, templateData);
 }
 
-const generateExportsContent = (dtos: Map<string, string>) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
-        exports: Array.from(dtos.keys()),
+const generateCollectiveDataType = (dtos: Map<string, string>) => {
+    return TemplateEngine.GenerateTemplateOutput(collectiveDataTypeTemplate, {
+        dtos: Array.from(dtos.keys()),
         suffix: '.dto',
     });
 }
 
-const createOutput = (contract: string, dtos: Map<string, string>, exportsOutput: string, outputBaseDir: string) => {
+const generateExportsContent = (filesToExport: string[]) => {
+    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
+        exports: filesToExport,
+        suffix: '.dto',
+    });
+}
+
+const createOutput = (
+    contract: string,
+    dtos: Map<string, string>,
+    collectiveDtoOutput: string,
+    exportsOutput: string,
+    outputBaseDir: string
+) => {
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts
@@ -75,6 +93,11 @@ const createOutput = (contract: string, dtos: Map<string, string>, exportsOutput
             filePath: path.join(path.format(dtosPath), `${name}.dto.ts`),
             content,
         })
+    })
+
+    output.push({
+        filePath: path.join(path.format(dtosPath), getCollectiveDataTypeFilename(contract, true, true)),
+        content: collectiveDtoOutput,
     })
 
     output.push({
@@ -194,4 +217,8 @@ function generateTypeName(structName: string, artifactType: ArtifactType) {
     }
 
     return output;
+}
+
+function getCollectiveDataTypeFilename(contract: string, includeSuffix: boolean = false, includeExtension: boolean = false): string {
+    return `${paramCase(contract)}-action${includeSuffix ? '.dto' : ''}${includeExtension ? '.ts' : ''}`;
 }
