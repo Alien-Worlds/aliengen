@@ -1,0 +1,12 @@
+import { 
+  {{#each entities}} 
+    {{pascalCase .}},
+  {{/each}}
+} from './';
+
+export type DataEntityType =
+{{#each entities}}
+  {{pascalCase .}}
+  {{~#unless @last}} |{{/unless}}
+  {{~#if @last}};{{/if}}
+{{/each}}
