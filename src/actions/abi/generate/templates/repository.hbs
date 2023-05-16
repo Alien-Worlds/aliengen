@@ -1,9 +1,7 @@
-import { injectable, Repository } from '@alien-worlds/api-core';
-import { ContractAction, ContractActionDocument } from '@alien-worlds/api-core';
-import {
-  DataDocumentType,
-  DataEntityType,
-} from '../../data/dtos/{{paramCase contract}}-action.dto';
+import { ContractAction, ContractActionDocument, Repository, injectable } from '@alien-worlds/api-core';
+
+import { DataDocumentType } from '../../data/dtos/{{paramCase contract}}-action.dto';
+import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
 
 @injectable()
 export abstract class {{pascalCase contract}}ActionRepository extends Repository<

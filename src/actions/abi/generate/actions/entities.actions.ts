@@ -2,7 +2,7 @@ import { Abi, Action } from "../../types/abi.types";
 import { GeneratedOutput, ParsedAbiType, ParsedAction } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
 import { camelCase, paramCase, pascalCase } from "change-case";
-import { entityTemplate, exportsTemplate } from '../templates';
+import { collectiveEntityTemplate, entityTemplate, exportsTemplate } from '../templates';
 
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
@@ -23,11 +23,16 @@ export const generateActionEntities = (
         const entityContent = generateEntityContent(parsedAction);
 
         entities.set(action.name, entityContent);
-    })
+    });
 
-    const exportsContent = generateExportsContent(entities);
+    const collectiveTypeContent = generateCollectiveEntityType(entities);
 
-    return createOutput(contract, entities, exportsContent, baseDir);
+    const exportsContent = generateExportsContent([
+        getCollectiveDataTypeFilename(contract),
+        ...Array.from(entities.keys()),
+    ]);
+
+    return createOutput(contract, entities, collectiveTypeContent, exportsContent, baseDir);
 };
 
 function parseAbiAction(abi: Abi, action: Action): ParsedAction {
@@ -67,13 +72,25 @@ const generateEntityContent = (parsedAction: ParsedAction): string => {
     return TemplateEngine.GenerateTemplateOutput(entityTemplate, templateData);
 }
 
-const generateExportsContent = (files: Map<string, string>) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
-        exports: Array.from(files.keys()),
+const generateCollectiveEntityType = (entities: Map<string, string>) => {
+    return TemplateEngine.GenerateTemplateOutput(collectiveEntityTemplate, {
+        entities: Array.from(entities.keys()),
     });
 }
 
-const createOutput = (contract: string, entities: Map<string, string>, exportsOutput: string, outputBaseDir: string): GeneratedOutput[] => {
+const generateExportsContent = (filesToExport: string[]) => {
+    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
+        exports: filesToExport,
+    });
+}
+
+const createOutput = (
+    contract: string,
+    entities: Map<string, string>,
+    collectiveEntityOutput: string,
+    exportsOutput: string,
+    outputBaseDir: string
+): GeneratedOutput[] => {
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/domain/entities/set-status.ts
@@ -84,6 +101,11 @@ const createOutput = (contract: string, entities: Map<string, string>, exportsOu
             filePath: path.join(path.format(outDir), `${name}.ts`),
             content,
         })
+    })
+
+    output.push({
+        filePath: path.join(path.format(outDir), getCollectiveDataTypeFilename(contract, true)),
+        content: collectiveEntityOutput,
     })
 
     output.push({
@@ -145,4 +167,8 @@ function getSubTypesToGen(subType: ParsedAbiType, availableTypes: Map<string, Pa
         .filter((prop) => prop.type.requiresCodeGen)
         .filter((prop) => !availableTypes.has(prop.type.sourceName))
         .reverse();
+}
+
+function getCollectiveDataTypeFilename(contract: string, includeExtension: boolean = false): string {
+    return `${paramCase(contract)}-action${includeExtension ? '.ts' : ''}`;
 }
