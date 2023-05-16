@@ -11,6 +11,7 @@ import { generateActionDataSource } from "./actions/data-source.actions";
 import { generateActionDtos } from "./actions/dtos.actions";
 import { generateActionEntities } from "./actions/entities.actions";
 import { generateActionEnums } from "./actions/enums.actions";
+import { generateActionRepository } from "./actions/repository.actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
 
@@ -74,6 +75,7 @@ function generateActions(abi: Abi, contractName: string, outputPath: string): Ge
     generateActionEntities(abi, contractName, outputPath),
     generateActionEnums(abi, contractName, outputPath),
     generateActionDataSource(contractName, outputPath),
+    generateActionRepository(contractName, outputPath),
   );
 
   return output;

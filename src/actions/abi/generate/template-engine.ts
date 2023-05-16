@@ -1,4 +1,4 @@
-import { camelCase, paramCase, pascalCase } from "change-case";
+import { camelCase, constantCase, paramCase, pascalCase } from "change-case";
 
 import Handlebars from "handlebars";
 import config from "../../../config";
@@ -19,7 +19,7 @@ export default class TemplateEngine {
 
 function registerHelpers(): void {
     Handlebars.registerHelper({
-        camelCase, paramCase, pascalCase
+        camelCase, paramCase, pascalCase, constantCase,
     });
 };
 

@@ -3,3 +3,4 @@ export const exportsTemplate = 'exports.hbs';
 export const entityTemplate = 'entity.hbs';
 export const enumsTemplate = 'enums.hbs';
 export const dataSourceTemplate = 'data-source.hbs';
+export const repositoryTemplate = 'repository.hbs';
