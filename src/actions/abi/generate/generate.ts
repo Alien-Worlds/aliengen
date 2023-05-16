@@ -7,6 +7,7 @@ import config from "../../../config";
 import { download } from "../download/download";
 import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
+import { generateActionDataSource } from "./actions/data-source.actions";
 import { generateActionDtos } from "./actions/dtos.actions";
 import { generateActionEntities } from "./actions/entities.actions";
 import { generateActionEnums } from "./actions/enums.actions";
@@ -72,6 +73,7 @@ function generateActions(abi: Abi, contractName: string, outputPath: string): Ge
     generateActionDtos(abi, contractName, outputPath),
     generateActionEntities(abi, contractName, outputPath),
     generateActionEnums(abi, contractName, outputPath),
+    generateActionDataSource(contractName, outputPath),
   );
 
   return output;
