@@ -11,6 +11,8 @@ import { generateActionDataSource } from "./actions/data-source.actions";
 import { generateActionDtos } from "./actions/dtos.actions";
 import { generateActionEntities } from "./actions/entities.actions";
 import { generateActionEnums } from "./actions/enums.actions";
+import { generateActionExports } from "./actions/exports.actions";
+import { generateActionIocConfig } from "./actions/ioc.actions";
 import { generateActionRepository } from "./actions/repository.actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
@@ -71,11 +73,18 @@ async function downloadContractIfSrcNotProvided(options: GenerateOptions): Promi
 
 function generateActions(abi: Abi, contractName: string, outputPath: string): GeneratedOutput[] {
   let output: GeneratedOutput[] = [].concat(
-    generateActionDtos(abi, contractName, outputPath),
-    generateActionEntities(abi, contractName, outputPath),
-    generateActionEnums(abi, contractName, outputPath),
+    // Data
     generateActionDataSource(contractName, outputPath),
+    generateActionDtos(abi, contractName, outputPath),
+    // TODO: generate mappers
+
+    // Domain
+    generateActionEntities(abi, contractName, outputPath),
     generateActionRepository(contractName, outputPath),
+    generateActionEnums(abi, contractName, outputPath),
+
+    // IOC config
+    generateActionIocConfig(contractName, outputPath),
   );
 
   return output;

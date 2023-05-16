@@ -1,0 +1,37 @@
+{{! template for action IOC config e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts }}
+{{> warn-do-not-edit}}
+import {
+  connectMongo,
+  Container,
+  MongoConfig,
+  MongoSource,
+  RepositoryImpl,
+} from '@alien-worlds/api-core';
+import { {{pascalCase contract}}ActionMongoSource } from '../data/data-sources/{{paramCase contract}}-action.mongo.source';
+import { {{pascalCase contract}}ActionMapper } from '../data/mappers/{{paramCase contract}}-action.mapper';
+import { {{pascalCase contract}}ActionRepository } from '../domain/repositories';
+
+export const setup{{pascalCase contract}}ActionRepository = async (
+  mongo: MongoSource | MongoConfig,
+  container?: Container
+): Promise<{{pascalCase contract}}ActionRepository> => {
+  let mongoSource: MongoSource;
+  if (mongo instanceof MongoSource) {
+    mongoSource = mongo;
+  } else {
+    const db = await connectMongo(mongo);
+    mongoSource = new MongoSource(db);
+  }
+  const repository = new RepositoryImpl(
+    new {{pascalCase contract}}ActionMongoSource(mongoSource),
+    new {{pascalCase contract}}ActionMapper()
+  );
+
+  if (container) {
+    container
+      .bind<{{pascalCase contract}}ActionRepository>({{pascalCase contract}}ActionRepository.Token)
+      .toConstantValue(repository);
+  }
+
+  return repository;
+};
