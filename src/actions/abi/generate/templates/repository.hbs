@@ -1,0 +1,14 @@
+import { injectable, Repository } from '@alien-worlds/api-core';
+import { ContractAction, ContractActionDocument } from '@alien-worlds/api-core';
+import {
+  DataDocumentType,
+  DataEntityType,
+} from '../../data/dtos/{{paramCase contract}}-action.dto';
+
+@injectable()
+export abstract class {{pascalCase contract}}ActionRepository extends Repository<
+  ContractAction<DataEntityType, DataDocumentType>,
+  ContractActionDocument<DataDocumentType>
+> {
+  public static Token = '{{constantCase contract}}_ACTION_REPOSITORY';
+}
