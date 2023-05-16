@@ -7,3 +7,4 @@ export const enumsTemplate = 'enums.hbs';
 export const dataSourceTemplate = 'data-source.hbs';
 export const repositoryTemplate = 'repository.hbs';
 export const actionIocConfigTemplate = 'action.ioc.config.hbs';
+export const actionExportsTemplate = 'action-exports.hbs';
