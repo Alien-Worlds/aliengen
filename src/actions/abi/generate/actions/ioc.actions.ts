@@ -1,7 +1,6 @@
-import { actionIocConfigTemplate, exportsTemplate } from "../templates";
-
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -9,7 +8,7 @@ export const generateActionIocConfig = (
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(actionIocConfigTemplate, {
+    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.iocConfigTemplate, {
         contract,
     });
 
@@ -19,9 +18,8 @@ export const generateActionIocConfig = (
 };
 
 const generateExportsContent = (contractNames: string[] = []) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
-        exports: contractNames.map(c => `${getActionIocConfigFilename(c)}`),
-        suffix: '.ioc.config',
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
+        exports: contractNames.map(contract => `./${getActionIocConfigFilename(contract, true)}`)
     });
 }
 
@@ -34,16 +32,16 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to dir e.g. src/contracts/dao-worlds/actions/ioc
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/ioc`);
+    const outDir = path.join(outputBaseDir, 'ioc');
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts
-        filePath: path.join(path.format(outDir), `${getActionIocConfigFilename(contract, true, true)}`),
+        filePath: path.join(outDir, `${getActionIocConfigFilename(contract, true, true)}`),
         content: dataSourceOutput,
     });
 
     output.push({
-        filePath: path.join(path.format(outDir), 'index.ts'),
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     });
 

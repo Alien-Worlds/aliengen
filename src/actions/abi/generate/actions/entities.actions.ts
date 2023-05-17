@@ -2,10 +2,10 @@ import { Abi, Action } from "../../types/abi.types";
 import { GeneratedOutput, ParsedAbiType, ParsedAction } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
 import { camelCase, paramCase, pascalCase } from "change-case";
-import { collectiveEntityTemplate, entityTemplate, exportsTemplate } from '../templates';
 
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
+import Templates from '../templates';
 import path from "path";
 
 const logger = Logger.getLogger();
@@ -69,18 +69,18 @@ const generateEntityContent = (parsedAction: ParsedAction): string => {
         imports: Object.fromEntries(imports),
     };
 
-    return TemplateEngine.GenerateTemplateOutput(entityTemplate, templateData);
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.entitiesTemplate, templateData);
 }
 
 const generateCollectiveEntityType = (entities: Map<string, string>) => {
-    return TemplateEngine.GenerateTemplateOutput(collectiveEntityTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.collectiveEntityTemplate, {
         entities: Array.from(entities.keys()),
     });
 }
 
-const generateExportsContent = (filesToExport: string[]) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
-        exports: filesToExport,
+const generateExportsContent = (entityNames: string[]) => {
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
+        exports: entityNames.map(entityName => `./${entityName}`)
     });
 }
 
@@ -94,22 +94,22 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/domain/entities/set-status.ts
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/domain/entities`)
+    const outDir = path.join(outputBaseDir, 'domain', 'entities')
 
     entities.forEach((content, name) => {
         output.push({
-            filePath: path.join(path.format(outDir), `${name}.ts`),
+            filePath: path.join(outDir, `${name}.ts`),
             content,
         })
     })
 
     output.push({
-        filePath: path.join(path.format(outDir), getCollectiveDataTypeFilename(contract, true)),
+        filePath: path.join(outDir, getCollectiveDataTypeFilename(contract, true)),
         content: collectiveEntityOutput,
     })
 
     output.push({
-        filePath: path.join(path.format(outDir), 'index.ts'),
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     })
 

@@ -1,7 +1,6 @@
-import { dataSourceTemplate, exportsTemplate } from "../templates";
-
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -9,7 +8,7 @@ export const generateActionDataSource = (
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(dataSourceTemplate, {
+    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.dataSourceTemplate, {
         contract,
     });
 
@@ -19,9 +18,8 @@ export const generateActionDataSource = (
 };
 
 const generateExportsContent = (contractNames: string[] = []) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
-        exports: contractNames.map(c => `${paramCase(c)}-action`),
-        suffix: '.mongo.source',
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
+        exports: contractNames.map(contract => `./${paramCase(contract)}-action.mongo.source`)
     });
 }
 
@@ -34,16 +32,16 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to dir e.g. src/contracts/dao-worlds/actions/data/data-sources
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/data/data-sources`);
+    const outDir = path.join(outputBaseDir, 'data', 'data-sources');
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/data/data-sources/dao-worlds-action.mongo.source.ts
-        filePath: path.join(path.format(outDir), `${paramCase(contract)}-action.mongo.source.ts`),
+        filePath: path.join(outDir, `${paramCase(contract)}-action.mongo.source.ts`),
         content: dataSourceOutput,
     })
 
     output.push({
-        filePath: path.join(path.format(outDir), 'index.ts'),
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     })
 

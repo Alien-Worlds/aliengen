@@ -1,11 +1,11 @@
 import { Abi, Action } from "../../types/abi.types";
 import { ArtifactType, GeneratedOutput, ParsedAbiType, ParsedAction } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
-import { collectiveDataTypeTemplate, dtosTemplate, exportsTemplate } from '../templates';
 import { paramCase, pascalCase } from "change-case";
 
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
+import Templates from '../templates';
 import path from "path";
 
 const logger = Logger.getLogger();
@@ -59,20 +59,19 @@ const generateDtoContent = (parsedAction: ParsedAction) => {
         imports: Object.fromEntries(imports),
     };
 
-    return TemplateEngine.GenerateTemplateOutput(dtosTemplate, templateData);
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.dtosTemplate, templateData);
 }
 
 const generateCollectiveDataType = (dtos: Map<string, string>) => {
-    return TemplateEngine.GenerateTemplateOutput(collectiveDataTypeTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.collectiveDataTypeTemplate, {
         dtos: Array.from(dtos.keys()),
         suffix: '.dto',
     });
 }
 
-const generateExportsContent = (filesToExport: string[]) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
-        exports: filesToExport,
-        suffix: '.dto',
+const generateExportsContent = (dtoNames: string[]) => {
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
+        exports: dtoNames.map(dtoName => `./${dtoName}.dto`)
     });
 }
 
@@ -86,22 +85,22 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts
-    const dtosPath = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/data/dtos`);
+    const dtosPath = path.join(outputBaseDir, 'data', 'dtos');
 
     dtos.forEach((content, name) => {
         output.push({
-            filePath: path.join(path.format(dtosPath), `${name}.dto.ts`),
+            filePath: path.join(dtosPath, `${name}.dto.ts`),
             content,
         })
     })
 
     output.push({
-        filePath: path.join(path.format(dtosPath), getCollectiveDataTypeFilename(contract, true, true)),
+        filePath: path.join(dtosPath, getCollectiveDataTypeFilename(contract, true, true)),
         content: collectiveDtoOutput,
     })
 
     output.push({
-        filePath: path.join(path.format(dtosPath), 'index.ts'),
+        filePath: path.join(dtosPath, 'index.ts'),
         content: exportsOutput,
     })
 

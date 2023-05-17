@@ -1,12 +1,14 @@
-export const dtosTemplate = 'dtos.hbs';
-export const collectiveDataTypeTemplate = 'collective-dto.hbs';
-export const exportsTemplate = 'exports.hbs';
-export const entityTemplate = 'entity.hbs';
-export const collectiveEntityTemplate = 'collective-entity.hbs';
-export const enumsTemplate = 'enums.hbs';
-export const dataSourceTemplate = 'data-source.hbs';
-export const repositoryTemplate = 'repository.hbs';
-export const actionIocConfigTemplate = 'action.ioc.config.hbs';
-export const actionExportsTemplate = 'action-exports.hbs';
-export const actionMappersTemplate = 'action-mappers.hbs';
-
+export default {
+    Actions: {
+        collectiveDataTypeTemplate: 'actions/collective-dto.action.hbs',
+        collectiveEntityTemplate: 'actions/collective-entity.action.hbs',
+        dataSourceTemplate: 'actions/data-source.action.hbs',
+        dtosTemplate: 'actions/dtos.action.hbs',
+        entitiesTemplate: 'actions/entities.action.hbs',
+        enumsTemplate: 'actions/enums.action.hbs',
+        iocConfigTemplate: 'actions/ioc.config.action.hbs',
+        mappersTemplate: 'actions/mappers.action.hbs',
+        repositoryTemplate: 'actions/repository.action.hbs',
+    },
+    exportsTemplate: 'exports.hbs',
+};

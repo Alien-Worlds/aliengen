@@ -2,7 +2,7 @@ import { Abi, Action } from "../../types/abi.types";
 
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
-import { enumsTemplate } from "../templates";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -13,7 +13,7 @@ export const generateActionEnums = (
 ): GeneratedOutput[] => {
     const actions: string[] = abi.actions.map((action: Action) => action.name)
 
-    const enumsContent = TemplateEngine.GenerateTemplateOutput(enumsTemplate, {
+    const enumsContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.enumsTemplate, {
         contract,
         actions,
     });
@@ -25,10 +25,10 @@ const createOutput = (contract: string, enumsOutput: string, outputBaseDir: stri
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/domain/enums.ts
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/domain/enums.ts`);
+    const filePath = path.join(outputBaseDir, 'domain/enums.ts');
 
     output.push({
-        filePath: path.format(outDir),
+        filePath,
         content: enumsOutput,
     })
 

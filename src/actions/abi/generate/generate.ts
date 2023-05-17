@@ -7,14 +7,7 @@ import config from "../../../config";
 import { download } from "../download/download";
 import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
-import { generateActionDataSource } from "./actions/data-source.actions";
-import { generateActionDtos } from "./actions/dtos.actions";
-import { generateActionEntities } from "./actions/entities.actions";
-import { generateActionEnums } from "./actions/enums.actions";
-import { generateActionExports } from "./actions/exports.actions";
-import { generateActionIocConfig } from "./actions/ioc.actions";
-import { generateActionMappers } from "./actions/mappers.actions";
-import { generateActionRepository } from "./actions/repository.actions";
+import { generateActions } from "./actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
 
@@ -70,28 +63,6 @@ async function downloadContractIfSrcNotProvided(options: GenerateOptions): Promi
   }
 
   return source;
-}
-
-function generateActions(abi: Abi, contractName: string, outputPath: string): GeneratedOutput[] {
-  let output: GeneratedOutput[] = [].concat(
-    // Data
-    generateActionDataSource(contractName, outputPath),
-    generateActionDtos(abi, contractName, outputPath),
-    generateActionMappers(abi, contractName, outputPath),
-
-    // Domain
-    generateActionEntities(abi, contractName, outputPath),
-    generateActionRepository(contractName, outputPath),
-    generateActionEnums(abi, contractName, outputPath),
-
-    // IOC config
-    generateActionIocConfig(contractName, outputPath),
-
-    // Exports
-    generateActionExports(contractName, outputPath),
-  );
-
-  return output;
 }
 
 async function transportOutput(output: GeneratedOutput[], overwrite: boolean): Promise<boolean> {

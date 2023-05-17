@@ -1,4 +1,8 @@
 {{> warn-do-not-edit}}
 {{#each exports}}
-export * from './{{.}}{{../suffix}}';
+    {{#if exportAs}}
+export * as {{exportAs}} from '{{path}}{{../suffix}}';
+    {{else}}
+export * from '{{.}}{{../suffix}}';
+    {{/if}}
 {{/each}}
