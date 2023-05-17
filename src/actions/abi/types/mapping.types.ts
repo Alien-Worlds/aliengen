@@ -1,6 +1,7 @@
+import { ArtifactType } from "../generate/generate.types";
 import { pascalCase } from "change-case";
 
-export const getMappedType = (sourceType: string, targetTechnology: 'typescript' | 'mongo'): MappedDatatype => {
+export const getMappedType = (sourceType: string, targetTechnology: TargetTech): MappedDatatype => {
     let typeKey = sourceType, isArrayType = false;
 
     if (sourceType.endsWith("[]")) {
@@ -20,28 +21,34 @@ export const getMappedType = (sourceType: string, targetTechnology: 'typescript'
             requiresImport: true,
             importRef: '@alien-worlds/eosio-contract-types',
         };
-    } else {
-        console.error(`No mapping exist for smart contract type '${typeKey}' in ${targetTechnology}`)
-        return {
-            sourceName: typeKey,
-            name: `${generateNewCustomTypeName(typeKey, TargetTech[targetTechnology])}${isArrayType ? '[]' : ''}`,
-            requiresCodeGen: true,
-        }
     }
 }
 
-function generateNewCustomTypeName(fieldType: string, target: TargetTech) {
-    if (target == TargetTech.mongo) {
-        return `${pascalCase(fieldType)}Struct`
-    } else if (target == TargetTech.typescript) {
-        return pascalCase(fieldType)
+export const generateCustomTypeName = (sourceType: string, artifactType?: ArtifactType): MappedDatatype => {
+    let typeKey = sourceType, isArrayType = false;
+
+    if (sourceType.endsWith("[]")) {
+        isArrayType = true;
+        typeKey = sourceType.split("[]")[0];
+    }
+
+    let suffix = '';
+    if ([ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType)) {
+        suffix = ArtifactType.SubDocument;
+    } else if ([ArtifactType.Struct, ArtifactType.SubStruct].includes(artifactType)) {
+        suffix = ArtifactType.SubStruct;
+    }
+
+    return {
+        sourceName: typeKey,
+        name: `${pascalCase(typeKey)}${suffix}${isArrayType ? '[]' : ''}`,
+        requiresCodeGen: true,
     }
 }
 
 export const typesMap = new Map<string, MappedType>([
     ["bytes", { typescript: ["Bytes"], mongo: ["Binary"] }],
     ["bool", { typescript: ["boolean"], mongo: ["boolean"] }],
-    ["asset", { typescript: ["Asset"], mongo: ["object"] }],
     ["symbol", { typescript: ["Symbol"], mongo: ["object"] }],
     ["extension", { typescript: ["Extension"], mongo: ["object"] }],
     ["name", { typescript: ["string"], mongo: ["string"] }],
@@ -77,7 +84,7 @@ export const typesMap = new Map<string, MappedType>([
 ]);
 
 export const commonEosTypesMap = new Map<string, MappedType>([
-    // TODO: think about defining common eos types in an independent git repository
+    ["asset", { typescript: ["Asset"], mongo: ["object"] }],
 ]);
 
 export type MappedType = {
@@ -94,6 +101,6 @@ export type MappedDatatype = {
 }
 
 export enum TargetTech {
-    typescript,
-    mongo,
+    Typescript = 'typescript',
+    Mongo = 'mongo',
 }

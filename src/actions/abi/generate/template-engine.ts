@@ -1,8 +1,9 @@
-import { readFileSync } from "fs";
-import Handlebars from "handlebars";
-import path from "path";
+import { camelCase, constantCase, paramCase, pascalCase } from "change-case";
 
+import Handlebars from "handlebars";
 import config from "../../../config";
+import path from "path";
+import { readFileSync } from "fs";
 import { walk } from "../utils/files";
 
 export default class TemplateEngine {
@@ -16,6 +17,12 @@ export default class TemplateEngine {
     }
 };
 
+function registerHelpers(): void {
+    Handlebars.registerHelper({
+        camelCase, paramCase, pascalCase, constantCase,
+    });
+};
+
 function registerTemplates(): void {
     const partialTemplatesDir = path.parse(path.join(process.cwd(), config.templatesDir, 'partials'));
     const partialTmpls = walk(path.format(partialTemplatesDir));
@@ -26,4 +33,5 @@ function registerTemplates(): void {
     })
 };
 
+registerHelpers();
 registerTemplates();

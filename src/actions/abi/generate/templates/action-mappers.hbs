@@ -1,0 +1,39 @@
+{{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
+{{> warn-do-not-edit}}
+import {
+  {{#each entities}} 
+    {{pascalCase .}},
+  {{/each}}
+} from '../../domain/entities';
+
+import { ContractAction, ContractActionDocument, Mapper } from '@alien-worlds/api-core';
+
+import { {{pascalCase contract}}ActionName } from '../../domain/enums';
+import { DataDocumentType } from '../dtos/{{paramCase contract}}-action.dto';
+import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
+
+export class {{pascalCase contract}}ActionMapper
+  implements Mapper<ContractAction<DataEntityType>, ContractActionDocument>
+{
+  public toEntity(
+    document: ContractActionDocument<DataDocumentType>
+  ): ContractAction<DataEntityType, DataDocumentType> {
+    switch (document.action.name) {
+      // TODO: implement entity mappers
+      /*
+      case DaoWorldsActionName.Appointcust:
+        return ContractAction.fromDocument(
+          document,
+          AppointCustodians.fromDocument
+        );
+      */
+      default:
+        return null;
+    }
+  }
+  public toDataObject(
+    entity: ContractAction<DataEntityType, DataDocumentType>
+  ): ContractActionDocument<DataDocumentType> {
+    return entity.toDocument();
+  }
+}

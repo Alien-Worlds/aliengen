@@ -1,0 +1,12 @@
+{{! template for action collective data type e.g. src/contracts/dao-worlds/actions/data/dtos/dao-worlds-action.dto.ts }}
+{{> warn-do-not-edit}}
+{{#each dtos}}
+import { {{pascalCase .}}Document } from './{{.}}{{../suffix}}';
+{{/each}}
+
+export type DataDocumentType =
+{{#each dtos}}
+  {{pascalCase .}}Document 
+  {{~#unless @last}} |{{/unless}}
+  {{~#if @last}};{{/if}}
+{{/each}}
