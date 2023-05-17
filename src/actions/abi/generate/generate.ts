@@ -13,6 +13,7 @@ import { generateActionEntities } from "./actions/entities.actions";
 import { generateActionEnums } from "./actions/enums.actions";
 import { generateActionExports } from "./actions/exports.actions";
 import { generateActionIocConfig } from "./actions/ioc.actions";
+import { generateActionMappers } from "./actions/mappers.actions";
 import { generateActionRepository } from "./actions/repository.actions";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
@@ -76,7 +77,7 @@ function generateActions(abi: Abi, contractName: string, outputPath: string): Ge
     // Data
     generateActionDataSource(contractName, outputPath),
     generateActionDtos(abi, contractName, outputPath),
-    // TODO: generate mappers
+    generateActionMappers(abi, contractName, outputPath),
 
     // Domain
     generateActionEntities(abi, contractName, outputPath),
