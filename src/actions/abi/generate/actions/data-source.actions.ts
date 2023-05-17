@@ -33,16 +33,16 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to dir e.g. src/contracts/dao-worlds/actions/data/data-sources
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/data/data-sources`);
+    const outDir = path.join(outputBaseDir, 'data', 'data-sources');
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/data/data-sources/dao-worlds-action.mongo.source.ts
-        filePath: path.join(path.format(outDir), `${paramCase(contract)}-action.mongo.source.ts`),
+        filePath: path.join(outDir, `${paramCase(contract)}-action.mongo.source.ts`),
         content: dataSourceOutput,
     })
 
     output.push({
-        filePath: path.join(path.format(outDir), 'index.ts'),
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     })
 

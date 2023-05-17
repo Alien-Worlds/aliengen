@@ -86,22 +86,22 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts
-    const dtosPath = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/data/dtos`);
+    const dtosPath = path.join(outputBaseDir, 'data', 'dtos');
 
     dtos.forEach((content, name) => {
         output.push({
-            filePath: path.join(path.format(dtosPath), `${name}.dto.ts`),
+            filePath: path.join(dtosPath, `${name}.dto.ts`),
             content,
         })
     })
 
     output.push({
-        filePath: path.join(path.format(dtosPath), getCollectiveDataTypeFilename(contract, true, true)),
+        filePath: path.join(dtosPath, getCollectiveDataTypeFilename(contract, true, true)),
         content: collectiveDtoOutput,
     })
 
     output.push({
-        filePath: path.join(path.format(dtosPath), 'index.ts'),
+        filePath: path.join(dtosPath, 'index.ts'),
         content: exportsOutput,
     })
 

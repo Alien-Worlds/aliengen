@@ -29,11 +29,11 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to dir e.g. src/contracts/dao-worlds/actions/data/mappers
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/data/mappers`);
+    const outDir = path.join(outputBaseDir, 'data', 'mappers');
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts
-        filePath: path.join(path.format(outDir), `${paramCase(contract)}-action.mapper.ts`),
+        filePath: path.join(outDir, `${paramCase(contract)}-action.mapper.ts`),
         content: exportsOutput,
     });
 

@@ -26,9 +26,11 @@ const createOutput = (
 ): GeneratedOutput[] => {
     const output: GeneratedOutput[] = [];
 
+    // write to file e.g. src/contracts/token-worlds/actions/index.ts
+    const filePath = path.join(outputBaseDir, 'index.ts');
+
     output.push({
-        // write to file e.g. src/contracts/token-worlds/actions/index.ts
-        filePath: path.format(path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/index.ts`)),
+        filePath,
         content: exportsOutput,
     });
 

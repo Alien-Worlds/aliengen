@@ -33,16 +33,16 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to dir e.g. src/contracts/dao-worlds/actions/ioc
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/ioc`);
+    const outDir = path.join(outputBaseDir, 'ioc');
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts
-        filePath: path.join(path.format(outDir), `${getActionIocConfigFilename(contract, true, true)}`),
+        filePath: path.join(outDir, `${getActionIocConfigFilename(contract, true, true)}`),
         content: dataSourceOutput,
     });
 
     output.push({
-        filePath: path.join(path.format(outDir), 'index.ts'),
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     });
 

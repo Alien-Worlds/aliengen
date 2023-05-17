@@ -8,24 +8,28 @@ import { generateActionExports } from "./exports.actions";
 import { generateActionIocConfig } from "./ioc.actions";
 import { generateActionMappers } from "./mappers.actions";
 import { generateActionRepository } from "./repository.actions";
+import { paramCase } from "change-case";
+import path from "path";
 
 export function generateActions(abi: Abi, contractName: string, outputPath: string): GeneratedOutput[] {
+    const actionsOutputPath = path.join(outputPath, 'contracts', paramCase(contractName), 'actions');
+
     let output: GeneratedOutput[] = [].concat(
         // Data
-        generateActionDataSource(contractName, outputPath),
-        generateActionDtos(abi, contractName, outputPath),
-        generateActionMappers(abi, contractName, outputPath),
+        generateActionDataSource(contractName, actionsOutputPath),
+        generateActionDtos(abi, contractName, actionsOutputPath),
+        generateActionMappers(abi, contractName, actionsOutputPath),
 
         // Domain
-        generateActionEntities(abi, contractName, outputPath),
-        generateActionRepository(contractName, outputPath),
-        generateActionEnums(abi, contractName, outputPath),
+        generateActionEntities(abi, contractName, actionsOutputPath),
+        generateActionRepository(contractName, actionsOutputPath),
+        generateActionEnums(abi, contractName, actionsOutputPath),
 
         // IOC config
-        generateActionIocConfig(contractName, outputPath),
+        generateActionIocConfig(contractName, actionsOutputPath),
 
         // Exports
-        generateActionExports(contractName, outputPath),
+        generateActionExports(contractName, actionsOutputPath),
     );
 
     return output;

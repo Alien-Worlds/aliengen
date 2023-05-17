@@ -94,22 +94,22 @@ const createOutput = (
     const output: GeneratedOutput[] = [];
 
     // write to file e.g. src/contracts/index-worlds/actions/domain/entities/set-status.ts
-    const outDir = path.parse(`${outputBaseDir}/contracts/${paramCase(contract)}/actions/domain/entities`)
+    const outDir = path.join(outputBaseDir, 'domain', 'entities')
 
     entities.forEach((content, name) => {
         output.push({
-            filePath: path.join(path.format(outDir), `${name}.ts`),
+            filePath: path.join(outDir, `${name}.ts`),
             content,
         })
     })
 
     output.push({
-        filePath: path.join(path.format(outDir), getCollectiveDataTypeFilename(contract, true)),
+        filePath: path.join(outDir, getCollectiveDataTypeFilename(contract, true)),
         content: collectiveEntityOutput,
     })
 
     output.push({
-        filePath: path.join(path.format(outDir), 'index.ts'),
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     })
 
