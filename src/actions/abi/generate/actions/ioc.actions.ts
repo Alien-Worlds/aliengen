@@ -19,8 +19,7 @@ export const generateActionIocConfig = (
 
 const generateExportsContent = (contractNames: string[] = []) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: contractNames.map(c => `${getActionIocConfigFilename(c)}`),
-        suffix: '.ioc.config',
+        exports: contractNames.map(contract => `./${getActionIocConfigFilename(contract, true)}`)
     });
 }
 

@@ -19,8 +19,7 @@ export const generateActionDataSource = (
 
 const generateExportsContent = (contractNames: string[] = []) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: contractNames.map(c => `${paramCase(c)}-action`),
-        suffix: '.mongo.source',
+        exports: contractNames.map(contract => `./${paramCase(contract)}-action.mongo.source`)
     });
 }
 

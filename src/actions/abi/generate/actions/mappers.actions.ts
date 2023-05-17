@@ -10,9 +10,10 @@ export const generateActionMappers = (
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
-    const exportsContent = generateActionMappersContent(contract);
+    const mappersContent = generateActionMappersContent(contract);
+    const exportsContent = generateExportsContent([contract]);
 
-    return createOutput(baseDir, contract, exportsContent);
+    return createOutput(baseDir, contract, mappersContent, exportsContent);
 };
 
 const generateActionMappersContent = (contract: string) => {
@@ -21,10 +22,17 @@ const generateActionMappersContent = (contract: string) => {
     });
 }
 
+const generateExportsContent = (contractNames: string[] = []) => {
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
+        exports: contractNames.map(contract => `./${paramCase(contract)}-action.mapper`),
+    });
+}
+
 const createOutput = (
     outputBaseDir: string,
     contract: string,
-    exportsOutput: string
+    mappersOutput: string,
+    exportsOutput: string,
 ): GeneratedOutput[] => {
     const output: GeneratedOutput[] = [];
 
@@ -34,6 +42,11 @@ const createOutput = (
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts
         filePath: path.join(outDir, `${paramCase(contract)}-action.mapper.ts`),
+        content: mappersOutput,
+    });
+
+    output.push({
+        filePath: path.join(outDir, 'index.ts'),
         content: exportsOutput,
     });
 

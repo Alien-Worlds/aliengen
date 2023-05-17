@@ -1,7 +1,6 @@
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
-import { paramCase } from "change-case";
 import path from "path";
 
 export const generateActionExports = (
@@ -14,9 +13,19 @@ export const generateActionExports = (
 };
 
 const generateActionExportsContent = () => {
-    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.exportsTemplate, {
-        exports,
-    });
+    const templateData = {
+        exports: [
+            { exportAs: 'DataSources', path: './data/data-sources' },
+            { exportAs: 'Types', path: './data/dtos' },
+            { exportAs: 'Mappers', path: './data/mappers' },
+            { exportAs: 'Repositories', path: './domain/repositories' },
+            { exportAs: 'Entities', path: './domain/entities' },
+            { exportAs: 'Ioc', path: './ioc' },
+            './domain/enums',
+        ],
+    }
+
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, templateData);
 }
 
 const createOutput = (

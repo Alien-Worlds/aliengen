@@ -69,10 +69,9 @@ const generateCollectiveDataType = (dtos: Map<string, string>) => {
     });
 }
 
-const generateExportsContent = (filesToExport: string[]) => {
+const generateExportsContent = (dtoNames: string[]) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: filesToExport,
-        suffix: '.dto',
+        exports: dtoNames.map(dtoName => `./${dtoName}.dto`)
     });
 }
 

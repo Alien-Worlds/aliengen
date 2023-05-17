@@ -78,9 +78,9 @@ const generateCollectiveEntityType = (entities: Map<string, string>) => {
     });
 }
 
-const generateExportsContent = (filesToExport: string[]) => {
+const generateExportsContent = (entityNames: string[]) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: filesToExport,
+        exports: entityNames.map(entityName => `./${entityName}`)
     });
 }
 

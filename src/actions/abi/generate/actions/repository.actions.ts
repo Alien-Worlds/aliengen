@@ -19,8 +19,7 @@ export const generateActionRepository = (
 
 const generateExportsContent = (contractNames: string[] = []) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: contractNames.map(c => `${paramCase(c)}-action`),
-        suffix: '.repository',
+        exports: contractNames.map(contract => `./${paramCase(contract)}-action.repository`),
     });
 }
 
