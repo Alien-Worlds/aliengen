@@ -1,7 +1,6 @@
-import { exportsTemplate, repositoryTemplate } from "../templates";
-
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -9,7 +8,7 @@ export const generateActionRepository = (
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(repositoryTemplate, {
+    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.repositoryTemplate, {
         contract,
     });
 
@@ -19,7 +18,7 @@ export const generateActionRepository = (
 };
 
 const generateExportsContent = (contractNames: string[] = []) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
         exports: contractNames.map(c => `${paramCase(c)}-action`),
         suffix: '.repository',
     });

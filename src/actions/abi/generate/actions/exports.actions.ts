@@ -1,7 +1,6 @@
-import { actionExportsTemplate, actionIocConfigTemplate, exportsTemplate } from "../templates";
-
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -15,7 +14,7 @@ export const generateActionExports = (
 };
 
 const generateActionExportsContent = () => {
-    return TemplateEngine.GenerateTemplateOutput(actionExportsTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.exportsTemplate, {
         exports,
     });
 }

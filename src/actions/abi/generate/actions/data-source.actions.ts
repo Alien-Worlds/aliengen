@@ -1,7 +1,6 @@
-import { dataSourceTemplate, exportsTemplate } from "../templates";
-
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -9,7 +8,7 @@ export const generateActionDataSource = (
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(dataSourceTemplate, {
+    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.dataSourceTemplate, {
         contract,
     });
 
@@ -19,7 +18,7 @@ export const generateActionDataSource = (
 };
 
 const generateExportsContent = (contractNames: string[] = []) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
         exports: contractNames.map(c => `${paramCase(c)}-action`),
         suffix: '.mongo.source',
     });

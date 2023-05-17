@@ -1,7 +1,7 @@
 import { Abi } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
-import { actionMappersTemplate } from "../templates";
+import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -16,7 +16,7 @@ export const generateActionMappers = (
 };
 
 const generateActionMappersContent = (contract: string) => {
-    return TemplateEngine.GenerateTemplateOutput(actionMappersTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.mappersTemplate, {
         contract,
     });
 }

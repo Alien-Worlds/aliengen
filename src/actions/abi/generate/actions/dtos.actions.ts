@@ -1,11 +1,11 @@
 import { Abi, Action } from "../../types/abi.types";
 import { ArtifactType, GeneratedOutput, ParsedAbiType, ParsedAction } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
-import { collectiveDataTypeTemplate, dtosTemplate, exportsTemplate } from '../templates';
 import { paramCase, pascalCase } from "change-case";
 
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
+import Templates from '../templates';
 import path from "path";
 
 const logger = Logger.getLogger();
@@ -59,18 +59,18 @@ const generateDtoContent = (parsedAction: ParsedAction) => {
         imports: Object.fromEntries(imports),
     };
 
-    return TemplateEngine.GenerateTemplateOutput(dtosTemplate, templateData);
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.dtosTemplate, templateData);
 }
 
 const generateCollectiveDataType = (dtos: Map<string, string>) => {
-    return TemplateEngine.GenerateTemplateOutput(collectiveDataTypeTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.collectiveDataTypeTemplate, {
         dtos: Array.from(dtos.keys()),
         suffix: '.dto',
     });
 }
 
 const generateExportsContent = (filesToExport: string[]) => {
-    return TemplateEngine.GenerateTemplateOutput(exportsTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
         exports: filesToExport,
         suffix: '.dto',
     });
