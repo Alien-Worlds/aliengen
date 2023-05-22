@@ -1,11 +1,11 @@
+import { generateExports, generateIocConfig } from "../common";
+
 import { Abi } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import { generateActionDataSource } from "./data-source.actions";
 import { generateActionDtos } from "./dtos.actions";
 import { generateActionEntities } from "./entities.actions";
 import { generateActionEnums } from "./enums.actions";
-import { generateActionExports } from "./exports.actions";
-import { generateActionIocConfig } from "./ioc.actions";
 import { generateActionMappers } from "./mappers.actions";
 import { generateActionRepository } from "./repository.actions";
 import { paramCase } from "change-case";
@@ -26,10 +26,10 @@ export function generateActions(abi: Abi, contractName: string, outputPath: stri
         generateActionEnums(abi, contractName, actionsOutputPath),
 
         // IOC config
-        generateActionIocConfig(contractName, actionsOutputPath),
+        generateIocConfig(contractName, actionsOutputPath, 'action'),
 
         // Exports
-        generateActionExports(contractName, actionsOutputPath),
+        generateExports(actionsOutputPath),
     );
 
     return output;

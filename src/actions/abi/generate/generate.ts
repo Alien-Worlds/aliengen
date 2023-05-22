@@ -1,15 +1,16 @@
-import { Abi, JsonFile, SupportedFormat } from "../types/abi.types";
-import { GenerateOptions, GeneratedOutput } from "./generate.types";
-
-import { FileTransport } from "../../../transport/file.transport";
-import Logger from "../../../logger";
-import config from "../../../config";
-import { download } from "../download/download";
 import { existsSync } from "fs";
-import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
-import { generateActions } from "./actions";
 import path from "path";
+
+import config from "../../../config";
+import Logger from "../../../logger";
+import { FileTransport } from "../../../transport/file.transport";
+import { download } from "../download/download";
+import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
+import { Abi, JsonFile, SupportedFormat } from "../types/abi.types";
 import { readJsonFiles } from "../utils/files";
+import { generateActions } from "./actions";
+import { generateDeltas } from "./deltas";
+import { GeneratedOutput, GenerateOptions } from "./generate.types";
 
 const logger = Logger.getLogger();
 
@@ -32,6 +33,13 @@ export const generate = async (
           outputPath || path.dirname(abiFile.path),
         )
 
+        const deltasOutput = generateDeltas(
+          abiFile.content,
+          contractName || extractDataFromAbiJsonFilename(abiFile.path).contract,
+          outputPath || path.dirname(abiFile.path),
+        )
+
+        output = output.concat(actionsOutput, deltasOutput);
         output = output.concat(actionsOutput);
       }
 

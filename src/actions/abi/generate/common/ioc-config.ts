@@ -4,27 +4,30 @@ import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
-export const generateActionIocConfig = (
+export const generateIocConfig = (
     contract: string,
     baseDir: string,
+    actionOrDelta: string,
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.iocConfigTemplate, {
+    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.iocConfigTemplate, {
         contract,
+        actionOrDelta,
     });
 
-    const exportsContent = generateExportsContent([contract]);
+    const exportsContent = generateExportsContent([contract], actionOrDelta);
 
-    return createOutput(baseDir, contract, dataSourceContent, exportsContent);
+    return createOutput(baseDir, actionOrDelta, contract, dataSourceContent, exportsContent);
 };
 
-const generateExportsContent = (contractNames: string[] = []) => {
+const generateExportsContent = (contractNames: string[] = [], actionOrDelta: string) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: contractNames.map(contract => `./${getActionIocConfigFilename(contract, true)}`)
+        exports: contractNames.map(contract => `./${getIocConfigFilename(contract, actionOrDelta, true)}`)
     });
 }
 
 const createOutput = (
     outputBaseDir: string,
+    actionOrDelta: string,
     contract: string,
     dataSourceOutput: string,
     exportsOutput: string
@@ -36,7 +39,7 @@ const createOutput = (
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts
-        filePath: path.join(outDir, `${getActionIocConfigFilename(contract, true, true)}`),
+        filePath: path.join(outDir, `${getIocConfigFilename(contract, actionOrDelta, true, true)}`),
         content: dataSourceOutput,
     });
 
@@ -48,10 +51,11 @@ const createOutput = (
     return output;
 };
 
-function getActionIocConfigFilename(
+function getIocConfigFilename(
     contract: string,
+    actionOrDelta: string,
     includeSuffix: boolean = false,
     includeExtension: boolean = false
 ): string {
-    return `${paramCase(contract)}-action${includeSuffix ? '.ioc.config' : ''}${includeExtension ? '.ts' : ''}`;
+    return `${paramCase(contract)}-${actionOrDelta}${includeSuffix ? '.ioc.config' : ''}${includeExtension ? '.ts' : ''}`;
 }

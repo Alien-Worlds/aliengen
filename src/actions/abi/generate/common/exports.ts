@@ -1,18 +1,18 @@
+import path from "path";
+
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
-import path from "path";
 
-export const generateActionExports = (
-    contract: string,
+export const generateExports = (
     baseDir: string,
 ): GeneratedOutput[] => {
-    const exportsContent = generateActionExportsContent();
+    const exportsContent = generateExportsContent();
 
-    return createOutput(baseDir, contract, exportsContent);
+    return createOutput(baseDir, exportsContent);
 };
 
-const generateActionExportsContent = () => {
+const generateExportsContent = () => {
     const templateData = {
         exports: [
             { exportAs: 'DataSources', path: './data/data-sources' },
@@ -30,7 +30,6 @@ const generateActionExportsContent = () => {
 
 const createOutput = (
     outputBaseDir: string,
-    contract: string,
     exportsOutput: string
 ): GeneratedOutput[] => {
     const output: GeneratedOutput[] = [];

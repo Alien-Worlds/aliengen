@@ -6,9 +6,9 @@ export default {
         dtosTemplate: 'actions/dtos.action.hbs',
         entitiesTemplate: 'actions/entities.action.hbs',
         enumsTemplate: 'actions/enums.action.hbs',
-        iocConfigTemplate: 'actions/ioc.config.action.hbs',
         mappersTemplate: 'actions/mappers.action.hbs',
         repositoryTemplate: 'actions/repository.action.hbs',
     },
     exportsTemplate: 'exports.hbs',
+    iocConfigTemplate: 'ioc.config.hbs',
 };
