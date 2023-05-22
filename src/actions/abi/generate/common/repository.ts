@@ -1,31 +1,35 @@
+import { AbiComponent } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
 
-export const generateActionRepository = (
+export const generateRepository = (
     contract: string,
+    actionOrDelta: AbiComponent,
     baseDir: string,
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.Actions.repositoryTemplate, {
+    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.repositoryTemplate, {
         contract,
+        actionOrDelta,
     });
 
-    const exportsContent = generateExportsContent([contract]);
+    const exportsContent = generateExportsContent([contract], actionOrDelta);
 
-    return createOutput(baseDir, contract, dataSourceContent, exportsContent);
+    return createOutput(baseDir, contract, actionOrDelta, dataSourceContent, exportsContent);
 };
 
-const generateExportsContent = (contractNames: string[] = []) => {
+const generateExportsContent = (contractNames: string[] = [], actionOrDelta: AbiComponent) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: contractNames.map(contract => `./${paramCase(contract)}-action.repository`),
+        exports: contractNames.map(contract => `./${paramCase(contract)}-${actionOrDelta}.repository`),
     });
 }
 
 const createOutput = (
     outputBaseDir: string,
     contract: string,
+    actionOrDelta: AbiComponent,
     dataSourceOutput: string,
     exportsOutput: string
 ): GeneratedOutput[] => {
@@ -36,7 +40,7 @@ const createOutput = (
 
     output.push({
         // write to file e.g. src/contracts/dao-worlds/actions/domain/repositories/dao-worlds-action.repository.ts
-        filePath: path.join(outDir, `${paramCase(contract)}-action.repository.ts`),
+        filePath: path.join(outDir, `${paramCase(contract)}-${actionOrDelta}.repository.ts`),
         content: dataSourceOutput,
     });
 

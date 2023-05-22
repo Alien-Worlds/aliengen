@@ -1,6 +1,7 @@
 export default {
     exportsTemplate: 'exports.hbs',
     iocConfigTemplate: 'ioc.config.hbs',
+    repositoryTemplate: 'repository.hbs',
     Actions: {
         collectiveDataTypeTemplate: 'actions/collective-dto.action.hbs',
         collectiveEntityTemplate: 'actions/collective-entity.action.hbs',
@@ -9,7 +10,6 @@ export default {
         entitiesTemplate: 'actions/entities.action.hbs',
         enumsTemplate: 'actions/enums.action.hbs',
         mappersTemplate: 'actions/mappers.action.hbs',
-        repositoryTemplate: 'actions/repository.action.hbs',
     },
     Deltas: {
         enumsTemplate: 'deltas/enums.delta.hbs',

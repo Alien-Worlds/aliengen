@@ -1,6 +1,6 @@
-import { generateExports, generateIocConfig } from "../common";
+import { Abi, AbiComponent } from "../../types/abi.types";
+import { generateExports, generateIocConfig, generateRepository } from "../common";
 
-import { Abi } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import { generateActionDataSource } from "./data-source.actions";
 import { generateActionDtos } from "./dtos.actions";
@@ -22,11 +22,11 @@ export function generateActions(abi: Abi, contractName: string, outputPath: stri
 
         // Domain
         generateActionEntities(abi, contractName, actionsOutputPath),
-        generateActionRepository(contractName, actionsOutputPath),
+        generateRepository(contractName, AbiComponent.Action, actionsOutputPath),
         generateActionEnums(abi, contractName, actionsOutputPath),
 
         // IOC config
-        generateIocConfig(contractName, actionsOutputPath, 'action'),
+        generateIocConfig(contractName, actionsOutputPath, AbiComponent.Action),
 
         // Exports
         generateExports(actionsOutputPath),

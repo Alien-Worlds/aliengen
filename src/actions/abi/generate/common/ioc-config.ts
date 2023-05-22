@@ -1,3 +1,4 @@
+import { AbiComponent } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
@@ -7,7 +8,7 @@ import path from "path";
 export const generateIocConfig = (
     contract: string,
     baseDir: string,
-    actionOrDelta: string,
+    actionOrDelta: AbiComponent,
 ): GeneratedOutput[] => {
     const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.iocConfigTemplate, {
         contract,
@@ -19,7 +20,7 @@ export const generateIocConfig = (
     return createOutput(baseDir, actionOrDelta, contract, dataSourceContent, exportsContent);
 };
 
-const generateExportsContent = (contractNames: string[] = [], actionOrDelta: string) => {
+const generateExportsContent = (contractNames: string[] = [], actionOrDelta: AbiComponent) => {
     return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
         exports: contractNames.map(contract => `./${getIocConfigFilename(contract, actionOrDelta, true)}`)
     });
@@ -27,7 +28,7 @@ const generateExportsContent = (contractNames: string[] = [], actionOrDelta: str
 
 const createOutput = (
     outputBaseDir: string,
-    actionOrDelta: string,
+    actionOrDelta: AbiComponent,
     contract: string,
     dataSourceOutput: string,
     exportsOutput: string
@@ -53,7 +54,7 @@ const createOutput = (
 
 function getIocConfigFilename(
     contract: string,
-    actionOrDelta: string,
+    actionOrDelta: AbiComponent,
     includeSuffix: boolean = false,
     includeExtension: boolean = false
 ): string {

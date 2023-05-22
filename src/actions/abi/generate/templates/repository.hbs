@@ -1,0 +1,23 @@
+{{! template for delta repository 
+    e.g. src/contracts/dao-worlds/deltas/domain/repositories/dao-worlds-delta.repository.ts }}
+{{> warn-do-not-edit}}
+import { 
+  Contract{{pascalCase actionOrDelta}}, 
+  Contract{{pascalCase actionOrDelta}}Document, 
+  Repository, 
+  injectable, 
+} from '@alien-worlds/api-core';
+
+import { DataDocumentType } from '../../data/dtos/{{paramCase contract}}-{{actionOrDelta}}.dto';
+import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-{{actionOrDelta}}';
+
+/**
+ * @description This abstract class represents a repository for `{{contract}}` contract {{actionOrDelta}}s.
+ */
+@injectable()
+export abstract class {{pascalCase contract}}{{pascalCase actionOrDelta}}Repository extends Repository<
+  Contract{{pascalCase actionOrDelta}}<DataEntityType, DataDocumentType>,
+  Contract{{pascalCase actionOrDelta}}Document<DataDocumentType>
+> {
+  public static Token = '{{constantCase contract}}_{{upperCase actionOrDelta}}_REPOSITORY';
+}

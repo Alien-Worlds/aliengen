@@ -1,6 +1,6 @@
-import { generateExports, generateIocConfig } from "../common";
+import { Abi, AbiComponent } from "../../types/abi.types";
+import { generateExports, generateIocConfig, generateRepository } from "../common";
 
-import { Abi } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import { generateDeltaEnums } from "./enums.deltas";
 import { paramCase } from "change-case";
@@ -17,11 +17,11 @@ export function generateDeltas(abi: Abi, contractName: string, outputPath: strin
 
         // Domain
         // generateDeltaEntities(abi, contractName, deltasOutputPath),
-        // generateDeltaRepository(contractName, deltasOutputPath),
+        generateRepository(contractName, AbiComponent.Delta, deltasOutputPath),
         generateDeltaEnums(abi, contractName, deltasOutputPath),
 
         // IOC config
-        generateIocConfig(contractName, deltasOutputPath, 'delta'),
+        generateIocConfig(contractName, deltasOutputPath, AbiComponent.Delta),
 
         // Exports
         generateExports(deltasOutputPath),
