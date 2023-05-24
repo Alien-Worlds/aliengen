@@ -1,0 +1,15 @@
+{{! template for action collective entity e.g. src/contracts/dao-worlds/actions/domain/entities/dao-worlds-action.ts }}
+{{! template for delta collective entity e.g. src/contracts/dao-worlds/deltas/domain/entities/dao-worlds-action.ts }}
+{{> warn-do-not-edit}}
+import {
+  {{#each entities}} 
+    {{pascalCase .}},
+  {{/each}}
+} from './';
+
+export type DataEntityType =
+{{#each entities}}
+  {{pascalCase .}}
+  {{~#unless @last}} |{{/unless}}
+  {{~#if @last}};{{/if}}
+{{/each}}

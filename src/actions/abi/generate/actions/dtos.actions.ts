@@ -1,5 +1,5 @@
 import { Abi, Action } from "../../types/abi.types";
-import { ArtifactType, GeneratedOutput, ParsedAbiType, ParsedAction } from "../generate.types";
+import { ArtifactType, GeneratedOutput, ParsedAbiComponent, ParsedType } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
 import { paramCase, pascalCase } from "change-case";
 
@@ -34,7 +34,7 @@ export const generateActionDtos = (
     return createOutput(contract, dtos, collectiveTypeContent, exportsContent, baseDir);
 };
 
-const generateDtoContent = (parsedAction: ParsedAction) => {
+const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
     const { name: actionName, types } = parsedAction;
 
     const imports: Map<string, Set<string>> = new Map();
@@ -59,11 +59,11 @@ const generateDtoContent = (parsedAction: ParsedAction) => {
         imports: Object.fromEntries(imports),
     };
 
-    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.dtosTemplate, templateData);
+    return TemplateEngine.GenerateTemplateOutput(Templates.dtosTemplate, templateData);
 }
 
 const generateCollectiveDataType = (dtos: Map<string, string>) => {
-    return TemplateEngine.GenerateTemplateOutput(Templates.Actions.collectiveDataTypeTemplate, {
+    return TemplateEngine.GenerateTemplateOutput(Templates.collectiveDataTypeTemplate, {
         dtos: Array.from(dtos.keys()),
         suffix: '.dto',
     });
@@ -107,10 +107,10 @@ const createOutput = (
     return output;
 }
 
-function parseAbiAction(abi: Abi, action: Action): ParsedAction {
+function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
     const { name, type } = action;
 
-    let result: ParsedAction = {
+    let result: ParsedAbiComponent = {
         name,
         types: [],
     };
@@ -123,8 +123,8 @@ function parseAbiAction(abi: Abi, action: Action): ParsedAction {
     return result;
 }
 
-function parseAbiStruct(abi: Abi, structName: string, artifactType: ArtifactType): ParsedAbiType[] {
-    let collectiveTypes: Map<string, ParsedAbiType> = new Map();
+function parseAbiStruct(abi: Abi, structName: string, artifactType: ArtifactType): ParsedType[] {
+    let collectiveTypes: Map<string, ParsedType> = new Map();
     let poolOfTypesToGen: {
         typename: string,
         artifactType: ArtifactType,
@@ -133,7 +133,7 @@ function parseAbiStruct(abi: Abi, structName: string, artifactType: ArtifactType
         artifactType,
     }];
 
-    let parsedType: ParsedAbiType;
+    let parsedType: ParsedType;
     do {
         const typeToGen = poolOfTypesToGen.splice(poolOfTypesToGen.length - 1, 1)[0];
 
@@ -160,8 +160,8 @@ function parseAbiStruct(abi: Abi, structName: string, artifactType: ArtifactType
     return Array.from(collectiveTypes.values());
 }
 
-function parseAbiStructWorker(abi: Abi, structName: string, artifactType: ArtifactType): ParsedAbiType {
-    const output: ParsedAbiType = {
+function parseAbiStructWorker(abi: Abi, structName: string, artifactType: ArtifactType): ParsedType {
+    const output: ParsedType = {
         artifactType,
         name: generateTypeName(structName, artifactType),
         props: [],
@@ -190,7 +190,7 @@ function parseAbiStructWorker(abi: Abi, structName: string, artifactType: Artifa
     return output;
 }
 
-function getSubTypesToGen(subType: ParsedAbiType, availableTypes: Map<string, ParsedAbiType>) {
+function getSubTypesToGen(subType: ParsedType, availableTypes: Map<string, ParsedType>) {
     return subType.props
         .filter((prop) => prop.type.requiresCodeGen)
         .filter((prop) => !availableTypes.has(prop.type.sourceName))

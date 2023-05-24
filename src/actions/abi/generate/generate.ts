@@ -8,6 +8,7 @@ import { download } from "../download/download";
 import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
 import { generateActions } from "./actions";
+import { generateDeltas } from "./deltas";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
 
@@ -32,7 +33,13 @@ export const generate = async (
           outputPath || path.dirname(abiFile.path),
         )
 
-        output = output.concat(actionsOutput);
+        const deltasOutput = generateDeltas(
+          abiFile.content,
+          contractName || extractDataFromAbiJsonFilename(abiFile.path).contract,
+          outputPath || path.dirname(abiFile.path),
+        )
+
+        output = output.concat(actionsOutput, deltasOutput);
       }
 
       await transportOutput(output, force);

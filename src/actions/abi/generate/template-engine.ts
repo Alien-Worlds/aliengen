@@ -18,6 +18,13 @@ export default class TemplateEngine {
 };
 
 function registerHelpers(): void {
+    Handlebars.registerHelper('upperCase', function(value) {
+        if(value && typeof value === "string") {
+            return value.toUpperCase();
+          }
+          return '';
+    });
+
     Handlebars.registerHelper({
         camelCase, paramCase, pascalCase, constantCase,
     });

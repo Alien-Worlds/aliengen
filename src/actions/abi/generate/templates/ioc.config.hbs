@@ -1,0 +1,39 @@
+{{! template for action IOC config e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts }}
+{{! template for delta IOC config e.g. src/contracts/dao-worlds/deltas/ioc/dao-worlds-delta.ioc.config.ts }}
+{{> warn-do-not-edit}}
+import {
+  Container,
+  MongoConfig,
+  MongoSource,
+  RepositoryImpl,
+  connectMongo,
+} from '@alien-worlds/api-core';
+
+import { {{pascalCase contract}}{{pascalCase actionOrDelta}}Mapper } from '../data/mappers';
+import { {{pascalCase contract}}{{pascalCase actionOrDelta}}MongoSource } from '../data/data-sources';
+import { {{pascalCase contract}}{{pascalCase actionOrDelta}}Repository } from '../domain/repositories';
+
+export const setup{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository = async (
+  mongo: MongoSource | MongoConfig,
+  container?: Container
+): Promise<{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository> => {
+  let mongoSource: MongoSource;
+  if (mongo instanceof MongoSource) {
+    mongoSource = mongo;
+  } else {
+    const db = await connectMongo(mongo);
+    mongoSource = new MongoSource(db);
+  }
+  const repository = new RepositoryImpl(
+    new {{pascalCase contract}}{{pascalCase actionOrDelta}}MongoSource(mongoSource),
+    new {{pascalCase contract}}{{pascalCase actionOrDelta}}Mapper()
+  );
+
+  if (container) {
+    container
+      .bind<{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository>({{pascalCase contract}}{{pascalCase actionOrDelta}}Repository.Token)
+      .toConstantValue(repository);
+  }
+
+  return repository;
+};

@@ -69,3 +69,8 @@ export enum SupportedFormat {
   JSON = 'json',
   HEX = 'hex'
 }
+
+export enum AbiComponent {
+  Action = 'action',
+  Delta = 'delta',
+}

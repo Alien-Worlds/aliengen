@@ -1,0 +1,39 @@
+{{! template for delta mapper e.g. src/contracts/dao-worlds/deltas/data/mappers/dao-worlds-delta.mapper.ts }}
+{{> warn-do-not-edit}}
+import {
+  {{#each entities}} 
+    {{pascalCase .}},
+  {{/each}}
+} from '../../domain/entities';
+
+import { ContractDelta, ContractDeltaDocument, Mapper } from '@alien-worlds/api-core';
+
+import { {{pascalCase contract}}TableName } from '../../domain/enums';
+import { DataDocumentType } from '../dtos/{{paramCase contract}}-delta.dto';
+import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-delta';
+
+export class {{pascalCase contract}}DeltaMapper
+  implements Mapper<ContractDelta<DataEntityType>, ContractDeltaDocument>
+{
+  public toEntity(
+    document: ContractDeltaDocument<DataDocumentType>
+  ): ContractDelta<DataEntityType, DataDocumentType> {
+    switch (document.table.name) {
+      // TODO: implement entity mappers
+      /*
+      case DaoWorldsTableName.Candidates:
+        return ContractDelta.fromDocument(
+          document,
+          Candidate.fromDocument
+        );
+      */
+      default:
+        return null;
+    }
+  }
+  public toDataObject(
+    entity: ContractDelta<DataEntityType, DataDocumentType>
+  ): ContractDeltaDocument<DataDocumentType> {
+    return entity.toDocument();
+  }
+}

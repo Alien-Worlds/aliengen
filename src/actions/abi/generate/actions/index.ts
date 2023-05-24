@@ -1,13 +1,12 @@
-import { Abi } from "../../types/abi.types";
+import { Abi, AbiComponent } from "../../types/abi.types";
+import { generateExports, generateIocConfig, generateRepository } from "../common";
+
 import { GeneratedOutput } from "../generate.types";
 import { generateActionDataSource } from "./data-source.actions";
 import { generateActionDtos } from "./dtos.actions";
 import { generateActionEntities } from "./entities.actions";
 import { generateActionEnums } from "./enums.actions";
-import { generateActionExports } from "./exports.actions";
-import { generateActionIocConfig } from "./ioc.actions";
 import { generateActionMappers } from "./mappers.actions";
-import { generateActionRepository } from "./repository.actions";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -22,14 +21,14 @@ export function generateActions(abi: Abi, contractName: string, outputPath: stri
 
         // Domain
         generateActionEntities(abi, contractName, actionsOutputPath),
-        generateActionRepository(contractName, actionsOutputPath),
+        generateRepository(contractName, AbiComponent.Action, actionsOutputPath),
         generateActionEnums(abi, contractName, actionsOutputPath),
 
         // IOC config
-        generateActionIocConfig(contractName, actionsOutputPath),
+        generateIocConfig(contractName, actionsOutputPath, AbiComponent.Action),
 
         // Exports
-        generateActionExports(contractName, actionsOutputPath),
+        generateExports(actionsOutputPath),
     );
 
     return output;
