@@ -34,8 +34,8 @@ export const generateDeltasDtos = (
     return createOutput(contract, dtos, collectiveTypeContent, exportsContent, baseDir);
 };
 
-const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
-    const { name: actionName, types } = parsedAction;
+const generateDtoContent = (parsedDelta: ParsedAbiComponent) => {
+    const { types } = parsedDelta;
 
     const imports: Map<string, Set<string>> = new Map();
 
@@ -49,12 +49,11 @@ const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
     })
 
     const templateData = {
-        actionName: pascalCase(actionName),
         documents: types.filter(tp => tp.artifactType == ArtifactType.Document),
         structs: types.filter(tp => [
             ArtifactType.SubDocument,
             ArtifactType.Struct,
-            ArtifactType.SubStruct
+            ArtifactType.SubStruct,
         ].includes(tp.artifactType)),
         imports: Object.fromEntries(imports),
     };
@@ -108,18 +107,24 @@ const createOutput = (
 }
 
 function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
-    const { name, type } = table;
+    const { name: tableName, type } = table;
 
     let result: ParsedAbiComponent = {
-        name,
+        name: tableName,
         types: [],
     };
 
-    const actionType = abi.structs.find((st) => (st.name == type));
+    const tableType = abi.structs.find((st) => (st.name == type));
 
-    result.types = parseAbiStruct(abi, actionType.name, ArtifactType.Document)
-        .concat(parseAbiStruct(abi, actionType.name, ArtifactType.Struct));
+    result.types = parseAbiStruct(abi, tableType.name, ArtifactType.Document)
+            .concat(parseAbiStruct(abi, tableType.name, ArtifactType.Struct));
 
+    result.types.forEach(dto => {
+        if(dto.name == generateTypeName(tableType.name, ArtifactType.Document)) {
+            dto.name = generateTypeName(tableName, ArtifactType.Document);
+        }
+    })
+            
     return result;
 }
 

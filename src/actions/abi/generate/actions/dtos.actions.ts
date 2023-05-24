@@ -49,7 +49,6 @@ const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
     })
 
     const templateData = {
-        actionName: pascalCase(actionName),
         documents: types.filter(tp => tp.artifactType == ArtifactType.Document),
         structs: types.filter(tp => [
             ArtifactType.SubDocument,
