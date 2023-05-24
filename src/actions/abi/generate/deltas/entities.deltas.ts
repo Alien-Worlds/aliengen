@@ -1,4 +1,4 @@
-import { Abi, Action } from "../../types/abi.types";
+import { Abi, Table } from "../../types/abi.types";
 import { GeneratedOutput, ParsedAbiComponent, ParsedType } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
 import { camelCase, paramCase, pascalCase } from "change-case";
@@ -10,19 +10,19 @@ import path from "path";
 
 const logger = Logger.getLogger();
 
-export const generateActionEntities = (
+export const generateDeltasEntities = (
     abi: Abi,
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
     const entities: Map<string, string> = new Map();
 
-    abi.actions.forEach((action: Action) => {
-        const parsedAction = parseAbiAction(abi, action);
+    abi.tables.forEach((table: Table) => {
+        const parsedDelta = parseAbiDelta(abi, table);
 
-        const entityContent = generateEntityContent(parsedAction);
+        const entityContent = generateEntityContent(parsedDelta);
 
-        entities.set(action.name, entityContent);
+        entities.set(table.name, entityContent);
     });
 
     const collectiveTypeContent = generateCollectiveEntityType(entities);
@@ -35,17 +35,23 @@ export const generateActionEntities = (
     return createOutput(contract, entities, collectiveTypeContent, exportsContent, baseDir);
 };
 
-function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
-    const { name, type } = action;
+function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
+    const { name: tableName, type } = table;
 
     let result: ParsedAbiComponent = {
-        name,
+        name: tableName,
         types: [],
     };
 
     const actionType = abi.structs.find((st) => (st.name == type));
-
+    
     result.types = parseAbiStruct(abi, actionType.name);
+
+    result.types.forEach(entityType => {
+        if(entityType.name == pascalCase(actionType.name)) {
+            entityType.name = pascalCase(tableName);
+        }
+    })
 
     return result;
 }
@@ -93,7 +99,7 @@ const createOutput = (
 ): GeneratedOutput[] => {
     const output: GeneratedOutput[] = [];
 
-    // write to file e.g. src/contracts/index-worlds/actions/domain/entities/set-status.ts
+    // write to file e.g. src/contracts/index-worlds/deltas/domain/entities/set-status.ts
     const outDir = path.join(outputBaseDir, 'domain', 'entities')
 
     entities.forEach((content, name) => {
@@ -170,5 +176,5 @@ function getSubTypesToGen(subType: ParsedType, availableTypes: Map<string, Parse
 }
 
 function getCollectiveDataTypeFilename(contract: string, includeExtension: boolean = false): string {
-    return `${paramCase(contract)}-action${includeExtension ? '.ts' : ''}`;
+    return `${paramCase(contract)}-delta${includeExtension ? '.ts' : ''}`;
 }

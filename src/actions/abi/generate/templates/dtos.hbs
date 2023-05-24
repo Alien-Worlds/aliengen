@@ -1,30 +1,31 @@
 {{! template for action dtos e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts }}
+{{! template for delta dtos e.g. src/contracts/index-worlds/deltas/data/dtos/setstatus.dto.ts }}
 {{> warn-do-not-edit}}
 import { MongoDB } from '@alien-worlds/api-core';
 {{> imports}}
 
 /**
- * Actions / Documents
+ * Actions/Deltas / Documents
  */
 
 {{#each documents}}
 export type {{name}} = {
     _id?: MongoDB.ObjectId;
 {{#each props}}
-    {{this.key}}?: {{this.type.name}};
+    {{this.key}}?: {{{this.type.name}}};
 {{/each}}
     [key: string]: unknown;
 };
 
 {{/each}}
 /**
- * Action Structs / MongoDB Subdocuments
+ * Actions/Deltas Structs / MongoDB Subdocuments
  */
 
 {{#each structs}}
 export type {{name}} = {
 {{#each props}}
-    {{this.key}}?: {{this.type.name}};
+    {{this.key}}?: {{{this.type.name}}};
 {{/each}}
     [key: string]: unknown;
 };

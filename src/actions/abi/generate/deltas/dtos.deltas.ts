@@ -1,4 +1,4 @@
-import { Abi, Action } from "../../types/abi.types";
+import { Abi, Table } from "../../types/abi.types";
 import { ArtifactType, GeneratedOutput, ParsedAbiComponent, ParsedType } from "../generate.types";
 import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
 import { paramCase, pascalCase } from "change-case";
@@ -10,18 +10,18 @@ import path from "path";
 
 const logger = Logger.getLogger();
 
-export const generateActionDtos = (
+export const generateDeltasDtos = (
     abi: Abi,
     contract: string,
     baseDir: string,
 ): GeneratedOutput[] => {
     const dtos: Map<string, string> = new Map();
 
-    abi.actions.forEach((action: Action) => {
-        const parsedAction = parseAbiAction(abi, action);
+    abi.tables.forEach((table: Table) => {
+        const parsedDelta = parseAbiDelta(abi, table);
 
-        const dtoContent = generateDtoContent(parsedAction);
-        dtos.set(action.name, dtoContent);
+        const dtoContent = generateDtoContent(parsedDelta);
+        dtos.set(table.name, dtoContent);
     })
 
     const collectiveTypeContent = generateCollectiveDataType(dtos);
@@ -84,7 +84,7 @@ const createOutput = (
 ) => {
     const output: GeneratedOutput[] = [];
 
-    // write to file e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts
+    // write to file e.g. src/contracts/index-worlds/deltas/data/dtos/setstatus.dto.ts
     const dtosPath = path.join(outputBaseDir, 'data', 'dtos');
 
     dtos.forEach((content, name) => {
@@ -107,8 +107,8 @@ const createOutput = (
     return output;
 }
 
-function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
-    const { name, type } = action;
+function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
+    const { name, type } = table;
 
     let result: ParsedAbiComponent = {
         name,
@@ -219,5 +219,5 @@ function generateTypeName(structName: string, artifactType: ArtifactType) {
 }
 
 function getCollectiveDataTypeFilename(contract: string, includeSuffix: boolean = false, includeExtension: boolean = false): string {
-    return `${paramCase(contract)}-action${includeSuffix ? '.dto' : ''}${includeExtension ? '.ts' : ''}`;
+    return `${paramCase(contract)}-delta${includeSuffix ? '.dto' : ''}${includeExtension ? '.ts' : ''}`;
 }

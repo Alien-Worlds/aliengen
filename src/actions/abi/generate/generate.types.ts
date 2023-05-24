@@ -1,21 +1,23 @@
+import { AbiComponent } from "../types/abi.types";
 import { MappedDatatype } from "../types/mapping.types";
 
 export type GenerateOptions = {
     contractName?: string,
     source?: string,
     outputPath?: string,
-    force?: boolean
+    force?: boolean,
 }
 
-export type ParsedAction = {
+export type ParsedAbiComponent = {
     name: string;
-    types: ParsedAbiType[];
+    component?: AbiComponent;
+    types: ParsedType[];
 };
 
-export type ParsedAbiType = {
+export type ParsedType = {
     artifactType?: ArtifactType;
     name: string;
-    props: TypeProp[]
+    props: Property[];
 }
 
 export enum ArtifactType {
@@ -25,7 +27,7 @@ export enum ArtifactType {
     SubStruct = 'SubStruct',
 }
 
-type TypeProp = {
+type Property = {
     key: string;
     type: MappedDatatype;
 }

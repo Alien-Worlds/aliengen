@@ -9,6 +9,10 @@ export const getMappedType = (sourceType: string, targetTechnology: TargetTech):
         typeKey = sourceType.split("[]")[0];
     }
 
+    if (typeKey.endsWith("?")) {
+        typeKey = typeKey.split("?")[0];
+    }
+
     if (typesMap.has(typeKey)) {
         return {
             sourceName: sourceType,
@@ -30,6 +34,10 @@ export const generateCustomTypeName = (sourceType: string, artifactType?: Artifa
     if (sourceType.endsWith("[]")) {
         isArrayType = true;
         typeKey = sourceType.split("[]")[0];
+    }
+
+    if (typeKey.endsWith("?")) {
+        typeKey = typeKey.split("?")[0];
     }
 
     let suffix = '';
@@ -81,10 +89,14 @@ export const typesMap = new Map<string, MappedType>([
     ["checksum512", { typescript: ["string"], mongo: ["string"] }],
     ["string", { typescript: ["string"], mongo: ["string"] }],
     ["variant", { typescript: ["Array<unknown>"], mongo: ["Array<unknown>"] }],
+    ["state_value_variant", { typescript: ["Array<unknown>"], mongo: ["Array<unknown>"] }],
+    ["time_point_sec", { typescript: ["Date"], mongo: ["Date"] }],
+    ["time_point", { typescript: ["Date"], mongo: ["Date"] }],
 ]);
 
 export const commonEosTypesMap = new Map<string, MappedType>([
     ["asset", { typescript: ["Asset"], mongo: ["object"] }],
+    ["extended_asset", { typescript: ["ExtendedAsset"], mongo: ["object"] }],
 ]);
 
 export type MappedType = {

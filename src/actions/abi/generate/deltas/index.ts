@@ -3,6 +3,10 @@ import { generateExports, generateIocConfig, generateRepository } from "../commo
 
 import { GeneratedOutput } from "../generate.types";
 import { generateDeltaEnums } from "./enums.deltas";
+import { generateDeltaMappers } from "./mappers.deltas";
+import { generateDeltasDataSource } from "./data-source.deltas";
+import { generateDeltasDtos } from "./dtos.deltas";
+import { generateDeltasEntities } from "./entities.deltas";
 import { paramCase } from "change-case";
 import path from "path";
 
@@ -11,12 +15,12 @@ export function generateDeltas(abi: Abi, contractName: string, outputPath: strin
 
     let output: GeneratedOutput[] = [].concat(
         // Data
-        // generateDeltaDataSource(contractName, deltasOutputPath),
-        // generateDeltaDtos(abi, contractName, deltasOutputPath),
-        // generateDeltaMappers(abi, contractName, deltasOutputPath),
+        generateDeltasDataSource(contractName, deltasOutputPath),
+        generateDeltasDtos(abi, contractName, deltasOutputPath),
+        generateDeltaMappers(abi, contractName, deltasOutputPath),
 
         // Domain
-        // generateDeltaEntities(abi, contractName, deltasOutputPath),
+        generateDeltasEntities(abi, contractName, deltasOutputPath),
         generateRepository(contractName, AbiComponent.Delta, deltasOutputPath),
         generateDeltaEnums(abi, contractName, deltasOutputPath),
 

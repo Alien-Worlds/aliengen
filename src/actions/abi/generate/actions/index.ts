@@ -7,7 +7,6 @@ import { generateActionDtos } from "./dtos.actions";
 import { generateActionEntities } from "./entities.actions";
 import { generateActionEnums } from "./enums.actions";
 import { generateActionMappers } from "./mappers.actions";
-import { generateActionRepository } from "./repository.actions";
 import { paramCase } from "change-case";
 import path from "path";
 

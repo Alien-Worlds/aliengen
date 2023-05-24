@@ -16,7 +16,7 @@ export class {{name}} {
    * @constructor
    * @param string id
    {{#each props}}
-   * @param {{this.type.name}} {{this.key}}
+   * @param {{{this.type.name}}} {{this.key}}
    {{/each}}
    * @param object [rest] - Rest of the attributes as an object
    * @returns `{{name}}` - An instance of the `{{name}}` class.
@@ -24,7 +24,7 @@ export class {{name}} {
   private constructor(
     public readonly id: string,
 {{#each props}}
-    public {{this.key}}: {{this.type.name}},
+    public {{this.key}}: {{{this.type.name}}},
 {{/each}}
     public rest?: object,
   ) {}
