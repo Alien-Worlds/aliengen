@@ -1,12 +1,12 @@
-import { Abi, Table } from "../../types/abi.types";
-import { ArtifactType, GeneratedOutput, ParsedAbiComponent, ParsedType } from "../generate.types";
-import { TargetTech, generateCustomTypeName, getMappedType } from "../../types/mapping.types";
 import { paramCase, pascalCase } from "change-case";
+import path from "path";
 
 import Logger from "../../../../logger";
+import { Abi, Table } from "../../types/abi.types";
+import { generateCustomTypeName, getMappedType, TargetTech } from "../../types/mapping.types";
+import { ArtifactType, GeneratedOutput, ParsedAbiComponent, ParsedType } from "../generate.types";
 import TemplateEngine from "../template-engine";
 import Templates from '../templates';
-import path from "path";
 
 const logger = Logger.getLogger();
 
@@ -122,6 +122,10 @@ function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
     result.types.forEach(dto => {
         if(dto.name == generateTypeName(tableType.name, ArtifactType.Document)) {
             dto.name = generateTypeName(tableName, ArtifactType.Document);
+        }
+
+        if(dto.name == generateTypeName(tableType.name, ArtifactType.Struct)) {
+            dto.name = generateTypeName(tableName, ArtifactType.Struct);
         }
     })
             
