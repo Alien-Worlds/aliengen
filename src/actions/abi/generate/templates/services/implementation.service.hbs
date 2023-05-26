@@ -1,0 +1,26 @@
+{{! template for service definition e.g. src/contracts/dao-worlds/services/dao-worlds-contract.service-impl.ts }}
+import {
+  EosRpcSource,
+  SmartContractServiceImpl,
+  TableService,
+} from '@alien-worlds/api-core';
+
+import { {{pascalCase contract}}ContractService } from './{{paramCase contract}}-contract.service';
+
+export class {{pascalCase contract}}ContractServiceImpl
+  extends SmartContractServiceImpl
+  implements {{pascalCase contract}}ContractService 
+{
+  constructor(rpcSource: EosRpcSource) {
+    super(rpcSource, 'index.worlds');
+  }
+
+{{#each deltas}}
+  public readonly {{pascalCase @key}} = new TableService(
+    '{{@key}}',
+    '{{.}}',
+    this.contract
+  );
+
+{{/each}}
+}

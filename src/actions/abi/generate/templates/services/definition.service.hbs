@@ -1,0 +1,7 @@
+{{! template for service definition e.g. src/contracts/dao-worlds/services/dao-worlds-contract.service.ts }}
+{{> warn-do-not-edit}}
+import { SmartContractService } from '@alien-worlds/api-core';
+
+export abstract class {{pascalCase contract}}ContractService extends SmartContractService {
+  public static Token = '{{constantCase contract}}_CONTRACT_SERVICE';
+}
