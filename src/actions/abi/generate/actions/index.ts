@@ -1,5 +1,9 @@
 import { Abi, AbiComponent } from "../../types/abi.types";
-import { generateExports, generateIocConfig, generateRepository } from "../common";
+import {
+  generateExports,
+  generateIocConfig,
+  generateRepository,
+} from "../common";
 
 import { GeneratedOutput } from "../generate.types";
 import { generateActionDataSource } from "./data-source.actions";
@@ -10,26 +14,35 @@ import { generateActionMappers } from "./mappers.actions";
 import { paramCase } from "change-case";
 import path from "path";
 
-export function generateActions(abi: Abi, contractName: string, outputPath: string): GeneratedOutput[] {
-    const actionsOutputPath = path.join(outputPath, 'contracts', paramCase(contractName), 'actions');
+export function generateActions(
+  abi: Abi,
+  contractName: string,
+  outputPath: string
+): GeneratedOutput[] {
+  const actionsOutputPath = path.join(
+    outputPath,
+    "contracts",
+    paramCase(contractName),
+    "actions"
+  );
 
-    let output: GeneratedOutput[] = [].concat(
-        // Data
-        generateActionDataSource(contractName, actionsOutputPath),
-        generateActionDtos(abi, contractName, actionsOutputPath),
-        generateActionMappers(abi, contractName, actionsOutputPath),
+  let output: GeneratedOutput[] = [].concat(
+    // Data
+    generateActionDataSource(contractName, actionsOutputPath),
+    generateActionDtos(abi, contractName, actionsOutputPath),
+    generateActionMappers(abi, contractName, actionsOutputPath),
 
-        // Domain
-        generateActionEntities(abi, contractName, actionsOutputPath),
-        generateRepository(contractName, AbiComponent.Action, actionsOutputPath),
-        generateActionEnums(abi, contractName, actionsOutputPath),
+    // Domain
+    generateActionEntities(abi, contractName, actionsOutputPath),
+    generateRepository(contractName, AbiComponent.Action, actionsOutputPath),
+    generateActionEnums(abi, contractName, actionsOutputPath),
 
-        // IOC config
-        generateIocConfig(contractName, actionsOutputPath, AbiComponent.Action),
+    // IOC config
+    generateIocConfig(contractName, actionsOutputPath, AbiComponent.Action),
 
-        // Exports
-        generateExports(actionsOutputPath),
-    );
+    // Exports
+    generateExports(actionsOutputPath)
+  );
 
-    return output;
+  return output;
 }

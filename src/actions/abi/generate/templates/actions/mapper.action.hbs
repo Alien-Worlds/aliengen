@@ -1,0 +1,77 @@
+{{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
+{{> warn-do-not-edit}}
+import { 
+  Mapper, 
+  MongoDB,
+  removeUndefinedProperties, 
+} from "@alien-worlds/api-core";
+import { {{#each mappers}}{{pascalCase this.name}}{{#unless @last}}, {{/unless}} {{/each}} } from "../../domain/entities";
+import { {{#each mappers}}{{pascalCase this.documentName}}{{#unless @last}}, {{/unless}} {{/each}} } from "../dtos/{{action}}.dto";
+
+{{#each mappers}}
+export class {{pascalCase this.name}}Mapper
+  implements Mapper<{{pascalCase this.name}}, {{pascalCase this.documentName}}>
+{
+  public static toEntity(document: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
+    const { 
+    {{#each props}}
+      {{this.key}},
+    {{/each}}
+      _id, 
+      ...rest
+    } = document;
+
+    return {{pascalCase this.name}}.create(
+    {{#each props}}
+        {{#if this.type.requiresCodeGen}}
+          {{~#if this.isArrayType}}
+            {{this.key}}?.map({{pascalCase this.type.sourceName}}Mapper.toEntity) ?? []
+          {{else}}
+            {{this.key}}
+              ? {{pascalCase this.type.sourceName}}Mapper.toEntity({{this.key}})
+              : {{pascalCase this.type.sourceName}}.getDefault()
+          {{~/if}}
+        {{~else}}
+          {{this.key}} ?? {{{this.defaultValue}}}
+        {{~/if}},
+    {{/each}}
+      _id instanceof MongoDB.ObjectId ? _id.toString() : undefined,
+      rest
+    );
+  }
+
+  public static fromEntity(entity: {{pascalCase this.name}}): {{pascalCase this.documentName}} {
+    const {
+    {{#each props}}
+      {{camelCase this.key}},
+    {{/each}}
+      id,
+      rest,
+    } = entity;
+
+    const document: {{pascalCase this.documentName}} = {
+      {{#each props}}
+        {{this.key}}: 
+        {{#if this.type.requiresCodeGen}}
+          {{#if this.isArrayType}}
+            {{camelCase this.key}}.map({{pascalCase this.type.sourceName}}Mapper.fromEntity)
+          {{else}}
+            {{pascalCase this.type.sourceName}}Mapper.fromEntity({{camelCase this.key}})
+          {{/if}}
+        {{/if}}
+        {{#unless this.type.requiresCodeGen}}
+          {{camelCase this.key}}
+        {{/unless}},
+      {{/each}}
+      ...rest,
+    };
+
+    if (id) {
+      document._id = new MongoDB.ObjectId(id);
+    }
+
+    return removeUndefinedProperties<{{pascalCase this.documentName}}>(document);
+  }
+}
+
+{{/each}}
