@@ -1,0 +1,45 @@
+{{! template for delta mapper e.g. src/contracts/dao-worlds/deltas/data/mappers/dao-worlds-delta.mapper.ts }}
+{{> warn-do-not-edit}}
+
+import { 
+  ContractDelta, 
+  ContractDeltaDocument, 
+  Mapper, 
+} from '@alien-worlds/api-core';
+
+import { DataDocumentType } from '../dtos/{{paramCase contract}}-delta.dto';
+import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-delta';
+import { {{pascalCase contract}}TableName } from '../../domain/enums';
+{{#each deltas}}
+import { {{pascalCase .}}Mapper } from "./{{.}}.mapper";
+{{/each}}
+
+export class {{pascalCase contract}}DeltaMapper
+  implements Mapper<ContractDelta<DataEntityType>, ContractDeltaDocument>
+{
+  public toEntity(
+    document: ContractDeltaDocument<DataDocumentType>
+  ): ContractDelta<DataEntityType, DataDocumentType> {
+    switch (document.delta.name) {
+      {{#each deltas}}
+      case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
+        return ContractDelta.toEntity(document, {{pascalCase .}}Mapper.toEntity);
+      {{/each}}
+      default:
+        return null;
+    }
+  }
+
+  public fromEntity(
+    entity: ContractDelta<DataEntityType, DataDocumentType>
+  ): ContractDeltaDocument<DataDocumentType> {
+    switch (entity.delta.name) {
+      {{#each deltas}}
+      case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
+        return ContractDelta.fromEntity(entity, {{pascalCase .}}Mapper.fromEntity);
+      {{/each}}
+      default:
+        return null;
+    }
+  }
+}

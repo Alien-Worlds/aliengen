@@ -15,6 +15,7 @@ import { paramCase, pascalCase } from "change-case";
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
+import { getDefault } from "../common/mappers";
 import path from "path";
 
 const logger = Logger.getLogger();
@@ -85,7 +86,7 @@ const generateActionMapperContent = (
   };
 
   return TemplateEngine.GenerateTemplateOutput(
-    Templates.Actions.MapperTemplate,
+    Templates.Actions.mapperTemplate,
     tmplData
   );
 };
@@ -125,7 +126,7 @@ const createOutput = (
 
   actionMappers.forEach((content, actionName) => {
     output.push({
-      // write to file e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts
+      // write to file e.g. src/contracts/dao-worlds/actions/data/mappers/appointcust.mapper.ts
       filePath: path.join(outDir, `${paramCase(actionName)}.mapper.ts`),
       content,
     });
@@ -255,19 +256,4 @@ function getSubTypesToGen(
     .filter((prop) => prop.type.requiresCodeGen)
     .filter((prop) => !availableTypes.has(prop.type.sourceName))
     .reverse();
-}
-
-function getDefault(type: string) {
-  switch (type) {
-    case "string":
-      return "''";
-    case "boolean":
-      return "false";
-    case "number":
-      return "-1";
-    case "bigint":
-      return "-1n";
-    default:
-      return "undefined";
-  }
 }
