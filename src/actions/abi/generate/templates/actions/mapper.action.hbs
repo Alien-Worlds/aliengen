@@ -24,7 +24,7 @@ export class {{pascalCase this.name}}Mapper
     return {{pascalCase this.name}}.create(
     {{#each props}}
         {{#if this.type.requiresCodeGen}}
-          {{~#if this.isArrayType}}
+          {{~#if this.type.isArray}}
             {{this.key}}?.map({{pascalCase this.type.sourceName}}Mapper.toEntity) ?? []
           {{else}}
             {{this.key}}
@@ -32,7 +32,7 @@ export class {{pascalCase this.name}}Mapper
               : {{pascalCase this.type.sourceName}}.getDefault()
           {{~/if}}
         {{~else}}
-          {{this.key}} ?? {{{this.defaultValue}}}
+          {{this.key}} ?? {{{this.type.defaultValue}}}
         {{~/if}},
     {{/each}}
       _id instanceof MongoDB.ObjectId ? _id.toString() : undefined,
@@ -53,7 +53,7 @@ export class {{pascalCase this.name}}Mapper
       {{#each props}}
         {{this.key}}: 
         {{#if this.type.requiresCodeGen}}
-          {{#if this.isArrayType}}
+          {{#if this.type.isArray}}
             {{camelCase this.key}}.map({{pascalCase this.type.sourceName}}Mapper.fromEntity)
           {{else}}
             {{pascalCase this.type.sourceName}}Mapper.fromEntity({{camelCase this.key}})

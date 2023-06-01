@@ -63,21 +63,17 @@ const generateDeltaMapperContent = (
     delta: delta.name,
     mappers: delta.types.map((type) => {
       const isChild = type.artifactType != ArtifactType.Document;
+
       return {
         isChild,
         name: isChild ? type.name : delta.name,
         documentName: `${isChild ? type.name : delta.name}${type.artifactType}`,
         props: type.props.map((prop) => {
-          let isArrayType: boolean = false;
-          if (prop.type.name.endsWith("[]")) {
-            isArrayType = true;
+          if (!prop.type.defaultValue) {
+            prop.type.defaultValue = "undefined";
           }
 
-          return {
-            ...prop,
-            isArrayType,
-            defaultValue: getDefault(prop.type.name),
-          };
+          return prop;
         }),
       };
     }),
