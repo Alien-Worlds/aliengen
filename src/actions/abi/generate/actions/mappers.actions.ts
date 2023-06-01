@@ -63,6 +63,7 @@ const generateActionMapperContent = (
     action: action.name,
     mappers: action.types.map((type) => {
       const isChild = type.artifactType != ArtifactType.Document;
+
       return {
         isChild,
         name: isChild ? type.name : action.name,
@@ -70,16 +71,11 @@ const generateActionMapperContent = (
           type.artifactType
         }`,
         props: type.props.map((prop) => {
-          let isArrayType: boolean = false;
-          if (prop.type.name.endsWith("[]")) {
-            isArrayType = true;
+          if (!prop.type.defaultValue) {
+            prop.type.defaultValue = "undefined";
           }
 
-          return {
-            ...prop,
-            isArrayType,
-            defaultValue: getDefault(prop.type.name),
-          };
+          return prop;
         }),
       };
     }),

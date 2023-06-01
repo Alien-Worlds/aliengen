@@ -68,7 +68,19 @@ export class {{name}} {
   }
 
   public static getDefault(): {{name}}{
-    throw new Error('Method not implemented');
+    return new {{name}}(
+    {{#each props}}
+      {{#if this.type.defaultValue}}
+          {{{this.type.defaultValue}}}
+        {{~else}}
+          {{~#if this.type.isArray}}
+            []
+          {{else}}
+            {{pascalCase this.type.sourceName}}.getDefault()
+          {{~/if}}
+        {{~/if}},
+    {{/each}}
+    );
   }
 }
 
