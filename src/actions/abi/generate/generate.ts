@@ -1,5 +1,6 @@
 import { Abi, JsonFile, SupportedFormat } from "../types/abi.types";
 import { GenerateOptions, GeneratedOutput } from "./generate.types";
+import { generateIocConfig, generateRootLevelExports } from "./common";
 
 import { FileTransport } from "../../../transport/file.transport";
 import Logger from "../../../logger";
@@ -9,7 +10,6 @@ import { existsSync } from "fs";
 import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.utils";
 import { generateActions } from "./actions";
 import { generateDeltas } from "./deltas";
-import { generateRootLevelExports } from "./common";
 import { generateServices } from "./services";
 import { paramCase } from "change-case";
 import path from "path";
@@ -65,6 +65,15 @@ function generateCodeFromABI(
     outputPath || path.dirname(abiFile.path)
   );
 
+  const iocConfigOutput = generateIocConfig(
+    contractName,
+    path.join(
+      outputPath || path.dirname(abiFile.path),
+      "contracts",
+      paramCase(contractName)
+    )
+  );
+
   const exportsOutput = generateRootLevelExports(
     path.join(
       outputPath || path.dirname(abiFile.path),
@@ -73,7 +82,13 @@ function generateCodeFromABI(
     )
   );
 
-  return [].concat(actionsOutput, deltasOutput, servicesOutput, exportsOutput);
+  return [].concat(
+    actionsOutput,
+    deltasOutput,
+    servicesOutput,
+    iocConfigOutput,
+    exportsOutput
+  );
 }
 
 async function downloadContractIfSrcNotProvided(

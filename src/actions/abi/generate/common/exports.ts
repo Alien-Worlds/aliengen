@@ -17,7 +17,6 @@ const generateExportsContent = () => {
       { exportAs: "Mappers", path: "./data/mappers" },
       { exportAs: "Repositories", path: "./domain/repositories" },
       { exportAs: "Entities", path: "./domain/entities" },
-      { exportAs: "Ioc", path: "./ioc" },
       "./domain/enums",
     ],
   };
@@ -43,6 +42,7 @@ const generateRootLevelExportsContent = () => {
       { exportAs: "Actions", path: "./actions" },
       { exportAs: "Deltas", path: "./deltas" },
       { exportAs: "Services", path: "./services" },
+      "./ioc.config",
     ],
   };
 

@@ -1,62 +1,37 @@
-import { AbiComponent } from "../../types/abi.types";
 import { GeneratedOutput } from "../generate.types";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
-import { paramCase } from "change-case";
 import path from "path";
 
 export const generateIocConfig = (
-    contract: string,
-    baseDir: string,
-    actionOrDelta: AbiComponent,
+  contract: string,
+  baseDir: string
 ): GeneratedOutput[] => {
-    const dataSourceContent = TemplateEngine.GenerateTemplateOutput(Templates.iocConfigTemplate, {
-        contract,
-        actionOrDelta,
-    });
+  const dataSourceContent = TemplateEngine.GenerateTemplateOutput(
+    Templates.iocConfigTemplate,
+    {
+      contract,
+    }
+  );
 
-    const exportsContent = generateExportsContent([contract], actionOrDelta);
-
-    return createOutput(baseDir, actionOrDelta, contract, dataSourceContent, exportsContent);
+  return createOutput(baseDir, dataSourceContent);
 };
-
-const generateExportsContent = (contractNames: string[] = [], actionOrDelta: AbiComponent) => {
-    return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-        exports: contractNames.map(contract => `./${getIocConfigFilename(contract, actionOrDelta, true)}`)
-    });
-}
 
 const createOutput = (
-    outputBaseDir: string,
-    actionOrDelta: AbiComponent,
-    contract: string,
-    dataSourceOutput: string,
-    exportsOutput: string
+  outputBaseDir: string,
+  dataSourceOutput: string
 ): GeneratedOutput[] => {
-    const output: GeneratedOutput[] = [];
+  const output: GeneratedOutput[] = [];
 
-    // write to dir e.g. src/contracts/dao-worlds/actions/ioc
-    const outDir = path.join(outputBaseDir, 'ioc');
+  output.push({
+    // write to file e.g. src/contracts/dao-worlds/ioc.config.ts
+    filePath: path.join(outputBaseDir, `${getIocConfigFilename(true)}`),
+    content: dataSourceOutput,
+  });
 
-    output.push({
-        // write to file e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts
-        filePath: path.join(outDir, `${getIocConfigFilename(contract, actionOrDelta, true, true)}`),
-        content: dataSourceOutput,
-    });
-
-    output.push({
-        filePath: path.join(outDir, 'index.ts'),
-        content: exportsOutput,
-    });
-
-    return output;
+  return output;
 };
 
-function getIocConfigFilename(
-    contract: string,
-    actionOrDelta: AbiComponent,
-    includeSuffix: boolean = false,
-    includeExtension: boolean = false
-): string {
-    return `${paramCase(contract)}-${actionOrDelta}${includeSuffix ? '.ioc.config' : ''}${includeExtension ? '.ts' : ''}`;
+function getIocConfigFilename(includeExtension: boolean = false): string {
+  return `ioc.config${includeExtension ? ".ts" : ""}`;
 }
