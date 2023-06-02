@@ -12,10 +12,10 @@ export const generateExports = (baseDir: string): GeneratedOutput[] => {
 const generateExportsContent = () => {
   const templateData = {
     exports: [
-      { exportAs: "DataSources", path: "./data/data-sources" },
+      "./data/data-sources",
       { exportAs: "Types", path: "./data/dtos" },
       { exportAs: "Mappers", path: "./data/mappers" },
-      { exportAs: "Repositories", path: "./domain/repositories" },
+      "./domain/repositories",
       { exportAs: "Entities", path: "./domain/entities" },
       "./domain/enums",
     ],

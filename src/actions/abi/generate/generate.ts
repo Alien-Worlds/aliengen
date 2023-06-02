@@ -33,7 +33,12 @@ export const generate = async (options: GenerateOptions) => {
         );
       }
 
-      await transportOutput(output, force);
+      const success = await transportOutput(output, force);
+      if (!success) {
+        logger.error(
+          `an error occurred while transporting the generated output`
+        );
+      }
     } else {
       logger.error(`invalid source path ${source}`);
     }
