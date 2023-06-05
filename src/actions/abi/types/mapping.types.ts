@@ -22,16 +22,20 @@ export const getMappedType = (
 
     let defaultValue: string = null;
     if (targetTechnology == TargetTech.Typescript) {
-      defaultValue = typescriptDefaults.get(mappedType.typescript[0]);
-
       if (mappedType.typescript[0].includes("Array")) {
         isArray = true;
       }
+
+      defaultValue = isArray
+        ? "[]"
+        : typescriptDefaults.get(mappedType.typescript[0]);
     }
 
     return {
       sourceName: sourceType,
-      name: mappedType[targetTechnology].join(`${isArray ? "[]" : ""} | `),
+      name:
+        mappedType[targetTechnology].join(`${isArray ? "[]" : ""} | `) +
+        `${isArray ? "[]" : ""}`,
       defaultValue,
       isArray,
     };

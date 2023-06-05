@@ -23,7 +23,7 @@ export class {{pascalCase contract}}ActionMapper
     switch (mongoModel.action.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        return ContractAction.toEntity(mongoModel, {{pascalCase .}}Mapper.toEntity);
+        return ContractAction.toEntity(mongoModel, new {{pascalCase .}}Mapper().toEntity);
       {{/each}}
       default:
         return null;
@@ -36,7 +36,7 @@ export class {{pascalCase contract}}ActionMapper
     switch (entity.action.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        return ContractAction.fromEntity(entity, {{pascalCase .}}Mapper.fromEntity);
+        return ContractAction.fromEntity(entity, new {{pascalCase .}}Mapper().fromEntity);
       {{/each}}
       default:
         return null;

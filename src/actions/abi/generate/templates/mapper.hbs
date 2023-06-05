@@ -12,7 +12,7 @@ import { {{#each mappers}}{{pascalCase this.documentName}}{{#unless @last}}, {{/
 export class {{pascalCase this.name}}Mapper
   implements Mapper<{{pascalCase this.name}}, {{pascalCase this.documentName}}>
 {
-  public static toEntity(mongoModel: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
+  public toEntity(mongoModel: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
     const { 
     {{#each props}}
       {{this.key}},
@@ -25,10 +25,10 @@ export class {{pascalCase this.name}}Mapper
     {{#each props}}
         {{#if this.type.requiresCodeGen}}
           {{~#if this.type.isArray}}
-            {{this.key}}?.map({{pascalCase this.type.sourceName}}Mapper.toEntity) ?? []
+            {{this.key}}?.map(new {{pascalCase this.type.sourceName}}Mapper().toEntity) ?? []
           {{else}}
             {{this.key}}
-              ? {{pascalCase this.type.sourceName}}Mapper.toEntity({{this.key}})
+              ? new {{pascalCase this.type.sourceName}}Mapper().toEntity({{this.key}})
               : {{pascalCase this.type.sourceName}}.getDefault()
           {{~/if}}
         {{~else}}
@@ -40,7 +40,7 @@ export class {{pascalCase this.name}}Mapper
     );
   }
 
-  public static fromEntity(entity: {{pascalCase this.name}}): {{pascalCase this.documentName}} {
+  public fromEntity(entity: {{pascalCase this.name}}): {{pascalCase this.documentName}} {
     const {
     {{#each props}}
       {{camelCase this.key}},
@@ -54,9 +54,9 @@ export class {{pascalCase this.name}}Mapper
         {{this.key}}: 
         {{#if this.type.requiresCodeGen}}
           {{#if this.type.isArray}}
-            {{camelCase this.key}}.map({{pascalCase this.type.sourceName}}Mapper.fromEntity)
+            {{camelCase this.key}}.map(new {{pascalCase this.type.sourceName}}Mapper().fromEntity)
           {{else}}
-            {{pascalCase this.type.sourceName}}Mapper.fromEntity({{camelCase this.key}})
+            new {{pascalCase this.type.sourceName}}Mapper().fromEntity({{camelCase this.key}})
           {{/if}}
         {{/if}}
         {{#unless this.type.requiresCodeGen}}
