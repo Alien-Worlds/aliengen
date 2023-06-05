@@ -66,14 +66,10 @@ const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
   });
 
   const templateData = {
-    documents: types.filter((tp) => tp.artifactType == ArtifactType.Document),
-    structs: types.filter((tp) =>
-      [
-        ArtifactType.SubDocument,
-        ArtifactType.Struct,
-        ArtifactType.SubStruct,
-      ].includes(tp.artifactType)
+    documents: types.filter(
+      (tp) => tp.artifactType == ArtifactType.MongoObject
     ),
+    structs: types.filter((tp) => tp.artifactType == ArtifactType.Object),
     imports: Object.fromEntries(imports),
   };
 
@@ -147,8 +143,8 @@ function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
   result.types = parseAbiStruct(
     abi,
     actionType.name,
-    ArtifactType.Document
-  ).concat(parseAbiStruct(abi, actionType.name, ArtifactType.Struct));
+    ArtifactType.MongoObject
+  ).concat(parseAbiStruct(abi, actionType.name, ArtifactType.Object));
 
   return result;
 }
@@ -190,12 +186,7 @@ function parseAbiStruct(
         subTypesToGen.map((st) => {
           return {
             typename: st.type.sourceName,
-            artifactType: [
-              ArtifactType.Document,
-              ArtifactType.SubDocument,
-            ].includes(typeToGen.artifactType)
-              ? ArtifactType.SubDocument
-              : ArtifactType.SubStruct,
+            artifactType: typeToGen.artifactType,
           };
         })
       );
@@ -226,7 +217,7 @@ function parseAbiStructWorker(
     const mappedType =
       getMappedType(
         field.type,
-        [ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType)
+        artifactType == ArtifactType.MongoObject
           ? TargetTech.Typescript
           : TargetTech.Mongo
       ) || generateCustomTypeName(field.type, artifactType);
@@ -251,24 +242,7 @@ function getSubTypesToGen(
 }
 
 function generateTypeName(structName: string, artifactType: ArtifactType) {
-  let output = pascalCase(structName);
-
-  switch (artifactType) {
-    case ArtifactType.Document:
-      output += "Document";
-      break;
-    case ArtifactType.SubDocument:
-      output += "SubDocument";
-      break;
-    case ArtifactType.Struct:
-      output += "Struct";
-      break;
-    case ArtifactType.SubStruct:
-      output += "SubStruct";
-      break;
-  }
-
-  return output;
+  return `${pascalCase(structName)}${pascalCase(artifactType)}`;
 }
 
 function getCollectiveDataTypeFilename(

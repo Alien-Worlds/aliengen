@@ -64,20 +64,9 @@ export const generateCustomTypeName = (
     typeKey = typeKey.split("?")[0];
   }
 
-  let suffix = "";
-  if (
-    [ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType)
-  ) {
-    suffix = ArtifactType.SubDocument;
-  } else if (
-    [ArtifactType.Struct, ArtifactType.SubStruct].includes(artifactType)
-  ) {
-    suffix = ArtifactType.SubStruct;
-  }
-
   return {
     sourceName: typeKey,
-    name: `${pascalCase(typeKey)}${suffix}${isArray ? "[]" : ""}`,
+    name: `${pascalCase(typeKey)}${artifactType ?? ""}${isArray ? "[]" : ""}`,
     requiresCodeGen: true,
     isArray,
   };

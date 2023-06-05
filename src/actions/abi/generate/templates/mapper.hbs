@@ -6,20 +6,20 @@ import {
   removeUndefinedProperties, 
 } from "@alien-worlds/api-core";
 import { {{#each mappers}}{{pascalCase this.name}}{{#unless @last}}, {{/unless}} {{/each}} } from "../../domain/entities";
-import { {{#each mappers}}{{pascalCase this.documentName}}{{#unless @last}}, {{/unless}} {{/each}} } from "../dtos/{{action}}.dto";
+import { {{#each mappers}}{{pascalCase this.documentName}}{{#unless @last}}, {{/unless}} {{/each}} } from "../dtos/{{name}}.dto";
 
 {{#each mappers}}
 export class {{pascalCase this.name}}Mapper
   implements Mapper<{{pascalCase this.name}}, {{pascalCase this.documentName}}>
 {
-  public static toEntity(document: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
+  public static toEntity(mongoObject: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
     const { 
     {{#each props}}
       {{this.key}},
     {{/each}}
       _id, 
       ...rest
-    } = document;
+    } = mongoObject;
 
     return {{pascalCase this.name}}.create(
     {{#each props}}
@@ -49,7 +49,7 @@ export class {{pascalCase this.name}}Mapper
       rest,
     } = entity;
 
-    const document: {{pascalCase this.documentName}} = {
+    const mongoObject: {{pascalCase this.documentName}} = {
       {{#each props}}
         {{this.key}}: 
         {{#if this.type.requiresCodeGen}}
@@ -67,10 +67,10 @@ export class {{pascalCase this.name}}Mapper
     };
 
     if (id) {
-      document._id = new MongoDB.ObjectId(id);
+      mongoObject._id = new MongoDB.ObjectId(id);
     }
 
-    return removeUndefinedProperties<{{pascalCase this.documentName}}>(document);
+    return removeUndefinedProperties<{{pascalCase this.documentName}}>(mongoObject);
   }
 }
 

@@ -18,12 +18,12 @@ export class {{pascalCase contract}}DeltaMapper
   implements Mapper<ContractDelta<DataEntityType>, ContractDeltaDocument>
 {
   public toEntity(
-    document: ContractDeltaDocument<DataDocumentType>
+    mongoObject: ContractDeltaDocument<DataDocumentType>
   ): ContractDelta<DataEntityType, DataDocumentType> {
-    switch (document.delta.name) {
+    switch (mongoObject.delta.name) {
       {{#each deltas}}
       case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
-        return ContractDelta.toEntity(document, {{pascalCase .}}Mapper.toEntity);
+        return ContractDelta.toEntity(mongoObject, {{pascalCase .}}Mapper.toEntity);
       {{/each}}
       default:
         return null;
