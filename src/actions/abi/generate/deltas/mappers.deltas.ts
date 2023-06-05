@@ -148,7 +148,7 @@ function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
 
   const tableType = abi.structs.find((st) => st.name == type);
 
-  result.types = parseAbiStruct(abi, tableType.name, ArtifactType.MongoObject);
+  result.types = parseAbiStruct(abi, tableType.name, ArtifactType.MongoModel);
 
   result.types.forEach((dto) => {
     if (dto.name == pascalCase(tableType.name)) {
@@ -229,7 +229,7 @@ function parseAbiStructWorker(
     const mappedType =
       getMappedType(
         field.type,
-        artifactType == ArtifactType.MongoObject
+        artifactType == ArtifactType.MongoModel
           ? TargetTech.Typescript
           : TargetTech.Mongo
       ) || generateCustomTypeName(field.type, artifactType);

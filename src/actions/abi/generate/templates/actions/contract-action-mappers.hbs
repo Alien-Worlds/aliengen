@@ -18,12 +18,12 @@ export class {{pascalCase contract}}ActionMapper
   implements Mapper<ContractAction<DataEntityType>, ContractActionDocument>
 {
   public toEntity(
-    mongoObject: ContractActionDocument<DataDocumentType>
+    mongoModel: ContractActionDocument<DataDocumentType>
   ): ContractAction<DataEntityType, DataDocumentType> {
-    switch (mongoObject.action.name) {
+    switch (mongoModel.action.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        return ContractAction.toEntity(mongoObject, {{pascalCase .}}Mapper.toEntity);
+        return ContractAction.toEntity(mongoModel, {{pascalCase .}}Mapper.toEntity);
       {{/each}}
       default:
         return null;

@@ -148,7 +148,7 @@ function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
 
   const actionType = abi.structs.find((st) => st.name == type);
 
-  result.types = parseAbiStruct(abi, actionType.name, ArtifactType.MongoObject);
+  result.types = parseAbiStruct(abi, actionType.name, ArtifactType.MongoModel);
 
   return result;
 }
@@ -193,9 +193,9 @@ function parseAbiStruct(
           return {
             typename: st.type.sourceName,
             artifactType:
-              typeToGen.artifactType == ArtifactType.MongoObject
-                ? ArtifactType.MongoObject
-                : ArtifactType.Object,
+              typeToGen.artifactType == ArtifactType.MongoModel
+                ? ArtifactType.MongoModel
+                : ArtifactType.Model,
           };
         })
       );
@@ -226,7 +226,7 @@ function parseAbiStructWorker(
     const mappedType =
       getMappedType(
         field.type,
-        artifactType == ArtifactType.MongoObject
+        artifactType == ArtifactType.MongoModel
           ? TargetTech.Typescript
           : TargetTech.Mongo
       ) || generateCustomTypeName(field.type, artifactType);

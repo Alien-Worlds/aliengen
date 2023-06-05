@@ -2,12 +2,12 @@
 {{! template for delta collective data type e.g. src/contracts/dao-worlds/deltas/data/dtos/dao-worlds-action.dto.ts }}
 {{> warn-do-not-edit}}
 {{#each dtos}}
-import { {{pascalCase .}}MongoObject } from './{{.}}{{../suffix}}';
+import { {{pascalCase .}}MongoModel } from './{{.}}{{../suffix}}';
 {{/each}}
 
 export type DataDocumentType =
 {{#each dtos}}
-  {{pascalCase .}}MongoObject 
+  {{pascalCase .}}MongoModel
   {{~#unless @last}} |{{/unless}}
   {{~#if @last}};{{/if}}
 {{/each}}

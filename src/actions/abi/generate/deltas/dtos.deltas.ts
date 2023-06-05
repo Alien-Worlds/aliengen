@@ -66,10 +66,8 @@ const generateDtoContent = (parsedDelta: ParsedAbiComponent) => {
   });
 
   const templateData = {
-    documents: types.filter(
-      (tp) => tp.artifactType == ArtifactType.MongoObject
-    ),
-    structs: types.filter((tp) => tp.artifactType == ArtifactType.Object),
+    documents: types.filter((tp) => tp.artifactType == ArtifactType.MongoModel),
+    structs: types.filter((tp) => tp.artifactType == ArtifactType.Model),
     imports: Object.fromEntries(imports),
   };
 
@@ -143,18 +141,16 @@ function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
   result.types = parseAbiStruct(
     abi,
     tableType.name,
-    ArtifactType.MongoObject
-  ).concat(parseAbiStruct(abi, tableType.name, ArtifactType.Object));
+    ArtifactType.MongoModel
+  ).concat(parseAbiStruct(abi, tableType.name, ArtifactType.Model));
 
   result.types.forEach((dto) => {
-    if (
-      dto.name == generateTypeName(tableType.name, ArtifactType.MongoObject)
-    ) {
-      dto.name = generateTypeName(tableName, ArtifactType.MongoObject);
+    if (dto.name == generateTypeName(tableType.name, ArtifactType.MongoModel)) {
+      dto.name = generateTypeName(tableName, ArtifactType.MongoModel);
     }
 
-    if (dto.name == generateTypeName(tableType.name, ArtifactType.Object)) {
-      dto.name = generateTypeName(tableName, ArtifactType.Object);
+    if (dto.name == generateTypeName(tableType.name, ArtifactType.Model)) {
+      dto.name = generateTypeName(tableName, ArtifactType.Model);
     }
   });
 
@@ -199,9 +195,9 @@ function parseAbiStruct(
           return {
             typename: st.type.sourceName,
             artifactType:
-              typeToGen.artifactType == ArtifactType.MongoObject
-                ? ArtifactType.MongoObject
-                : ArtifactType.Object,
+              typeToGen.artifactType == ArtifactType.MongoModel
+                ? ArtifactType.MongoModel
+                : ArtifactType.Model,
           };
         })
       );
@@ -232,7 +228,7 @@ function parseAbiStructWorker(
     const mappedType =
       getMappedType(
         field.type,
-        artifactType == ArtifactType.MongoObject
+        artifactType == ArtifactType.MongoModel
           ? TargetTech.Typescript
           : TargetTech.Mongo
       ) || generateCustomTypeName(field.type, artifactType);

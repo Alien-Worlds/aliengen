@@ -12,14 +12,14 @@ import { {{#each mappers}}{{pascalCase this.documentName}}{{#unless @last}}, {{/
 export class {{pascalCase this.name}}Mapper
   implements Mapper<{{pascalCase this.name}}, {{pascalCase this.documentName}}>
 {
-  public static toEntity(mongoObject: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
+  public static toEntity(mongoModel: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
     const { 
     {{#each props}}
       {{this.key}},
     {{/each}}
       _id, 
       ...rest
-    } = mongoObject;
+    } = mongoModel;
 
     return {{pascalCase this.name}}.create(
     {{#each props}}
@@ -49,7 +49,7 @@ export class {{pascalCase this.name}}Mapper
       rest,
     } = entity;
 
-    const mongoObject: {{pascalCase this.documentName}} = {
+    const mongoModel: {{pascalCase this.documentName}} = {
       {{#each props}}
         {{this.key}}: 
         {{#if this.type.requiresCodeGen}}
@@ -67,10 +67,10 @@ export class {{pascalCase this.name}}Mapper
     };
 
     if (id) {
-      mongoObject._id = new MongoDB.ObjectId(id);
+      mongoModel._id = new MongoDB.ObjectId(id);
     }
 
-    return removeUndefinedProperties<{{pascalCase this.documentName}}>(mongoObject);
+    return removeUndefinedProperties<{{pascalCase this.documentName}}>(mongoModel);
   }
 }
 

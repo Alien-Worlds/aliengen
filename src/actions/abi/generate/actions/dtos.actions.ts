@@ -66,10 +66,8 @@ const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
   });
 
   const templateData = {
-    documents: types.filter(
-      (tp) => tp.artifactType == ArtifactType.MongoObject
-    ),
-    structs: types.filter((tp) => tp.artifactType == ArtifactType.Object),
+    documents: types.filter((tp) => tp.artifactType == ArtifactType.MongoModel),
+    structs: types.filter((tp) => tp.artifactType == ArtifactType.Model),
     imports: Object.fromEntries(imports),
   };
 
@@ -143,8 +141,8 @@ function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
   result.types = parseAbiStruct(
     abi,
     actionType.name,
-    ArtifactType.MongoObject
-  ).concat(parseAbiStruct(abi, actionType.name, ArtifactType.Object));
+    ArtifactType.MongoModel
+  ).concat(parseAbiStruct(abi, actionType.name, ArtifactType.Model));
 
   return result;
 }
@@ -217,7 +215,7 @@ function parseAbiStructWorker(
     const mappedType =
       getMappedType(
         field.type,
-        artifactType == ArtifactType.MongoObject
+        artifactType == ArtifactType.MongoModel
           ? TargetTech.Typescript
           : TargetTech.Mongo
       ) || generateCustomTypeName(field.type, artifactType);
