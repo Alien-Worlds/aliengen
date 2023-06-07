@@ -67,7 +67,7 @@ const generateDtoContent = (parsedAction: ParsedAbiComponent) => {
 
   const templateData = {
     documents: types.filter((tp) => tp.artifactType == ArtifactType.MongoModel),
-    structs: types.filter((tp) => tp.artifactType == ArtifactType.Model),
+    structs: types.filter((tp) => tp.artifactType == ArtifactType.RawModel),
     imports: Object.fromEntries(imports),
   };
 
@@ -142,7 +142,7 @@ function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
     abi,
     actionType.name,
     ArtifactType.MongoModel
-  ).concat(parseAbiStruct(abi, actionType.name, ArtifactType.Model));
+  ).concat(parseAbiStruct(abi, actionType.name, ArtifactType.RawModel));
 
   return result;
 }

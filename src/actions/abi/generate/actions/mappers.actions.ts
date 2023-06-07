@@ -195,7 +195,7 @@ function parseAbiStruct(
             artifactType:
               typeToGen.artifactType == ArtifactType.MongoModel
                 ? ArtifactType.MongoModel
-                : ArtifactType.Model,
+                : ArtifactType.RawModel,
           };
         })
       );

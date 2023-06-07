@@ -1,45 +1,94 @@
 {{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
 {{> warn-do-not-edit}}
 
-import { 
-  ContractAction, 
-  ContractActionDocument, 
-  Mapper, 
-} from '@alien-worlds/api-core';
-
-import { DataDocumentType } from '../dtos/{{paramCase contract}}-action.dto';
+import { ContractAction, Mapper } from '@alien-worlds/api-core';
+import { MongoDB } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
 import { {{pascalCase contract}}ActionName } from '../../domain/enums';
 {{#each actions}}
-import { {{pascalCase .}}Mapper } from "./{{.}}.mapper";
+import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
 {{/each}}
 
-export class {{pascalCase contract}}ActionMapper
-  implements Mapper<ContractAction<DataEntityType>, ContractActionDocument>
+export class {{pascalCase contract}}ActionMongoMapper
+  implements Mapper<ContractAction<DataEntityType>, {{pascalCase contract}}ActionMongoModel>
 {
+  public fromEntity(
+    entity: ContractAction<DataEntityType>
+  ): {{pascalCase contract}}ActionMongoModel {
+    let entityData;
+    switch (entity.name) {
+      {{#each actions}}
+      case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
+        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.data);
+        break;
+      {{/each}}
+    }
+
+    return {
+      _id: entity.id,
+      block_timestamp: entity.blockTimestamp,
+      block_number: entity.blockNumber,
+      global_sequence: entity.globalSequence,
+      receiver_sequence: entity.receiverSequence,
+      trx_id: entity.transactionId,
+      action_hash: entity.actionHash,
+      action: {
+        name: entity.name,
+        account: entity.account,
+        data: entityData,
+      },
+    };
+  }
+
   public toEntity(
-    mongoModel: ContractActionDocument<DataDocumentType>
-  ): ContractAction<DataEntityType, DataDocumentType> {
+    mongoModel: {{pascalCase contract}}ActionMongoModel
+  ): ContractAction<DataEntityType> {
+    let data;
     switch (mongoModel.action.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        return ContractAction.toEntity(mongoModel, new {{pascalCase .}}Mapper().toEntity);
+        data = new {{pascalCase .}}MongoMapper().toEntity(mongoModel);
+        break;
       {{/each}}
-      default:
-        return null;
     }
-  }
 
-  public fromEntity(
-    entity: ContractAction<DataEntityType, DataDocumentType>
-  ): ContractActionDocument<DataDocumentType> {
-    switch (entity.action.name) {
-      {{#each actions}}
-      case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        return ContractAction.fromEntity(entity, new {{pascalCase .}}Mapper().fromEntity);
-      {{/each}}
-      default:
-        return null;
-    }
+    const {
+      _id,
+      block_timestamp,
+      block_number,
+      global_sequence,
+      receiver_sequence,
+      trx_id,
+      action_hash,
+      action,
+    } = mongoModel;
+
+    return new ContractAction(
+      _id,
+      block_timestamp,
+      block_number,
+      action.account,
+      action.name,
+      global_sequence,
+      receiver_sequence,
+      trx_id,
+      data,
+      action_hash
+    );
   }
 }
+
+export type {{pascalCase contract}}ActionMongoModel<DataType = unknown> = {
+  _id: MongoDB.ObjectId;
+  block_timestamp: Date;
+  block_number: MongoDB.Long;
+  global_sequence: MongoDB.Long;
+  receiver_sequence: MongoDB.Long;
+  trx_id: string;
+  action_hash: string;
+  action: {
+    account: string;
+    name: string;
+    data: DataType;
+  };
+};

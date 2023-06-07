@@ -31,11 +31,17 @@ export const getMappedType = (
         : typescriptDefaults.get(mappedType.typescript[0]);
     }
 
+    let typeName = mappedType[targetTechnology].join(
+      `${isArray ? "[]" : ""} | `
+    );
+
+    if (isArray && !typeName.includes("Array")) {
+      typeName += "[]";
+    }
+
     return {
       sourceName: sourceType,
-      name:
-        mappedType[targetTechnology].join(`${isArray ? "[]" : ""} | `) +
-        `${isArray ? "[]" : ""}`,
+      name: typeName,
       defaultValue,
       isArray,
     };

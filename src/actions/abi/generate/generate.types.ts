@@ -23,7 +23,7 @@ export type ParsedType = {
 
 export enum ArtifactType {
   MongoModel = "MongoModel",
-  Model = "Model",
+  RawModel = "RawModel",
 }
 
 type Property = {

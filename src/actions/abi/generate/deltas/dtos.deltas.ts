@@ -67,7 +67,7 @@ const generateDtoContent = (parsedDelta: ParsedAbiComponent) => {
 
   const templateData = {
     documents: types.filter((tp) => tp.artifactType == ArtifactType.MongoModel),
-    structs: types.filter((tp) => tp.artifactType == ArtifactType.Model),
+    structs: types.filter((tp) => tp.artifactType == ArtifactType.RawModel),
     imports: Object.fromEntries(imports),
   };
 
@@ -142,15 +142,15 @@ function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
     abi,
     tableType.name,
     ArtifactType.MongoModel
-  ).concat(parseAbiStruct(abi, tableType.name, ArtifactType.Model));
+  ).concat(parseAbiStruct(abi, tableType.name, ArtifactType.RawModel));
 
   result.types.forEach((dto) => {
     if (dto.name == generateTypeName(tableType.name, ArtifactType.MongoModel)) {
       dto.name = generateTypeName(tableName, ArtifactType.MongoModel);
     }
 
-    if (dto.name == generateTypeName(tableType.name, ArtifactType.Model)) {
-      dto.name = generateTypeName(tableName, ArtifactType.Model);
+    if (dto.name == generateTypeName(tableType.name, ArtifactType.RawModel)) {
+      dto.name = generateTypeName(tableName, ArtifactType.RawModel);
     }
   });
 
@@ -197,7 +197,7 @@ function parseAbiStruct(
             artifactType:
               typeToGen.artifactType == ArtifactType.MongoModel
                 ? ArtifactType.MongoModel
-                : ArtifactType.Model,
+                : ArtifactType.RawModel,
           };
         })
       );
