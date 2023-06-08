@@ -7,15 +7,33 @@ import {
 
 import { {{pascalCase contract}}ContractService } from './{{paramCase contract}}-contract.service';
 
+/**
+ * A service class for interacting with the {{contract}} smart contract.
+ * 
+ * @class {{pascalCase contract}}ContractServiceImpl
+ * @extends {SmartContractServiceImpl}
+ * @implements { {{pascalCase contract}}ContractService}
+*/
 export class {{pascalCase contract}}ContractServiceImpl
   extends SmartContractServiceImpl
   implements {{pascalCase contract}}ContractService 
 {
+  /**
+   * Creates an instance of TokenWorldsContractServiceImpl.
+   * 
+   * @constructor
+   * @param {EosRpcSource} rpcSource - The EOS RPC source to use for interactions. 
+   */
   constructor(rpcSource: EosRpcSource) {
     super(rpcSource, 'index.worlds');
   }
 
 {{#each deltas}}
+  /**
+   * A TableService for the {{@key}} table.
+   * 
+   * @type {TableService} 
+   */
   public readonly {{pascalCase @key}} = new TableService(
     '{{@key}}',
     '{{.}}',

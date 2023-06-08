@@ -9,6 +9,9 @@ import { MongoDB } from '@alien-worlds/storage-mongodb';
  */
 
 {{#each documents}}
+/**
+ * @typedef {Object} {{name}}
+ */
 export type {{name}} = {
   _id?: MongoDB.ObjectId;
 {{#each props}}
@@ -23,6 +26,9 @@ export type {{name}} = {
  */
 
 {{#each structs}}
+/**
+ * @typedef {Object} {{name}}
+ */
 export type {{name}} = {
 {{#each props}}
   {{this.key}}?: {{{this.type.name}}};
