@@ -15,7 +15,6 @@ import { paramCase, pascalCase } from "change-case";
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
-import { getDefault } from "../common/mappers";
 import path from "path";
 
 const logger = Logger.getLogger();
@@ -60,14 +59,11 @@ const generateActionMapperContent = (
 ) => {
   const tmplData = {
     contract,
-    action: action.name,
+    name: action.name,
     mappers: action.types.map((type) => {
-      const isChild = type.artifactType != ArtifactType.Document;
-
       return {
-        isChild,
-        name: isChild ? type.name : action.name,
-        documentName: `${isChild ? type.name : action.name}${
+        name: type.isParent ? action.name : type.name,
+        documentName: `${type.isParent ? action.name : type.name}${
           type.artifactType
         }`,
         props: type.props.map((prop) => {
@@ -82,7 +78,7 @@ const generateActionMapperContent = (
   };
 
   return TemplateEngine.GenerateTemplateOutput(
-    Templates.Actions.mapperTemplate,
+    Templates.mapperTemplate,
     tmplData
   );
 };
@@ -152,7 +148,7 @@ function parseAbiAction(abi: Abi, action: Action): ParsedAbiComponent {
 
   const actionType = abi.structs.find((st) => st.name == type);
 
-  result.types = parseAbiStruct(abi, actionType.name, ArtifactType.Document);
+  result.types = parseAbiStruct(abi, actionType.name, ArtifactType.MongoModel);
 
   return result;
 }
@@ -166,10 +162,12 @@ function parseAbiStruct(
   let poolOfTypesToGen: {
     typename: string;
     artifactType: ArtifactType;
+    isParent?: boolean;
   }[] = [
     {
       typename: structName,
       artifactType,
+      isParent: true,
     },
   ];
 
@@ -194,12 +192,10 @@ function parseAbiStruct(
         subTypesToGen.map((st) => {
           return {
             typename: st.type.sourceName,
-            artifactType: [
-              ArtifactType.Document,
-              ArtifactType.SubDocument,
-            ].includes(typeToGen.artifactType)
-              ? ArtifactType.SubDocument
-              : ArtifactType.SubStruct,
+            artifactType:
+              typeToGen.artifactType == ArtifactType.MongoModel
+                ? ArtifactType.MongoModel
+                : ArtifactType.RawModel,
           };
         })
       );
@@ -230,7 +226,7 @@ function parseAbiStructWorker(
     const mappedType =
       getMappedType(
         field.type,
-        [ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType)
+        artifactType == ArtifactType.MongoModel
           ? TargetTech.Typescript
           : TargetTech.Mongo
       ) || generateCustomTypeName(field.type, artifactType);

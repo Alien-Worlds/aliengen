@@ -2,14 +2,13 @@
 {{! template for delta collective entity e.g. src/contracts/dao-worlds/deltas/domain/entities/dao-worlds-action.ts }}
 {{> warn-do-not-edit}}
 import {
-  {{#each entities}} 
-    {{pascalCase .}},
-  {{/each}}
+{{#each entities}} 
+  {{pascalCase .}},
+{{/each}}
 } from './';
 
 export type DataEntityType =
 {{#each entities}}
-  {{pascalCase .}}
-  {{~#unless @last}} |{{/unless}}
+  | {{pascalCase .}}
   {{~#if @last}};{{/if}}
 {{/each}}

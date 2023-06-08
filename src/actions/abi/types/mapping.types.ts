@@ -22,16 +22,26 @@ export const getMappedType = (
 
     let defaultValue: string = null;
     if (targetTechnology == TargetTech.Typescript) {
-      defaultValue = typescriptDefaults.get(mappedType.typescript[0]);
-
       if (mappedType.typescript[0].includes("Array")) {
         isArray = true;
       }
+
+      defaultValue = isArray
+        ? "[]"
+        : typescriptDefaults.get(mappedType.typescript[0]);
+    }
+
+    let typeName = mappedType[targetTechnology].join(
+      `${isArray ? "[]" : ""} | `
+    );
+
+    if (isArray && !typeName.includes("Array")) {
+      typeName += "[]";
     }
 
     return {
       sourceName: sourceType,
-      name: mappedType[targetTechnology].join(`${isArray ? "[]" : ""} | `),
+      name: typeName,
       defaultValue,
       isArray,
     };
@@ -64,20 +74,9 @@ export const generateCustomTypeName = (
     typeKey = typeKey.split("?")[0];
   }
 
-  let suffix = "";
-  if (
-    [ArtifactType.Document, ArtifactType.SubDocument].includes(artifactType)
-  ) {
-    suffix = ArtifactType.SubDocument;
-  } else if (
-    [ArtifactType.Struct, ArtifactType.SubStruct].includes(artifactType)
-  ) {
-    suffix = ArtifactType.SubStruct;
-  }
-
   return {
     sourceName: typeKey,
-    name: `${pascalCase(typeKey)}${suffix}${isArray ? "[]" : ""}`,
+    name: `${pascalCase(typeKey)}${artifactType ?? ""}${isArray ? "[]" : ""}`,
     requiresCodeGen: true,
     isArray,
   };

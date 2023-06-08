@@ -28,6 +28,10 @@ export const generateServiceImplementation = (
 const getTableKey = (abi: Abi, table: Table): string => {
   const tableStruct = abi.structs.find((st) => st.name == table.type);
 
+  /*
+   * Normally, in smart contracts we use the first defined field as the primary key.
+   * It is simply an internal convention and not enforced anywhere.
+   */
   return tableStruct.fields[0].name;
 };
 

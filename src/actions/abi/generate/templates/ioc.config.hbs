@@ -1,22 +1,27 @@
-{{! template for action IOC config e.g. src/contracts/dao-worlds/actions/ioc/dao-worlds-action.ioc.config.ts }}
-{{! template for delta IOC config e.g. src/contracts/dao-worlds/deltas/ioc/dao-worlds-delta.ioc.config.ts }}
+{{! template for action/delta/service IOC config e.g. src/contracts/dao-worlds/ioc.config.ts }}
 {{> warn-do-not-edit}}
 import {
   Container,
+  EosRpcSource,
   MongoConfig,
   MongoSource,
   RepositoryImpl,
   connectMongo,
 } from '@alien-worlds/api-core';
 
-import { {{pascalCase contract}}{{pascalCase actionOrDelta}}Mapper } from '../data/mappers';
-import { {{pascalCase contract}}{{pascalCase actionOrDelta}}MongoSource } from '../data/data-sources';
-import { {{pascalCase contract}}{{pascalCase actionOrDelta}}Repository } from '../domain/repositories';
+import { {{pascalCase contract}}ActionMongoMapper } from './actions/data/mappers';
+import { {{pascalCase contract}}ActionMongoSource } from './actions/data/data-sources';
+import { {{pascalCase contract}}ActionRepository } from './actions/domain/repositories';
+import { {{pascalCase contract}}ContractService } from "./services/{{paramCase contract}}-contract.service";
+import { {{pascalCase contract}}ContractServiceImpl } from "./services/{{paramCase contract}}-contract.service-impl";
+import { {{pascalCase contract}}DeltaMongoMapper } from './deltas/data/mappers';
+import { {{pascalCase contract}}DeltaMongoSource } from './deltas/data/data-sources';
+import { {{pascalCase contract}}DeltaRepository } from './deltas/domain/repositories';
 
-export const setup{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository = async (
+export const setup{{pascalCase contract}}ActionRepository = async (
   mongo: MongoSource | MongoConfig,
   container?: Container
-): Promise<{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository> => {
+): Promise<{{pascalCase contract}}ActionRepository> => {
   let mongoSource: MongoSource;
   if (mongo instanceof MongoSource) {
     mongoSource = mongo;
@@ -25,15 +30,55 @@ export const setup{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository 
     mongoSource = new MongoSource(db);
   }
   const repository = new RepositoryImpl(
-    new {{pascalCase contract}}{{pascalCase actionOrDelta}}MongoSource(mongoSource),
-    new {{pascalCase contract}}{{pascalCase actionOrDelta}}Mapper()
+    new {{pascalCase contract}}ActionMongoSource(mongoSource),
+    new {{pascalCase contract}}ActionMongoMapper()
   );
 
   if (container) {
     container
-      .bind<{{pascalCase contract}}{{pascalCase actionOrDelta}}Repository>({{pascalCase contract}}{{pascalCase actionOrDelta}}Repository.Token)
+      .bind<{{pascalCase contract}}ActionRepository>({{pascalCase contract}}ActionRepository.Token)
       .toConstantValue(repository);
   }
 
   return repository;
+};
+
+export const setup{{pascalCase contract}}DeltaRepository = async (
+  mongo: MongoSource | MongoConfig,
+  container?: Container
+): Promise<{{pascalCase contract}}DeltaRepository> => {
+  let mongoSource: MongoSource;
+  if (mongo instanceof MongoSource) {
+    mongoSource = mongo;
+  } else {
+    const db = await connectMongo(mongo);
+    mongoSource = new MongoSource(db);
+  }
+  const repository = new RepositoryImpl(
+    new {{pascalCase contract}}DeltaMongoSource(mongoSource),
+    new {{pascalCase contract}}DeltaMongoMapper()
+  );
+
+  if (container) {
+    container
+      .bind<{{pascalCase contract}}DeltaRepository>({{pascalCase contract}}DeltaRepository.Token)
+      .toConstantValue(repository);
+  }
+
+  return repository;
+};
+
+export const setup{{pascalCase contract}}ContractService = (
+  eosRpcSource: EosRpcSource,
+  container?: Container
+): {{pascalCase contract}}ContractService => {
+  const service = new {{pascalCase contract}}ContractServiceImpl(eosRpcSource, "{{contract}}");
+
+  if (container) {
+    container
+      .bind<{{camelCase contract}}ContractService>({{camelCase contract}}ContractService.Token)
+      .toConstantValue(service);
+  }
+
+  return service;
 };
