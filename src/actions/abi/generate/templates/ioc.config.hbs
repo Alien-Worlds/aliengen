@@ -9,12 +9,12 @@ import {
   connectMongo,
 } from '@alien-worlds/api-core';
 
-import { {{pascalCase contract}}ActionMapper } from './actions/data/mappers';
+import { {{pascalCase contract}}ActionMongoMapper } from './actions/data/mappers';
 import { {{pascalCase contract}}ActionMongoSource } from './actions/data/data-sources';
 import { {{pascalCase contract}}ActionRepository } from './actions/domain/repositories';
 import { {{pascalCase contract}}ContractService } from "./services/{{paramCase contract}}-contract.service";
 import { {{pascalCase contract}}ContractServiceImpl } from "./services/{{paramCase contract}}-contract.service-impl";
-import { {{pascalCase contract}}DeltaMapper } from './deltas/data/mappers';
+import { {{pascalCase contract}}DeltaMongoMapper } from './deltas/data/mappers';
 import { {{pascalCase contract}}DeltaMongoSource } from './deltas/data/data-sources';
 import { {{pascalCase contract}}DeltaRepository } from './deltas/domain/repositories';
 
@@ -31,7 +31,7 @@ export const setup{{pascalCase contract}}ActionRepository = async (
   }
   const repository = new RepositoryImpl(
     new {{pascalCase contract}}ActionMongoSource(mongoSource),
-    new {{pascalCase contract}}ActionMapper()
+    new {{pascalCase contract}}ActionMongoMapper()
   );
 
   if (container) {
@@ -56,7 +56,7 @@ export const setup{{pascalCase contract}}DeltaRepository = async (
   }
   const repository = new RepositoryImpl(
     new {{pascalCase contract}}DeltaMongoSource(mongoSource),
-    new {{pascalCase contract}}DeltaMapper()
+    new {{pascalCase contract}}DeltaMongoMapper()
   );
 
   if (container) {

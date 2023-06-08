@@ -31,6 +31,8 @@ function registerHelpers(): void {
     return "";
   });
 
+  Handlebars.registerHelper("dateTimeNow", () => new Date().toUTCString());
+
   Handlebars.registerHelper({
     camelCase,
     paramCase,

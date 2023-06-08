@@ -1,33 +1,33 @@
 {{! template for action dtos e.g. src/contracts/index-worlds/actions/data/dtos/setstatus.dto.ts }}
 {{! template for delta dtos e.g. src/contracts/index-worlds/deltas/data/dtos/setstatus.dto.ts }}
 {{> warn-do-not-edit}}
-import { MongoDB } from '@alien-worlds/api-core';
+import { MongoDB } from '@alien-worlds/storage-mongodb';
 {{> imports}}
 
 /**
- * Mongo Model(s)
+ * MongoDB Model(s) - Types representing data from MongoDB
  */
 
 {{#each documents}}
 export type {{name}} = {
-    _id?: MongoDB.ObjectId;
+  _id?: MongoDB.ObjectId;
 {{#each props}}
-    {{this.key}}?: {{{this.type.name}}};
+  {{this.key}}?: {{{this.type.name}}};
 {{/each}}
-    [key: string]: unknown;
+  [key: string]: unknown;
 };
 
 {{/each}}
 /**
- * Types representing data from blockchain
+ * Raw Model(s) - Types representing data from blockchain
  */
 
 {{#each structs}}
 export type {{name}} = {
 {{#each props}}
-    {{this.key}}?: {{{this.type.name}}};
+  {{this.key}}?: {{{this.type.name}}};
 {{/each}}
-    [key: string]: unknown;
+  [key: string]: unknown;
 };
 
 {{/each}}

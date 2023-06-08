@@ -7,7 +7,6 @@ import { {{pascalCase .}}MongoModel } from './{{.}}{{../suffix}}';
 
 export type DataDocumentType =
 {{#each dtos}}
-  {{pascalCase .}}MongoModel
-  {{~#unless @last}} |{{/unless}}
+  | {{pascalCase .}}MongoModel
   {{~#if @last}};{{/if}}
 {{/each}}
