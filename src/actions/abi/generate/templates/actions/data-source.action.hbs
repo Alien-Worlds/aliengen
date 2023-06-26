@@ -2,12 +2,12 @@
     e.g. src/contracts/dao-worlds/actions/data/data-sources/dao-worlds-action.mongo.source.ts }}
 {{> warn-do-not-edit}}
 import { MongoSource, MongoCollectionSource } from '@alien-worlds/storage-mongodb';
-import { DaoWorldsActionMongoModel } from '../mappers';
+import { {{pascalCase contract}}ActionMongoModel } from '../mappers';
 
 /**
  * @class
  */
-export class {{pascalCase contract}}ActionMongoSource extends MongoCollectionSource<DaoWorldsActionMongoModel> {
+export class {{pascalCase contract}}ActionMongoSource extends MongoCollectionSource<{{pascalCase contract}}ActionMongoModel> {
   /**
    * @constructor
    * @param {MongoSource} mongoSource
