@@ -1,5 +1,6 @@
+import { MappedDatatype, Technology } from "../types/mapping.types";
+
 import { AbiComponent } from "../types/abi.types";
-import { MappedDatatype } from "../types/mapping.types";
 
 export type GenerateOptions = {
   contractName?: string;
@@ -24,9 +25,10 @@ export type ParsedType = {
 export enum ArtifactType {
   MongoModel = "MongoModel",
   RawModel = "RawModel",
+  Entity = "Entity",
 }
 
-type Property = {
+export type Property = {
   key: string;
   type: MappedDatatype;
 };
@@ -35,4 +37,19 @@ export type GeneratedOutput = {
   filePath: string;
   overwrite?: boolean;
   content: string;
+};
+
+export type ParsedComponentMapper = {
+  name: string;
+  component?: AbiComponent;
+
+  [Technology.Mongo]?: ParsedTypeMapper[];
+  [Technology.Typescript]?: ParsedTypeMapper[];
+  [Technology.Raw]?: ParsedTypeMapper[];
+};
+
+export type ParsedTypeMapper = {
+  name: string;
+  isParent?: boolean;
+  props: Property[];
 };

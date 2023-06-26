@@ -1,35 +1,51 @@
 {{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
 {{> warn-do-not-edit}}
 
-import { ContractAction, Mapper } from '@alien-worlds/api-core';
-import { MongoDB } from '@alien-worlds/storage-mongodb';
-import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
-import { {{pascalCase contract}}ActionName } from '../../domain/enums';
+import { 
+{{#each actions}}
+  {{pascalCase .}},
+{{/each}}
+} from '../../domain/entities';
+import { 
+  ContractAction, 
+  MapperImpl, 
+  parseToBigInt 
+} from '@alien-worlds/api-core';
+
 {{#each actions}}
 import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
 {{/each}}
+import { MongoDB } from '@alien-worlds/storage-mongodb';
+import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
+import { 
+  DataDocumentType,
+  {{#each actions}}
+  {{pascalCase .}}MongoModel,
+  {{/each}}
+} from '../dtos';
+import { {{pascalCase contract}}ActionName } from '../../domain/enums';
 
 export class {{pascalCase contract}}ActionMongoMapper
-  implements Mapper<ContractAction<DataEntityType>, {{pascalCase contract}}ActionMongoModel>
+  extends MapperImpl<ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>, {{pascalCase contract}}ActionMongoModel>
 {
   public fromEntity(
-    entity: ContractAction<DataEntityType>
+    entity: ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>
   ): {{pascalCase contract}}ActionMongoModel {
     let entityData;
     switch (entity.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.data);
+        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.data as {{pascalCase .}});
         break;
       {{/each}}
     }
 
     return {
-      _id: entity.id,
+      _id: new MongoDB.ObjectId(entity.id),
       block_timestamp: entity.blockTimestamp,
-      block_number: entity.blockNumber,
-      global_sequence: entity.globalSequence,
-      receiver_sequence: entity.receiverSequence,
+      block_number: new MongoDB.Long(entity.blockNumber),
+      global_sequence: new MongoDB.Long(entity.globalSequence),
+      receiver_sequence: new MongoDB.Long(entity.receiverSequence),
       trx_id: entity.transactionId,
       action_hash: entity.actionHash,
       action: {
@@ -42,12 +58,12 @@ export class {{pascalCase contract}}ActionMongoMapper
 
   public toEntity(
     mongoModel: {{pascalCase contract}}ActionMongoModel
-  ): ContractAction<DataEntityType> {
+  ): ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel> {
     let data;
     switch (mongoModel.action.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        data = new {{pascalCase .}}MongoMapper().toEntity(mongoModel);
+        data = new {{pascalCase .}}MongoMapper().toEntity(mongoModel.action.data as {{pascalCase .}}MongoModel);
         break;
       {{/each}}
     }
@@ -63,14 +79,14 @@ export class {{pascalCase contract}}ActionMongoMapper
       action,
     } = mongoModel;
 
-    return new ContractAction(
-      _id,
+    return new ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>(
+      _id.toString(),
       block_timestamp,
-      block_number,
+      parseToBigInt(block_number),
       action.account,
       action.name,
-      global_sequence,
-      receiver_sequence,
+      parseToBigInt(global_sequence),
+      parseToBigInt(receiver_sequence),
       trx_id,
       data,
       action_hash
@@ -78,7 +94,7 @@ export class {{pascalCase contract}}ActionMongoMapper
   }
 }
 
-export type {{pascalCase contract}}ActionMongoModel<DataType = unknown> = {
+export type {{pascalCase contract}}ActionMongoModel = {
   _id: MongoDB.ObjectId;
   block_timestamp: Date;
   block_number: MongoDB.Long;
@@ -89,6 +105,6 @@ export type {{pascalCase contract}}ActionMongoModel<DataType = unknown> = {
   action: {
     account: string;
     name: string;
-    data: DataType;
+    data: DataDocumentType;
   };
 };

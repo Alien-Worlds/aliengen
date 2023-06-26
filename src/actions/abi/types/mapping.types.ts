@@ -3,8 +3,13 @@ import { pascalCase } from "change-case";
 
 export const getMappedType = (
   sourceType: string,
-  targetTechnology: TargetTech
+  artifactType: ArtifactType
 ): MappedDatatype => {
+  const targetTechnology =
+    artifactType == ArtifactType.MongoModel
+      ? Technology.Mongo
+      : Technology.Typescript;
+
   let typeKey = sourceType,
     isArray = false;
 
@@ -21,7 +26,7 @@ export const getMappedType = (
     const mappedType = typesMap.get(typeKey);
 
     let defaultValue: string = null;
-    if (targetTechnology == TargetTech.Typescript) {
+    if (targetTechnology == Technology.Typescript) {
       if (mappedType.typescript[0].includes("Array")) {
         isArray = true;
       }
@@ -45,17 +50,25 @@ export const getMappedType = (
       defaultValue,
       isArray,
     };
-  } else if (commonEosTypesMap.has(typeKey)) {
+  } else if (commonEosTypes.includes(typeKey)) {
     return {
       sourceName: typeKey,
-      name: commonEosTypesMap
-        .get(typeKey)
-        [targetTechnology].join(`${isArray ? "[]" : ""} | `),
+      name: getCommonTypeName(typeKey, artifactType, isArray),
       requiresImport: true,
       importRef: "@alien-worlds/eosio-contract-types",
       isArray,
     };
   }
+};
+
+const getCommonTypeName = (
+  typeKey: string,
+  artifactType: ArtifactType,
+  isArray: boolean
+) => {
+  return `${pascalCase(typeKey)}${
+    artifactType != ArtifactType.Entity ? artifactType : ""
+  }${isArray ? "[]" : ""}`;
 };
 
 export const generateCustomTypeName = (
@@ -125,16 +138,13 @@ export const typesMap = new Map<string, MappedType>([
   ["time_point", { typescript: ["Date"], mongo: ["Date"] }],
 ]);
 
-export const commonEosTypesMap = new Map<string, MappedType>([
-  ["asset", { typescript: ["Asset"], mongo: ["object"] }],
-  ["extended_asset", { typescript: ["ExtendedAsset"], mongo: ["object"] }],
-]);
+export const commonEosTypes: string[] = ["asset", "extended_asset"];
 
 export const typescriptDefaults = new Map<string, string>([
-  ["number", "-1"],
+  ["number", "0"],
   ["boolean", "false"],
   ["string", "''"],
-  ["bigint", "-1n"],
+  ["bigint", "0n"],
   ["Date", "new Date(0)"],
 ]);
 
@@ -153,7 +163,66 @@ export type MappedDatatype = {
   isArray: boolean;
 };
 
-export enum TargetTech {
+export enum Technology {
   Typescript = "typescript",
   Mongo = "mongo",
+  Raw = "raw",
 }
+
+export const getArtifactType = (tech: Technology): ArtifactType => {
+  let artifactType: ArtifactType = null;
+
+  switch (tech) {
+    case Technology.Mongo:
+      artifactType = ArtifactType.MongoModel;
+      break;
+
+    case Technology.Typescript:
+      artifactType = ArtifactType.Entity;
+      break;
+
+    case Technology.Raw:
+      artifactType = ArtifactType.RawModel;
+      break;
+  }
+
+  return artifactType;
+};
+
+export const getTechnology = (artifactType: ArtifactType): Technology => {
+  let tech: Technology = null;
+
+  switch (artifactType) {
+    case ArtifactType.MongoModel:
+      tech = Technology.Mongo;
+      break;
+
+    case ArtifactType.Entity:
+      tech = Technology.Typescript;
+      break;
+
+    case ArtifactType.RawModel:
+      tech = Technology.Raw;
+      break;
+  }
+
+  return tech;
+};
+
+export const generateStructName = (rawName: string, targetTech: Technology) => {
+  let result = "";
+
+  switch (targetTech) {
+    case Technology.Typescript:
+      result = pascalCase(rawName);
+      break;
+    case Technology.Mongo:
+    case Technology.Raw:
+      result = `${pascalCase(rawName)}${pascalCase(
+        getArtifactType(targetTech)
+      )}`;
+      break;
+  }
+
+  return result;
+};

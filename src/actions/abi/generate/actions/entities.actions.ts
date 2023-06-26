@@ -1,15 +1,15 @@
 import { Abi, Action } from "../../types/abi.types";
 import {
+  ArtifactType,
   GeneratedOutput,
   ParsedAbiComponent,
   ParsedType,
 } from "../generate.types";
+import { camelCase, paramCase, pascalCase } from "change-case";
 import {
-  TargetTech,
   generateCustomTypeName,
   getMappedType,
 } from "../../types/mapping.types";
-import { camelCase, paramCase, pascalCase } from "change-case";
 
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
@@ -180,7 +180,7 @@ function parseAbiStructWorker(abi: Abi, structName: string): ParsedType {
     output.props.push({
       key: camelCase(field.name),
       type:
-        getMappedType(field.type, TargetTech.Typescript) ||
+        getMappedType(field.type, ArtifactType.Entity) ||
         generateCustomTypeName(field.type),
     });
   });

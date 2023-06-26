@@ -1,16 +1,13 @@
 {{! template for action Mongo data source
     e.g. src/contracts/dao-worlds/deltas/data/data-sources/dao-worlds-delta.mongo.source.ts }}
 {{> warn-do-not-edit}}
-import {
-  CollectionMongoSource, 
-  ContractDeltaDocument, 
-  MongoSource,
-} from '@alien-worlds/api-core';
+import { MongoSource, MongoCollectionSource } from '@alien-worlds/storage-mongodb';
+import { {{pascalCase contract}}DeltaMongoModel } from '../mappers';
 
 /**
  * @class
  */
-export class {{pascalCase contract}}DeltaMongoSource extends CollectionMongoSource<ContractDeltaDocument> {
+export class {{pascalCase contract}}DeltaMongoSource extends MongoCollectionSource<{{pascalCase contract}}DeltaMongoModel> {
   /**
    * @constructor
    * @param {MongoSource} mongoSource

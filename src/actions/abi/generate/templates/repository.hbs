@@ -3,7 +3,7 @@
 {{> warn-do-not-edit}}
 import { 
   Contract{{pascalCase actionOrDelta}}, 
-  Contract{{pascalCase actionOrDelta}}Document, 
+  Contract{{pascalCase actionOrDelta}}Model, 
   Repository, 
   injectable, 
 } from '@alien-worlds/api-core';
@@ -17,7 +17,7 @@ import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-{{a
 @injectable()
 export abstract class {{pascalCase contract}}{{pascalCase actionOrDelta}}Repository extends Repository<
   Contract{{pascalCase actionOrDelta}}<DataEntityType, DataDocumentType>,
-  Contract{{pascalCase actionOrDelta}}Document<DataDocumentType>
+  Contract{{pascalCase actionOrDelta}}Model
 > {
   public static Token = '{{constantCase contract}}_{{upperCase actionOrDelta}}_REPOSITORY';
 }

@@ -1,44 +1,56 @@
 {{! template for service definition e.g. src/contracts/dao-worlds/services/dao-worlds-contract.service-impl.ts }}
-import {
-  EosRpcSource,
-  SmartContractServiceImpl,
-  TableService,
-} from '@alien-worlds/api-core';
+import { 
+{{#each deltas}}
+  {{ pascalCase @key}}RawModel,
+{{/each}}
+} from '../deltas/data/dtos';
+import { 
+  EosRpcSourceImpl,
+  EosSmartContractServiceImpl,
+} from '@alien-worlds/eos';
 
 import { {{pascalCase contract}}ContractService } from './{{paramCase contract}}-contract.service';
+import { GetTableRowsOptions, Result } from '@alien-worlds/api-core';
 
 /**
  * A service class for interacting with the {{contract}} smart contract.
  * 
  * @class {{pascalCase contract}}ContractServiceImpl
- * @extends {SmartContractServiceImpl}
+ * @extends {EosSmartContractServiceImpl}
  * @implements { {{pascalCase contract}}ContractService}
 */
 export class {{pascalCase contract}}ContractServiceImpl
-  extends SmartContractServiceImpl
+  extends EosSmartContractServiceImpl
   implements {{pascalCase contract}}ContractService 
 {
   /**
-   * Creates an instance of TokenWorldsContractServiceImpl.
+   * Creates an instance of {{pascalCase contract}}ContractServiceImpl.
    * 
    * @constructor
-   * @param {EosRpcSource} rpcSource - The EOS RPC source to use for interactions. 
+   * @param {EosRpcSourceImpl} eosRpcSourceImpl - The EOS RPC source to use for interactions.
+   * @param {string} serviceUrl - Service Url
    */
-  constructor(rpcSource: EosRpcSource) {
-    super(rpcSource, 'index.worlds');
+  constructor(eosRpcSourceImpl: EosRpcSourceImpl, serviceUrl: string) {
+    super(eosRpcSourceImpl, serviceUrl, '{{contract}}');
   }
 
 {{#each deltas}}
   /**
-   * A TableService for the {{@key}} table.
+   * A EosSmartContractServiceImpl for the {{@key}} table.
    * 
-   * @type {TableService} 
+   * @type {EosSmartContractServiceImpl}
+   * @param {GetTableRowsOptions} options 
    */
-  public readonly {{pascalCase @key}} = new TableService(
-    '{{@key}}',
-    '{{.}}',
-    this.contract
-  );
+  public readonly fetch{{pascalCase @key}} = async (
+    options?: GetTableRowsOptions
+  ): Promise<Result<{{pascalCase @key}}RawModel[], Error>> => {
+    return await this.getAll<{{pascalCase @key}}RawModel>('candidate_name', {
+      ...options,
+      code: '{{../contract}}',
+      table: '{{@key}}',
+      table_key: '{{.}}',
+    });
+  };
 
 {{/each}}
 }

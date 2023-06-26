@@ -6,7 +6,7 @@ import {
   ParsedType,
 } from "../generate.types";
 import {
-  TargetTech,
+  Technology,
   generateCustomTypeName,
   getMappedType,
 } from "../../types/mapping.types";
@@ -213,12 +213,8 @@ function parseAbiStructWorker(
 
   struct?.fields?.forEach((field) => {
     const mappedType =
-      getMappedType(
-        field.type,
-        artifactType == ArtifactType.MongoModel
-          ? TargetTech.Typescript
-          : TargetTech.Mongo
-      ) || generateCustomTypeName(field.type, artifactType);
+      getMappedType(field.type, artifactType) ||
+      generateCustomTypeName(field.type, artifactType);
 
     output.props.push({
       key: field.name,

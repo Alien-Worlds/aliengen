@@ -1,20 +1,23 @@
-import { Abi, Table } from "../../types/abi.types";
+import { Abi, AbiComponent, Table } from "../../types/abi.types";
 import {
-  ArtifactType,
   GeneratedOutput,
-  ParsedAbiComponent,
+  ParsedComponentMapper,
   ParsedType,
+  ParsedTypeMapper,
+  Property,
 } from "../generate.types";
 import {
-  TargetTech,
+  Technology,
   generateCustomTypeName,
+  generateStructName,
+  getArtifactType,
   getMappedType,
 } from "../../types/mapping.types";
-import { paramCase, pascalCase } from "change-case";
 
 import Logger from "../../../../logger";
 import TemplateEngine from "../template-engine";
 import Templates from "../templates";
+import { paramCase } from "change-case";
 import path from "path";
 
 const logger = Logger.getLogger();
@@ -55,26 +58,38 @@ export const generateDeltaMappers = (
 
 const generateDeltaMapperContent = (
   contract: string,
-  delta: ParsedAbiComponent
+  delta: ParsedComponentMapper
 ) => {
+  const imports: Map<string, Set<string>> = new Map();
+
+  delta.typescript.forEach((tp) => {
+    tp.props.forEach((prop) => {
+      if (prop.type.requiresImport) {
+        const deps = (imports.get(prop.type.importRef) ?? new Set<string>())
+          .add(prop.type.name)
+          .add(`${prop.type.name}MongoMapper`)
+          .add(`${prop.type.name}RawMapper`);
+
+        imports.set(prop.type.importRef, deps);
+      }
+    });
+  });
+
+  delta.typescript.forEach((e, entityIndex) => {
+    e.props = e.props.map((p: any, propIndex) => {
+      return {
+        ...p,
+        mongo: delta.mongo[entityIndex].props[propIndex].type,
+      };
+    });
+  });
+
   const tmplData = {
     contract,
     name: delta.name,
-    mappers: delta.types.map((type) => {
-      return {
-        name: type.isParent ? delta.name : type.name,
-        documentName: `${type.isParent ? delta.name : type.name}${
-          type.artifactType
-        }`,
-        props: type.props.map((prop) => {
-          if (!prop.type.defaultValue) {
-            prop.type.defaultValue = "undefined";
-          }
-
-          return prop;
-        }),
-      };
-    }),
+    imports: Object.fromEntries(imports),
+    entities: delta.typescript,
+    mongoModels: delta.mongo,
   };
 
   return TemplateEngine.GenerateTemplateOutput(
@@ -138,23 +153,28 @@ const createOutput = (
   return output;
 };
 
-function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
+function parseAbiDelta(abi: Abi, table: Table): ParsedComponentMapper {
   const { name: tableName, type } = table;
 
-  let result: ParsedAbiComponent = {
+  let result: ParsedComponentMapper = {
     name: tableName,
-    types: [],
+    component: AbiComponent.Action,
   };
 
   const tableType = abi.structs.find((st) => st.name == type);
 
-  result.types = parseAbiStruct(abi, tableType.name, ArtifactType.MongoModel);
-
-  result.types.forEach((dto) => {
-    if (dto.name == pascalCase(tableType.name)) {
-      dto.name = pascalCase(tableName);
-    }
-  });
+  result.mongo = parseAbiStruct(
+    abi,
+    tableType.name,
+    Technology.Mongo,
+    tableName
+  );
+  result.typescript = parseAbiStruct(
+    abi,
+    tableType.name,
+    Technology.Typescript,
+    tableName
+  );
 
   return result;
 }
@@ -162,33 +182,40 @@ function parseAbiDelta(abi: Abi, table: Table): ParsedAbiComponent {
 function parseAbiStruct(
   abi: Abi,
   structName: string,
-  artifactType: ArtifactType
-): ParsedType[] {
+  tech: Technology,
+  tableName: string
+): ParsedTypeMapper[] {
+  let result: ParsedTypeMapper[] = [];
+
   let collectiveTypes: Map<string, ParsedType> = new Map();
+
   let poolOfTypesToGen: {
     typename: string;
-    artifactType: ArtifactType;
     isParent?: boolean;
   }[] = [
     {
       typename: structName,
-      artifactType,
       isParent: true,
     },
   ];
 
-  let parsedType: ParsedType;
   do {
     const typeToGen = poolOfTypesToGen.splice(
       poolOfTypesToGen.length - 1,
       1
     )[0];
 
-    parsedType = parseAbiStructWorker(
-      abi,
-      typeToGen.typename,
-      typeToGen.artifactType
-    );
+    let parsedType: ParsedType = {
+      artifactType: getArtifactType(tech),
+      name: generateStructName(
+        typeToGen.isParent ? tableName : typeToGen.typename,
+        tech
+      ),
+      isParent: typeToGen.isParent,
+      props: [],
+    };
+
+    parsedType.props = parseAbiStructWorker(abi, typeToGen.typename, tech);
     collectiveTypes.set(typeToGen.typename, parsedType);
 
     const subTypesToGen = getSubTypesToGen(parsedType, collectiveTypes);
@@ -198,26 +225,24 @@ function parseAbiStruct(
         subTypesToGen.map((st) => {
           return {
             typename: st.type.sourceName,
-            artifactType: typeToGen.artifactType,
+            artifactType: parsedType.artifactType,
           };
         })
       );
     }
   } while (poolOfTypesToGen.length);
 
-  return Array.from(collectiveTypes.values());
+  result = Array.from(collectiveTypes.values());
+
+  return result;
 }
 
 function parseAbiStructWorker(
   abi: Abi,
   structName: string,
-  artifactType: ArtifactType
-): ParsedType {
-  const output: ParsedType = {
-    artifactType,
-    name: pascalCase(structName),
-    props: [],
-  };
+  tech: Technology
+): Property[] {
+  const output: Property[] = [];
 
   const struct = abi.structs.find((st) => st.name == structName);
   if (!struct) {
@@ -227,14 +252,14 @@ function parseAbiStructWorker(
 
   struct?.fields?.forEach((field) => {
     const mappedType =
-      getMappedType(
-        field.type,
-        artifactType == ArtifactType.MongoModel
-          ? TargetTech.Typescript
-          : TargetTech.Mongo
-      ) || generateCustomTypeName(field.type, artifactType);
+      getMappedType(field.type, getArtifactType(tech)) ||
+      generateCustomTypeName(field.type, getArtifactType(tech));
 
-    output.props.push({
+    if (!mappedType.defaultValue) {
+      mappedType.defaultValue = "undefined";
+    }
+
+    output.push({
       key: field.name,
       type: mappedType,
     });

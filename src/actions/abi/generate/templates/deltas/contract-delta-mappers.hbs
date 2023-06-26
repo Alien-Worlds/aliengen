@@ -1,52 +1,58 @@
 {{! template for delta mapper e.g. src/contracts/dao-worlds/deltas/data/mappers/dao-worlds-delta.mapper.ts }}
 {{> warn-do-not-edit}}
 
-import { ContractDelta, Mapper } from '@alien-worlds/api-core';
+import { 
+{{#each deltas}}
+  {{pascalCase .}},
+{{/each}}
+} from '../../domain/entities';
+import { ContractDelta, MapperImpl, parseToBigInt } from '@alien-worlds/api-core';
 import { MongoDB } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-delta';
+import { DataDocumentType } from '../dtos';
 import { {{pascalCase contract}}TableName } from '../../domain/enums';
 {{#each deltas}}
 import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
 {{/each}}
 
 export class {{pascalCase contract}}DeltaMongoMapper
-  implements Mapper<ContractDelta<DataEntityType>, {{pascalCase contract}}DeltaMongoModel>
+  extends MapperImpl<ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>, {{pascalCase contract}}DeltaMongoModel>
 {
   public fromEntity(
-    entity: ContractDelta<DataEntityType>
+    entity: ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>
   ): {{pascalCase contract}}DeltaMongoModel {
     let entityData;
     switch (entity.table) {
       {{#each deltas}}
       case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
-        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.delta);
+        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.delta as {{pascalCase .}});
         break;
       {{/each}}
     }
 
     return {
-      _id: entity.id,
-      block_number: entity.blockNumber,
+      _id: new MongoDB.ObjectId(entity.id),
       block_timestamp: entity.blockTimestamp,
+      block_number: new MongoDB.Long(entity.blockNumber),
       code: entity.code,
       scope: entity.scope,
       table: entity.table,
       data_hash: entity.deltaHash,
       data: entityData,
       payer: entity.payer,
-      primary_key: entity.primaryKey,
+      primary_key: new MongoDB.Long(entity.primaryKey),
       present: entity.present,
     };
   }
 
   public toEntity(
     mongoModel: {{pascalCase contract}}DeltaMongoModel
-  ): ContractDelta<DataEntityType> {
+  ): ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel> {
     let data;
     switch (mongoModel.table) {
       {{#each deltas}}
       case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
-        data = new {{pascalCase .}}MongoMapper().toEntity(mongoModel);
+        data = new {{pascalCase .}}MongoMapper().toEntity(mongoModel.data);
         break;
       {{/each}}
     }
@@ -64,30 +70,30 @@ export class {{pascalCase contract}}DeltaMongoMapper
       block_timestamp,
     } = mongoModel;
 
-    return new ContractDelta(
-      _id,
-      block_number,
+    return new ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>(
+      _id.toString(),
+      parseToBigInt(block_number),
       code,
       scope,
       table,
       data_hash,
       data,
       payer,
-      primary_key,
+      parseToBigInt(primary_key),
       present,
       block_timestamp,
     );
   }
 }
 
-export type {{pascalCase contract}}DeltaMongoModel<DataType = unknown> = {
+export type {{pascalCase contract}}DeltaMongoModel = {
   _id: MongoDB.ObjectId;
   block_number: MongoDB.Long;
   code: string;
   scope: string;
   table: string;
   data_hash: string;
-  data: DataType;
+  data: DataDocumentType;
   payer: string;
   primary_key: MongoDB.Long,
   present: boolean;

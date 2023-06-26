@@ -1,67 +1,43 @@
 {{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
 {{> warn-do-not-edit}}
 import {
-  Mapper,
-  MissingKeyMappingsError,
-  PropertyMapping,
+  MapperImpl,
+  parseToBigInt,
 } from '@alien-worlds/api-core';
 import { MongoDB } from '@alien-worlds/storage-mongodb';
-
-import { {{#each mappers}}{{pascalCase this.name}}{{#unless @last}}, {{/unless}} {{/each}} } from "../../domain/entities";
-import { {{#each mappers}}{{pascalCase this.documentName}}, {{pascalCase this.name}}RawModel{{#unless @last}}, {{/unless}} {{/each}} } from "../dtos/{{name}}.dto";
-import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
+{{> imports}}
+import { {{#each entities}}{{pascalCase this.name}}{{#unless @last}}, {{/unless}} {{/each}} } from "../../domain/entities";
+import { {{#each entities}}{{pascalCase this.name}}MongoModel, {{pascalCase this.name}}RawModel{{#unless @last}}, {{/unless}} {{/each}} } from "../dtos/{{name}}.dto";
 
 // Mongo Mappers
-{{#each mappers}}
+{{#each entities}}
 export class {{pascalCase this.name}}MongoMapper
-  implements Mapper<{{pascalCase this.name}}, {{pascalCase this.documentName}}>
+  extends MapperImpl<{{pascalCase this.name}}, {{pascalCase this.name}}MongoModel>
 {
-  private readonly mappingFromEntity = new Map<string, PropertyMapping>([
-    {{#each props}}
-    [
-      '{{camelCase this.key}}', 
-      { 
-        key: '{{this.key}}', 
-        mapper: {{~#if this.type.requiresCodeGen}}{{~#if this.type.isArray}} (value: {{{pascalCase this.type.sourceName}}}[]) => 
-          value.map(new {{{pascalCase this.type.sourceName}}}MongoMapper().fromEntity),
-          {{else}}
-            new {{{pascalCase this.type.sourceName}}}MongoMapper().fromEntity,
-          {{~/if}}
-        {{~else}} (value: {{{this.type.name}}}) => value,
-        {{/if}}
-      },
-    ],
-    {{/each}}
-  ]);
+  constructor() {
+    super();
 
-  public fromEntity(entity: {{pascalCase this.name}} | DataEntityType): {{pascalCase this.name}}MongoModel {
-    const { id, ...rest } = entity;
-    const missingMappings: string[] = [];
-
-    const mongoModel: {{pascalCase this.name}}MongoModel = {};
-
-    if (id) {
-      mongoModel._id = new MongoDB.ObjectId(id);
-    }
-
-    Object.keys(rest).forEach(key => {
-      const mapping = this.mappingFromEntity.get(key);
-
-      if (mapping) {
-        document[mapping.key] = mapping.mapper(rest[key]);
-      } else {
-        missingMappings.push(key);
-      }
+  {{#each props}}
+    this.mappingFromEntity.set('{{camelCase this.key}}', { 
+      key: '{{this.key}}', 
+      mapper: {{~#if this.type.requiresCodeGen}}{{~#if this.type.isArray}} (value: {{{pascalCase this.type.sourceName}}}[]) => 
+        value.map(new {{{pascalCase this.type.sourceName}}}MongoMapper().fromEntity),
+        {{else}}
+          new {{{pascalCase this.type.sourceName}}}MongoMapper().fromEntity,
+        {{~/if}}
+      {{~else}} (value: {{{this.type.name}}}) => {{#if (eq this.type.name 'bigint') }}MongoDB.Long.fromBigInt(value), {{~else}}
+      {{#if this.type.requiresImport}}
+           new {{pascalCase this.type.sourceName}}MongoMapper().fromEntity(value)
+      {{~else}}
+        value,
+      {{~/if}}{{~/if}}
+      {{/if}}
     });
 
-    if (missingMappings.length > 0) {
-      throw new MissingKeyMappingsError(missingMappings);
-    }
-
-    return mongoModel;
+  {{/each}}
   }
 
-  public toEntity(mongoModel: {{pascalCase this.documentName}}): {{pascalCase this.name}} {
+  public toEntity(mongoModel: {{pascalCase this.name}}MongoModel): {{pascalCase this.name}} {
     const { 
     {{#each props}}
       {{this.key}},
@@ -81,7 +57,13 @@ export class {{pascalCase this.name}}MongoMapper
           : {{pascalCase this.type.sourceName}}.getDefault()
       {{~/if}}
     {{~else}}
-      {{this.key}} ?? {{{this.type.defaultValue}}}
+      {{#if this.type.requiresImport}}
+        {{this.key}} 
+          ? new {{pascalCase this.type.sourceName}}MongoMapper().toEntity({{this.key}})
+          : {{pascalCase this.type.sourceName}}.getDefault()
+      {{~else}}
+        {{this.key}}{{#if (eq this.type.name 'bigint') }}.toBigInt(){{~/if}} ?? {{{this.type.defaultValue}}}
+      {{~/if}}
     {{~/if}},
     {{/each}}
       _id instanceof MongoDB.ObjectId ? _id.toString() : undefined,
@@ -93,9 +75,9 @@ export class {{pascalCase this.name}}MongoMapper
 {{/each}}
 
 // Raw mappers
-{{#each mappers}}
+{{#each entities}}
 export class {{pascalCase this.name}}RawMapper
-  implements Mapper<{{pascalCase this.name}}, {{pascalCase this.name}}RawModel>
+  extends MapperImpl<{{pascalCase this.name}}, {{pascalCase this.name}}RawModel>
 {
   public fromEntity(entity: {{pascalCase this.name}}): {{pascalCase this.name}}RawModel {
     throw new Error('Method not implemented');
@@ -120,7 +102,17 @@ export class {{pascalCase this.name}}RawMapper
           : {{pascalCase this.type.sourceName}}.getDefault()
       {{~/if}}
     {{~else}}
-      {{this.key}} ?? {{{this.type.defaultValue}}}
+    {{#if (eq this.type.name 'bigint') }}
+      parseToBigInt({{this.key}} ?? {{{this.type.defaultValue}}})
+    {{~else}}
+      {{#if this.type.requiresImport}}
+        {{this.key}} 
+          ? new {{pascalCase this.type.sourceName}}RawMapper().toEntity({{this.key}})
+          : {{pascalCase this.type.sourceName}}.getDefault()
+      {{~else}}
+        {{this.key}} ?? {{{this.type.defaultValue}}}
+      {{~/if}}
+    {{~/if}}
     {{~/if}},
     {{/each}}
       undefined,

@@ -1,16 +1,13 @@
 {{! template for action Mongo data source
     e.g. src/contracts/dao-worlds/actions/data/data-sources/dao-worlds-action.mongo.source.ts }}
 {{> warn-do-not-edit}}
-import {
-  CollectionMongoSource, 
-  ContractActionDocument, 
-  MongoSource,
-} from '@alien-worlds/api-core';
+import { MongoSource, MongoCollectionSource } from '@alien-worlds/storage-mongodb';
+import { DaoWorldsActionMongoModel } from '../mappers';
 
 /**
  * @class
  */
-export class {{pascalCase contract}}ActionMongoSource extends CollectionMongoSource<ContractActionDocument> {
+export class {{pascalCase contract}}ActionMongoSource extends MongoCollectionSource<DaoWorldsActionMongoModel> {
   /**
    * @constructor
    * @param {MongoSource} mongoSource

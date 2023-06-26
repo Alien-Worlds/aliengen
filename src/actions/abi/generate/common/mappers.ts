@@ -5,9 +5,9 @@ export const getDefault = (type: string) => {
     case "boolean":
       return "false";
     case "number":
-      return "-1";
+      return "0";
     case "bigint":
-      return "-1n";
+      return "0n";
     case "Date":
       return "new Date(0)";
     default:

@@ -31,6 +31,17 @@ function registerHelpers(): void {
     return "";
   });
 
+  Handlebars.registerHelper("eq", function (value1, value2) {
+    if (
+      value1 &&
+      value2 &&
+      typeof value1 === "string" &&
+      typeof value2 === "string"
+    ) {
+      return value1 === value2;
+    }
+  });
+
   Handlebars.registerHelper("dateTimeNow", () => new Date().toUTCString());
 
   Handlebars.registerHelper({
