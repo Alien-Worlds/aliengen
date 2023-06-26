@@ -7,7 +7,6 @@ import { generateActionDtos } from "./dtos.actions";
 import { generateActionEntities } from "./entities.actions";
 import { generateActionEnums } from "./enums.actions";
 import { generateActionMappers } from "./mappers.actions";
-import { paramCase } from "change-case";
 import path from "path";
 
 export function generateActions(
@@ -15,12 +14,7 @@ export function generateActions(
   contractName: string,
   outputPath: string
 ): GeneratedOutput[] {
-  const actionsOutputPath = path.join(
-    outputPath,
-    "contracts",
-    paramCase(contractName),
-    "actions"
-  );
+  const actionsOutputPath = path.join(outputPath, "actions");
 
   let output: GeneratedOutput[] = [].concat(
     // Data

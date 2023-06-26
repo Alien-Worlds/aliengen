@@ -11,7 +11,6 @@ import { extractDataFromAbiJsonFilename } from "../json-to-code/json-to-code.uti
 import { generateActions } from "./actions";
 import { generateDeltas } from "./deltas";
 import { generateServices } from "./services";
-import { paramCase } from "change-case";
 import path from "path";
 import { readJsonFiles } from "../utils/files";
 
@@ -72,19 +71,11 @@ function generateCodeFromABI(
 
   const iocConfigOutput = generateIocConfig(
     contractName,
-    path.join(
-      outputPath || path.dirname(abiFile.path),
-      "contracts",
-      paramCase(contractName)
-    )
+    path.join(outputPath || path.dirname(abiFile.path))
   );
 
   const exportsOutput = generateRootLevelExports(
-    path.join(
-      outputPath || path.dirname(abiFile.path),
-      "contracts",
-      paramCase(contractName)
-    )
+    path.join(outputPath || path.dirname(abiFile.path))
   );
 
   return [].concat(

@@ -7,7 +7,6 @@ import { generateDeltaMappers } from "./mappers.deltas";
 import { generateDeltasDataSource } from "./data-source.deltas";
 import { generateDeltasDtos } from "./dtos.deltas";
 import { generateDeltasEntities } from "./entities.deltas";
-import { paramCase } from "change-case";
 import path from "path";
 
 export function generateDeltas(
@@ -15,12 +14,7 @@ export function generateDeltas(
   contractName: string,
   outputPath: string
 ): GeneratedOutput[] {
-  const deltasOutputPath = path.join(
-    outputPath,
-    "contracts",
-    paramCase(contractName),
-    "deltas"
-  );
+  const deltasOutputPath = path.join(outputPath, "deltas");
 
   let output: GeneratedOutput[] = [].concat(
     // Data
