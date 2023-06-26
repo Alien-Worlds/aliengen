@@ -98,7 +98,6 @@ export const generateCustomTypeName = (
 export const typesMap = new Map<string, MappedType>([
   ["bytes", { typescript: ["Bytes"], mongo: ["Binary"] }],
   ["bool", { typescript: ["boolean"], mongo: ["boolean"] }],
-  ["symbol", { typescript: ["Symbol"], mongo: ["object"] }],
   ["extension", { typescript: ["Extension"], mongo: ["object"] }],
   ["name", { typescript: ["string"], mongo: ["string"] }],
   ["int8", { typescript: ["number"], mongo: ["number"] }],
@@ -138,7 +137,12 @@ export const typesMap = new Map<string, MappedType>([
   ["time_point", { typescript: ["Date"], mongo: ["Date"] }],
 ]);
 
-export const commonEosTypes: string[] = ["asset", "extended_asset"];
+export const commonEosTypes: string[] = [
+  "asset",
+  "extended_asset",
+  "symbol",
+  "extended_symbol",
+];
 
 export const typescriptDefaults = new Map<string, string>([
   ["number", "0"],
