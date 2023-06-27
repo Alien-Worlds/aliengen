@@ -9,7 +9,7 @@ import {
 import { ContractDelta, MapperImpl, parseToBigInt } from '@alien-worlds/api-core';
 import { MongoDB } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-delta';
-import { DataDocumentType } from '../dtos';
+import { {{pascalCase contract}}DeltaMongoModel } from '../dtos';
 import { {{pascalCase contract}}TableName } from '../../domain/enums';
 {{#each deltas}}
 import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
@@ -85,17 +85,3 @@ export class {{pascalCase contract}}DeltaMongoMapper
     );
   }
 }
-
-export type {{pascalCase contract}}DeltaMongoModel = {
-  _id: MongoDB.ObjectId;
-  block_number: MongoDB.Long;
-  code: string;
-  scope: string;
-  table: string;
-  data_hash: string;
-  data: DataDocumentType;
-  payer: string;
-  primary_key: MongoDB.Long,
-  present: boolean;
-  block_timestamp: Date;
-};

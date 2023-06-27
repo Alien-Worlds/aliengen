@@ -1,4 +1,4 @@
-import { Abi, Table } from "../../types/abi.types";
+import { Abi, AbiComponent, Table } from "../../types/abi.types";
 import {
   ArtifactType,
   GeneratedOutput,
@@ -33,7 +33,7 @@ export const generateDeltasDtos = (
     dtos.set(table.name, dtoContent);
   });
 
-  const collectiveTypeContent = generateCollectiveDataType(dtos);
+  const collectiveTypeContent = generateCollectiveDataType(contract, dtos);
 
   const exportsContent = generateExportsContent([
     getCollectiveDataTypeFilename(contract),
@@ -77,10 +77,15 @@ const generateDtoContent = (parsedDelta: ParsedAbiComponent) => {
   );
 };
 
-const generateCollectiveDataType = (dtos: Map<string, string>) => {
+const generateCollectiveDataType = (
+  contract: string,
+  dtos: Map<string, string>
+) => {
   return TemplateEngine.GenerateTemplateOutput(
     Templates.collectiveDataTypeTemplate,
     {
+      contract,
+      actionOrDelta: AbiComponent.Delta,
       dtos: Array.from(dtos.keys()),
       suffix: ".dto",
     }

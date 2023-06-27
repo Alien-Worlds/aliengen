@@ -1,6 +1,8 @@
 {{! template for action collective data type e.g. src/contracts/dao-worlds/actions/data/dtos/dao-worlds-action.dto.ts }}
 {{! template for delta collective data type e.g. src/contracts/dao-worlds/deltas/data/dtos/dao-worlds-action.dto.ts }}
 {{> warn-do-not-edit}}
+import { MongoDB } from '@alien-worlds/storage-mongodb';
+
 {{#each dtos}}
 import { {{pascalCase .}}MongoModel } from './{{.}}{{../suffix}}';
 {{/each}}
@@ -10,3 +12,36 @@ export type DataDocumentType =
   | {{pascalCase .}}MongoModel
   {{~#if @last}};{{/if}}
 {{/each}}
+
+{{#if (eq actionOrDelta 'action')}}
+export type {{pascalCase contract}}ActionMongoModel = {
+  _id: MongoDB.ObjectId;
+  block_timestamp: Date;
+  block_number: MongoDB.Long;
+  global_sequence: MongoDB.Long;
+  receiver_sequence: MongoDB.Long;
+  trx_id: string;
+  action_hash: string;
+  action: {
+    account: string;
+    name: string;
+    data: DataDocumentType;
+  };
+};
+{{/if}}
+
+{{#if (eq actionOrDelta 'delta')}}
+export type {{pascalCase contract}}DeltaMongoModel = {
+  _id: MongoDB.ObjectId;
+  block_number: MongoDB.Long;
+  code: string;
+  scope: string;
+  table: string;
+  data_hash: string;
+  data: DataDocumentType;
+  payer: string;
+  primary_key: MongoDB.Long,
+  present: boolean;
+  block_timestamp: Date;
+};
+{{/if}}
