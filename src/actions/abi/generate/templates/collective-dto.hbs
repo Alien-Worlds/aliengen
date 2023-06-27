@@ -15,14 +15,14 @@ export type DataDocumentType =
 
 {{#if (eq actionOrDelta 'action')}}
 export type {{pascalCase contract}}ActionMongoModel = {
-  _id: MongoDB.ObjectId;
-  block_timestamp: Date;
-  block_number: MongoDB.Long;
-  global_sequence: MongoDB.Long;
-  receiver_sequence: MongoDB.Long;
-  trx_id: string;
-  action_hash: string;
-  action: {
+  _id?: MongoDB.ObjectId;
+  block_timestamp?: Date;
+  block_number?: MongoDB.Long;
+  global_sequence?: MongoDB.Long;
+  receiver_sequence?: MongoDB.Long;
+  trx_id?: string;
+  action_hash?: string;
+  action?: {
     account: string;
     name: string;
     data: DataDocumentType;
@@ -32,16 +32,16 @@ export type {{pascalCase contract}}ActionMongoModel = {
 
 {{#if (eq actionOrDelta 'delta')}}
 export type {{pascalCase contract}}DeltaMongoModel = {
-  _id: MongoDB.ObjectId;
-  block_number: MongoDB.Long;
-  code: string;
-  scope: string;
-  table: string;
-  data_hash: string;
-  data: DataDocumentType;
-  payer: string;
-  primary_key: MongoDB.Long,
-  present: boolean;
-  block_timestamp: Date;
+  _id?: MongoDB.ObjectId;
+  block_number?: MongoDB.Long;
+  code?: string;
+  scope?: string;
+  table?: string;
+  data_hash?: string;
+  data?: DataDocumentType;
+  payer?: string;
+  primary_key?: MongoDB.Long,
+  present?: boolean;
+  block_timestamp?: Date;
 };
 {{/if}}
