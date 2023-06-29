@@ -45,7 +45,10 @@ export const generateActionMappers = (
     Array.from(actionMappers.keys())
   );
 
-  const exportsContent = generateExportsContent([contract]);
+  const exportsContent = generateExportsContent(
+    contract,
+    Array.from(actionMappers.keys())
+  );
 
   return createOutput(
     baseDir,
@@ -111,11 +114,15 @@ const generateContractActionsMapperContent = (
   );
 };
 
-const generateExportsContent = (contractNames: string[] = []) => {
+const generateExportsContent = (
+  contractName: string,
+  actionNames: string[] = []
+) => {
   return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-    exports: contractNames.map(
-      (contract) => `./${paramCase(contract)}-action.mapper`
-    ),
+    exports: [
+      `./${paramCase(contractName)}-action.mapper`,
+      ...actionNames.map((action) => `./${paramCase(action)}.mapper`),
+    ],
   });
 };
 

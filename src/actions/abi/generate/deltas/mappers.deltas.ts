@@ -45,7 +45,10 @@ export const generateDeltaMappers = (
     Array.from(deltaMappers.keys())
   );
 
-  const exportsContent = generateExportsContent([contract]);
+  const exportsContent = generateExportsContent(
+    contract,
+    Array.from(deltaMappers.keys())
+  );
 
   return createOutput(
     baseDir,
@@ -111,11 +114,15 @@ const generateContractDeltasMapperContent = (
   );
 };
 
-const generateExportsContent = (contractNames: string[] = []) => {
+const generateExportsContent = (
+  contractName: string,
+  deltaNames: string[] = []
+) => {
   return TemplateEngine.GenerateTemplateOutput(Templates.exportsTemplate, {
-    exports: contractNames.map(
-      (contract) => `./${paramCase(contract)}-delta.mapper`
-    ),
+    exports: [
+      `./${paramCase(contractName)}-delta.mapper`,
+      ...deltaNames.map((action) => `./${paramCase(action)}.mapper`),
+    ],
   });
 };
 
