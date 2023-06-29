@@ -1,4 +1,5 @@
 {{! template for service definition e.g. src/contracts/dao-worlds/services/dao-worlds-contract.service-impl.ts }}
+{{> warn-do-not-edit}}
 import { 
 {{#each deltas}}
   {{ pascalCase @key}}RawModel,
@@ -41,9 +42,9 @@ export class {{pascalCase contract}}ContractServiceImpl
    * @type {EosSmartContractServiceImpl}
    * @param {GetTableRowsOptions} options 
    */
-  public readonly fetch{{pascalCase @key}} = async (
+  public async fetch{{pascalCase @key}} (
     options?: GetTableRowsOptions
-  ): Promise<Result<{{pascalCase @key}}RawModel[], Error>> => {
+  ): Promise<Result<{{pascalCase @key}}RawModel[], Error>> {
     return await this.getAll<{{pascalCase @key}}RawModel>('candidate_name', {
       ...options,
       code: '{{../contract}}',
