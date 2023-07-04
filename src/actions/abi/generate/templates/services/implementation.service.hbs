@@ -45,7 +45,7 @@ export class {{pascalCase contract}}ContractServiceImpl
   public async fetch{{pascalCase @key}} (
     options?: GetTableRowsOptions
   ): Promise<Result<{{pascalCase @key}}RawModel[], Error>> {
-    return await this.getAll<{{pascalCase @key}}RawModel>('candidate_name', {
+    return await this.getAll<{{pascalCase @key}}RawModel>('{{.}}', {
       ...options,
       code: '{{../contract}}',
       table: '{{@key}}',
