@@ -15,6 +15,7 @@ import { {{pascalCase contract}}TableName } from '../../domain/enums';
 import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
 {{/each}}
 
+// Mongo Mapper
 export class {{pascalCase contract}}DeltaMongoMapper
   extends MapperImpl<ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>, {{pascalCase contract}}DeltaMongoModel>
 {
@@ -71,6 +72,58 @@ export class {{pascalCase contract}}DeltaMongoMapper
     } = mongoModel;
 
     return new ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>(
+      _id.toString(),
+      parseToBigInt(block_number),
+      code,
+      scope,
+      table,
+      data_hash,
+      data,
+      payer,
+      parseToBigInt(primary_key),
+      present,
+      block_timestamp,
+    );
+  }
+}
+
+
+// Raw Mapper
+export class {{pascalCase contract}}DeltaRawMapper
+  extends MapperImpl<ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>, {{pascalCase contract}}DeltaRawModel>
+{
+  public fromEntity(
+    entity: ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>
+  ): {{pascalCase contract}}DeltaRawModel {
+    throw new Error('method not implemented');
+  }
+
+  public toEntity(
+    rawModel: {{pascalCase contract}}DeltaRawModel
+  ): ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel> {
+    let data;
+    switch (rawModel.table) {
+      {{#each deltas}}
+      case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
+        data = new {{pascalCase .}}RawMapper().toEntity(rawModel.data);
+        break;
+      {{/each}}
+    }
+
+    const {
+      _id,
+      block_number,
+      code,
+      scope,
+      table,
+      data_hash,
+      payer,
+      primary_key,
+      present,
+      block_timestamp,
+    } = rawModel;
+
+    return new ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>(
       _id.toString(),
       parseToBigInt(block_number),
       code,

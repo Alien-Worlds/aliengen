@@ -13,18 +13,21 @@ import {
 } from '@alien-worlds/api-core';
 
 {{#each actions}}
-import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
+import { {{pascalCase .}}MongoMapper, {{pascalCase .}}RawMapper } from "./{{.}}.mapper";
 {{/each}}
 import { MongoDB } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
 import { 
   {{pascalCase contract}}ActionMongoModel,
+  {{pascalCase contract}}ActionRawModel,
   {{#each actions}}
   {{pascalCase .}}MongoModel,
+  {{pascalCase .}}RawModel,
   {{/each}}
 } from '../dtos';
 import { {{pascalCase contract}}ActionName } from '../../domain/enums';
 
+// Mongo Mapper
 export class {{pascalCase contract}}ActionMongoMapper
   extends MapperImpl<ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>, {{pascalCase contract}}ActionMongoModel>
 {
@@ -80,6 +83,54 @@ export class {{pascalCase contract}}ActionMongoMapper
     } = mongoModel;
 
     return new ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>(
+      _id.toString(),
+      block_timestamp,
+      parseToBigInt(block_number),
+      action.account,
+      action.name,
+      parseToBigInt(global_sequence),
+      parseToBigInt(receiver_sequence),
+      trx_id,
+      data,
+      action_hash
+    );
+  }
+}
+
+// Processor Task Mapper
+export class {{pascalCase contract}}ActionProcessorTaskMapper
+  extends MapperImpl<ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>, {{pascalCase contract}}ActionRawModel>
+{
+  public fromEntity(
+    entity: ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>
+  ): {{pascalCase contract}}ActionRawModel {
+    throw new Error('method not implemented');
+  }
+
+  public toEntity(
+    rawModel: {{pascalCase contract}}ActionRawModel
+  ): ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel> {
+    let data;
+    switch (rawModel.action.name) {
+      {{#each actions}}
+      case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
+        data = new {{pascalCase .}}RawMapper().toEntity(rawModel.action.data as {{pascalCase .}}RawModel);
+        break;
+      {{/each}}
+    }
+
+    const {
+      _id,
+      block_timestamp,
+      block_number,
+      global_sequence,
+      receiver_sequence,
+      trx_id,
+      action_hash,
+      action,
+    } = rawModel;
+
+    return new ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>(
       _id.toString(),
       block_timestamp,
       parseToBigInt(block_number),
