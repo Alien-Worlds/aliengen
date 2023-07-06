@@ -38,7 +38,9 @@ export class {{pascalCase contract}}ActionMongoMapper
     switch (entity.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.data as {{pascalCase .}});
+        entityData = new {{pascalCase .}}MongoMapper().fromEntity(
+          entity.data as {{pascalCase .}}
+        );
         break;
       {{/each}}
     }
@@ -50,7 +52,6 @@ export class {{pascalCase contract}}ActionMongoMapper
       global_sequence: new MongoDB.Long(entity.globalSequence),
       receiver_sequence: new MongoDB.Long(entity.receiverSequence),
       trx_id: entity.transactionId,
-      action_hash: entity.actionHash,
       action: {
         name: entity.name,
         account: entity.account,
@@ -66,7 +67,9 @@ export class {{pascalCase contract}}ActionMongoMapper
     switch (mongoModel.action.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        data = new {{pascalCase .}}MongoMapper().toEntity(mongoModel.action.data as {{pascalCase .}}MongoModel);
+        data = new {{pascalCase .}}MongoMapper().toEntity(
+          mongoModel.action.data as {{pascalCase .}}MongoModel
+        );
         break;
       {{/each}}
     }
@@ -78,7 +81,6 @@ export class {{pascalCase contract}}ActionMongoMapper
       global_sequence,
       receiver_sequence,
       trx_id,
-      action_hash,
       action,
     } = mongoModel;
 
@@ -92,15 +94,15 @@ export class {{pascalCase contract}}ActionMongoMapper
       parseToBigInt(receiver_sequence),
       trx_id,
       data,
-      action_hash
     );
   }
 }
 
 // Processor Task Mapper
-export class {{pascalCase contract}}ActionProcessorTaskMapper
-  extends MapperImpl<ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>, {{pascalCase contract}}ActionRawModel>
-{
+export class {{pascalCase contract}}ActionProcessorTaskMapper extends MapperImpl<
+  ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>,
+  {{pascalCase contract}}ActionRawModel
+> {
   public fromEntity(
     entity: ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>
   ): {{pascalCase contract}}ActionRawModel {
@@ -111,36 +113,36 @@ export class {{pascalCase contract}}ActionProcessorTaskMapper
     rawModel: {{pascalCase contract}}ActionRawModel
   ): ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel> {
     let data;
-    switch (rawModel.action.name) {
+    switch (rawModel.name) {
       {{#each actions}}
       case {{pascalCase ../contract}}ActionName.{{pascalCase .}}:
-        data = new {{pascalCase .}}RawMapper().toEntity(rawModel.action.data as {{pascalCase .}}RawModel);
+        data = new {{pascalCase .}}RawMapper().toEntity(
+          rawModel.data as {{pascalCase .}}RawModel
+        );
         break;
       {{/each}}
     }
 
     const {
-      _id,
+      account,
+      name,
       block_timestamp,
       block_number,
       global_sequence,
-      receiver_sequence,
-      trx_id,
-      action_hash,
-      action,
+      recv_sequence,
+      transaction_id,
     } = rawModel;
 
     return new ContractAction<DataEntityType, {{pascalCase contract}}ActionRawModel>(
-      _id.toString(),
+      '',
       block_timestamp,
       parseToBigInt(block_number),
-      action.account,
-      action.name,
+      account,
+      name,
       parseToBigInt(global_sequence),
-      parseToBigInt(receiver_sequence),
-      trx_id,
-      data,
-      action_hash
+      parseToBigInt(recv_sequence),
+      transaction_id,
+      data
     );
   }
 }

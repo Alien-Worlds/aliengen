@@ -9,10 +9,10 @@ import {
 import { ContractDelta, MapperImpl, parseToBigInt } from '@alien-worlds/api-core';
 import { MongoDB } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-delta';
-import { {{pascalCase contract}}DeltaMongoModel } from '../dtos';
+import { {{pascalCase contract}}DeltaMongoModel, {{pascalCase contract}}DeltaRawModel } from '../dtos';
 import { {{pascalCase contract}}TableName } from '../../domain/enums';
 {{#each deltas}}
-import { {{pascalCase .}}MongoMapper } from "./{{.}}.mapper";
+import { {{pascalCase .}}MongoMapper, {{pascalCase .}}RawMapper } from "./{{.}}.mapper";
 {{/each}}
 
 // Mongo Mapper
@@ -26,7 +26,9 @@ export class {{pascalCase contract}}DeltaMongoMapper
     switch (entity.table) {
       {{#each deltas}}
       case {{pascalCase ../contract}}TableName.{{pascalCase .}}:
-        entityData = new {{pascalCase .}}MongoMapper().fromEntity(entity.delta as {{pascalCase .}});
+        entityData = new {{pascalCase .}}MongoMapper().fromEntity(
+          entity.data as {{pascalCase .}}
+        );
         break;
       {{/each}}
     }
@@ -38,7 +40,6 @@ export class {{pascalCase contract}}DeltaMongoMapper
       code: entity.code,
       scope: entity.scope,
       table: entity.table,
-      data_hash: entity.deltaHash,
       data: entityData,
       payer: entity.payer,
       primary_key: new MongoDB.Long(entity.primaryKey),
@@ -64,7 +65,6 @@ export class {{pascalCase contract}}DeltaMongoMapper
       code,
       scope,
       table,
-      data_hash,
       payer,
       primary_key,
       present,
@@ -77,21 +77,20 @@ export class {{pascalCase contract}}DeltaMongoMapper
       code,
       scope,
       table,
-      data_hash,
       data,
       payer,
       parseToBigInt(primary_key),
       present,
-      block_timestamp,
+      block_timestamp
     );
   }
 }
 
-
-// Raw Mapper
-export class {{pascalCase contract}}DeltaRawMapper
-  extends MapperImpl<ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>, {{pascalCase contract}}DeltaRawModel>
-{
+// Processor Task Mapper
+export class {{pascalCase contract}}DeltaProcessorTaskMapper extends MapperImpl<
+  ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>, 
+    {{pascalCase contract}}DeltaRawModel
+> {
   public fromEntity(
     entity: ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>
   ): {{pascalCase contract}}DeltaRawModel {
@@ -111,12 +110,10 @@ export class {{pascalCase contract}}DeltaRawMapper
     }
 
     const {
-      _id,
       block_number,
       code,
       scope,
       table,
-      data_hash,
       payer,
       primary_key,
       present,
@@ -124,12 +121,11 @@ export class {{pascalCase contract}}DeltaRawMapper
     } = rawModel;
 
     return new ContractDelta<DataEntityType, {{pascalCase contract}}DeltaRawModel>(
-      _id.toString(),
+      '',
       parseToBigInt(block_number),
       code,
       scope,
       table,
-      data_hash,
       data,
       payer,
       parseToBigInt(primary_key),
