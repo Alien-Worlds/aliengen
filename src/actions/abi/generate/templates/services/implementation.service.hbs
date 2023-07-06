@@ -45,13 +45,17 @@ export class {{pascalCase contract}}ContractServiceImpl
   public async fetch{{pascalCase @key}} (
     options?: GetTableRowsOptions
   ): Promise<Result<{{pascalCase @key}}RawModel[], Error>> {
-    return await this.getAll<{{pascalCase @key}}RawModel>('{{.}}', {
+    const table_key = '{{.}}';
+    const tableRowOptions = {
       ...options,
       code: '{{../contract}}',
       table: '{{@key}}',
-      table_key: '{{.}}',
-    });
-  }
+      table_key,
+    };
 
+    return options?.limit > 0
+      ? await this.getMany<{{pascalCase @key}}RawModel>(tableRowOptions)
+      : await this.getAll<{{pascalCase @key}}RawModel>(table_key, tableRowOptions);
+  }
 {{/each}}
 }
