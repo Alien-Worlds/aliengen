@@ -1,7 +1,11 @@
 {{! template for action/delta/service IOC config e.g. src/contracts/dao-worlds/ioc.config.ts }}
 {{> warn-do-not-edit}}
 import { Container, RepositoryImpl } from '@alien-worlds/api-core';
-import { MongoConfig, MongoSource } from '@alien-worlds/storage-mongodb';
+import { 
+  MongoConfig,
+  MongoQueryBuilders, 
+  MongoSource,
+} from '@alien-worlds/storage-mongodb';
 
 import { {{pascalCase contract}}ActionMongoMapper } from './actions/data/mappers';
 import { {{pascalCase contract}}ActionMongoSource } from './actions/data/data-sources';
@@ -23,10 +27,13 @@ export const setup{{pascalCase contract}}ActionRepository = async (
   } else {
     mongoSource = await MongoSource.create(mongo);
   }
+
+  const mapper = new {{pascalCase contract}}ActionMongoMapper();
+  
   const repository = new RepositoryImpl(
     new {{pascalCase contract}}ActionMongoSource(mongoSource),
-    new {{pascalCase contract}}ActionMongoMapper(),
-    null
+    mapper,
+    new MongoQueryBuilders(mapper)
   );
 
   if (container) {
@@ -48,10 +55,13 @@ export const setup{{pascalCase contract}}DeltaRepository = async (
   } else {
     mongoSource = await MongoSource.create(mongo);
   }
+
+  const mapper = new {{pascalCase contract}}DeltaMongoMapper();
+  
   const repository = new RepositoryImpl(
     new {{pascalCase contract}}DeltaMongoSource(mongoSource),
-    new {{pascalCase contract}}DeltaMongoMapper(),
-    null
+    mapper,
+    new MongoQueryBuilders(mapper)
   );
 
   if (container) {
