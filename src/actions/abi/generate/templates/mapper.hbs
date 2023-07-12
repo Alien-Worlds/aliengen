@@ -20,18 +20,7 @@ export class {{pascalCase this.name}}MongoMapper
   {{#each props}}
     this.mappingFromEntity.set('{{camelCase this.key}}', { 
       key: '{{this.key}}', 
-      mapper: {{~#if this.type.requiresCodeGen}}{{~#if this.type.isArray}} (value: {{{pascalCase this.type.sourceName}}}[]) => 
-        value.map(new {{{pascalCase this.type.sourceName}}}MongoMapper().fromEntity),
-        {{else}}
-          new {{{pascalCase this.type.sourceName}}}MongoMapper().fromEntity,
-        {{~/if}}
-      {{~else}} (value: {{{this.type.name}}}) => {{#if (eq this.type.name 'bigint') }}MongoDB.Long.fromBigInt(value), {{~else}}
-      {{#if this.type.requiresImport}}
-           new {{pascalCase this.type.sourceName}}MongoMapper().fromEntity(value)
-      {{~else}}
-        value,
-      {{~/if}}{{~/if}}
-      {{/if}}
+      mapper: {{{buildMappingFromEntity this "mongo"}}}
     });
 
   {{/each}}
@@ -48,23 +37,7 @@ export class {{pascalCase this.name}}MongoMapper
 
     return {{pascalCase this.name}}.create(
     {{#each props}}
-    {{#if this.type.requiresCodeGen}}
-      {{~#if this.type.isArray}}
-        {{this.key}}?.map(new {{pascalCase this.type.sourceName}}MongoMapper().toEntity) ?? []
-      {{else}}
-        {{this.key}}
-          ? new {{pascalCase this.type.sourceName}}MongoMapper().toEntity({{this.key}})
-          : {{pascalCase this.type.sourceName}}.getDefault()
-      {{~/if}}
-    {{~else}}
-      {{#if this.type.requiresImport}}
-        {{this.key}} 
-          ? new {{pascalCase this.type.sourceName}}MongoMapper().toEntity({{this.key}})
-          : {{pascalCase this.type.sourceName}}.getDefault()
-      {{~else}}
-        {{this.key}}{{#if (eq this.type.name 'bigint') }}.toBigInt(){{~/if}} ?? {{{this.type.defaultValue}}}
-      {{~/if}}
-    {{~/if}},
+      {{{buildMappingToEntity this "mongo"}}}
     {{/each}}
       _id instanceof MongoDB.ObjectId ? _id.toString() : undefined,
       rest
@@ -93,27 +66,7 @@ export class {{pascalCase this.name}}RawMapper
 
     return {{pascalCase this.name}}.create(
     {{#each props}}
-    {{#if this.type.requiresCodeGen}}
-      {{~#if this.type.isArray}}
-        {{this.key}}?.map(new {{pascalCase this.type.sourceName}}RawMapper().toEntity) ?? []
-      {{else}}
-        {{this.key}}
-          ? new {{pascalCase this.type.sourceName}}RawMapper().toEntity({{this.key}})
-          : {{pascalCase this.type.sourceName}}.getDefault()
-      {{~/if}}
-    {{~else}}
-    {{#if (eq this.type.name 'bigint') }}
-      parseToBigInt({{this.key}} ?? {{{this.type.defaultValue}}})
-    {{~else}}
-      {{#if this.type.requiresImport}}
-        {{this.key}} 
-          ? new {{pascalCase this.type.sourceName}}RawMapper().toEntity({{this.key}})
-          : {{pascalCase this.type.sourceName}}.getDefault()
-      {{~else}}
-        {{this.key}} ?? {{{this.type.defaultValue}}}
-      {{~/if}}
-    {{~/if}}
-    {{~/if}},
+      {{{buildMappingToEntity this "raw"}}}
     {{/each}}
       undefined,
       rest

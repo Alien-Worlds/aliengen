@@ -29,10 +29,10 @@ import { {{pascalCase contract}}ActionName } from '../../domain/enums';
 
 // Mongo Mapper
 export class {{pascalCase contract}}ActionMongoMapper
-  extends MapperImpl<ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>, {{pascalCase contract}}ActionMongoModel>
+  extends MapperImpl<ContractAction<DataEntityType>, {{pascalCase contract}}ActionMongoModel>
 {
   public fromEntity(
-    entity: ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>
+    entity: ContractAction<DataEntityType>
   ): {{pascalCase contract}}ActionMongoModel {
     let entityData;
     switch (entity.name) {
@@ -62,7 +62,7 @@ export class {{pascalCase contract}}ActionMongoMapper
 
   public toEntity(
     mongoModel: {{pascalCase contract}}ActionMongoModel
-  ): ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel> {
+  ): ContractAction<DataEntityType> {
     let data;
     switch (mongoModel.action.name) {
       {{#each actions}}
@@ -84,7 +84,7 @@ export class {{pascalCase contract}}ActionMongoMapper
       action,
     } = mongoModel;
 
-    return new ContractAction<DataEntityType, {{pascalCase contract}}ActionMongoModel>(
+    return new ContractAction<DataEntityType>(
       _id.toString(),
       block_timestamp,
       parseToBigInt(block_number),

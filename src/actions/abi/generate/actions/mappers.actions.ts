@@ -15,7 +15,7 @@ import {
 } from "../../types/mapping.types";
 
 import Logger from "../../../../logger";
-import TemplateEngine from "../template-engine";
+import TemplateEngine from "../template-engine/template-engine";
 import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
@@ -69,9 +69,9 @@ const generateActionMapperContent = (
     tp.props.forEach((prop) => {
       if (prop.type.requiresImport) {
         const deps = (imports.get(prop.type.importRef) ?? new Set<string>())
-          .add(prop.type.name)
-          .add(`${prop.type.name}MongoMapper`)
-          .add(`${prop.type.name}RawMapper`);
+          .add(prop.type.mappedName)
+          .add(`${prop.type.mappedName}MongoMapper`)
+          .add(`${prop.type.mappedName}RawMapper`);
 
         imports.set(prop.type.importRef, deps);
       }

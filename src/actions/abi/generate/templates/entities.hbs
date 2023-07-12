@@ -49,6 +49,9 @@ export class {{name}} implements Entity {
    *
    * @static
    * @public
+   {{#each props}}
+   * @param {{{this.type.name}}} {{this.key}}
+   {{/each}}
    * @returns `{{name}}` An instance of the `{{name}}` class.
    */
   public static create(
@@ -78,7 +81,7 @@ export class {{name}} implements Entity {
       {{~#if this.type.isArray}}
         []
       {{else}}
-      {{pascalCase this.type.sourceName}}.getDefault()
+      {{pascalCase this.type.mappedName}}.getDefault()
       {{~/if}}
     {{~/if}},
 {{/each}}
