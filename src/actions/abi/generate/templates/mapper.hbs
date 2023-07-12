@@ -1,9 +1,6 @@
 {{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
 {{> warn-do-not-edit}}
-import {
-  MapperImpl,
-  parseToBigInt,
-} from '@alien-worlds/api-core';
+import { MapperImpl } from '@alien-worlds/api-core';
 import { MongoDB } from '@alien-worlds/storage-mongodb';
 {{> imports}}
 import { {{#each entities}}{{pascalCase this.name}}{{#unless @last}}, {{/unless}} {{/each}} } from "../../domain/entities";
