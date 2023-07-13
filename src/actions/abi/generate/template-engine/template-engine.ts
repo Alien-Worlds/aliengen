@@ -6,9 +6,12 @@ import path from "path";
 import { readFileSync } from "fs";
 import { walk } from "../../utils/files";
 import {
-  buildMappingFromEntity,
-  buildMappingToEntity,
+  mapper_writeMappingFromEntity,
+  mapper_writeMappingToEntity,
+  mapper_writeArg_Id,
+  mapper_writeParam_Id,
 } from "./helpers/mapper.helpers";
+import { buildParam_Id, buildArg_Id } from "./helpers/entity.helpers";
 
 export default class TemplateEngine {
   public static GenerateTemplateOutput(
@@ -56,8 +59,15 @@ function registerHelpers(): void {
   });
   // mapper helpers
   Handlebars.registerHelper({
-    buildMappingFromEntity,
-    buildMappingToEntity,
+    buildMappingFromEntity: mapper_writeMappingFromEntity,
+    buildMappingToEntity: mapper_writeMappingToEntity,
+    mapper_buildArg_Id: mapper_writeArg_Id,
+    mapper_buildParam_Id: mapper_writeParam_Id,
+  });
+  // entity helpers
+  Handlebars.registerHelper({
+    buildParam_Id,
+    buildArg_Id,
   });
 }
 

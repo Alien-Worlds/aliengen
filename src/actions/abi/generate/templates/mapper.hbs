@@ -28,7 +28,7 @@ export class {{pascalCase this.name}}MongoMapper
     {{#each props}}
       {{this.key}},
     {{/each}}
-      _id, 
+      {{{mapper_buildParam_Id props "mongo"}}}
       ...rest
     } = mongoModel;
 
@@ -36,7 +36,7 @@ export class {{pascalCase this.name}}MongoMapper
     {{#each props}}
       {{{buildMappingToEntity this "mongo"}}}
     {{/each}}
-      _id instanceof MongoDB.ObjectId ? _id.toString() : undefined,
+      {{{mapper_buildArg_Id props "mongo"}}}
       rest
     );
   }
@@ -65,7 +65,7 @@ export class {{pascalCase this.name}}RawMapper
     {{#each props}}
       {{{buildMappingToEntity this "raw"}}}
     {{/each}}
-      undefined,
+      {{{mapper_buildArg_Id props "raw"}}}
       rest
     );
   }

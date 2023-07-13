@@ -25,7 +25,7 @@ export class {{name}} implements Entity {
 {{#each props}}
     public {{this.key}}: {{{this.type.name}}},
 {{/each}}
-    public id?: string,
+    {{{buildParam_Id props "public"}}}
   ) {}
 
   public rest?: UnknownObject;
@@ -58,14 +58,14 @@ export class {{name}} implements Entity {
 {{#each props}}
     {{this.key}}: {{{this.type.name}}},
 {{/each}}
-    id?: string,
+    {{{buildParam_Id props}}}
     rest?: UnknownObject
   ): {{name}} {
     const entity = new {{name}}(
     {{#each props}}
       {{this.key}},
     {{/each}}
-      id
+      {{{buildArg_Id props}}}
     );
     entity.rest = rest;
 

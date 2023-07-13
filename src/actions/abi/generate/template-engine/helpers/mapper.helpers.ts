@@ -2,7 +2,7 @@ import { Technology } from "./../../../types/mapping.types";
 import { pascalCase } from "change-case";
 import { Property } from "../../generate.types";
 
-export const buildMappingFromEntity = (
+export const mapper_writeMappingFromEntity = (
   prop: Property,
   technology: Technology
 ) => {
@@ -37,7 +37,7 @@ export const buildMappingFromEntity = (
   return `(value: ${type.name}) => value,`;
 };
 
-export const buildMappingToEntity = (
+export const mapper_writeMappingToEntity = (
   prop: Property,
   technology: Technology
 ) => {
@@ -70,4 +70,38 @@ export const buildMappingToEntity = (
   }
 
   return `${key} || ${type.defaultValue},`;
+};
+
+export const mapper_writeArg_Id = (
+  props: Property[],
+  technology: Technology
+) => {
+  const id = props.find((prop) => prop.key === "id");
+
+  if (id) {
+    return "";
+  }
+
+  if (technology === Technology.Mongo) {
+    return `_id instanceof MongoDB.ObjectId ? _id.toString() : undefined,`;
+  }
+
+  return "undefined,";
+};
+
+export const mapper_writeParam_Id = (
+  props: Property[],
+  technology: Technology
+) => {
+  const id = props.find((prop) => prop.key === "id");
+
+  if (id) {
+    return "";
+  }
+
+  if (technology === Technology.Mongo) {
+    return `_id,`;
+  }
+
+  return "undefined,";
 };
