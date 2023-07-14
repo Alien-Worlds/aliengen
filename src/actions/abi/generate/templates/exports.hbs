@@ -1,4 +1,7 @@
 {{> warn-do-not-edit}}
+
+import 'reflect-metadata';
+
 {{#each exports}}
     {{#if exportAs}}
 export * as {{exportAs}} from '{{path}}{{../suffix}}';

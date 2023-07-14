@@ -66,7 +66,7 @@ export const mapper_writeMappingToEntity = (
   }
 
   if (type.requiresCodeGen || type.requiresImport) {
-    return `new ${pascalCaseMappedName}${pascalCaseTechnology}Mapper().toEntity(${key}),`;
+    return `${key} ? new ${pascalCaseMappedName}${pascalCaseTechnology}Mapper().toEntity(${key}) : ${pascalCaseMappedName}.getDefault(),`;
   }
 
   return `${key} || ${type.defaultValue},`;
