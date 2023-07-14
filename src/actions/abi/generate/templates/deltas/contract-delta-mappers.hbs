@@ -7,7 +7,7 @@ import {
 {{/each}}
 } from '../../domain/entities';
 import { ContractDelta, MapperImpl, parseToBigInt } from '@alien-worlds/api-core';
-import { MongoDB } from '@alien-worlds/storage-mongodb';
+import { MongoDB, MongoMapper } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-delta';
 import { {{pascalCase contract}}DeltaMongoModel, {{pascalCase contract}}DeltaRawModel } from '../dtos';
 import { {{pascalCase contract}}TableName } from '../../domain/enums';
@@ -17,7 +17,7 @@ import { {{pascalCase .}}MongoMapper, {{pascalCase .}}RawMapper } from "./{{.}}.
 
 // Mongo Mapper
 export class {{pascalCase contract}}DeltaMongoMapper
-  extends MapperImpl<ContractDelta<DataEntityType>, {{pascalCase contract}}DeltaMongoModel>
+  extends MongoMapper<ContractDelta<DataEntityType>, {{pascalCase contract}}DeltaMongoModel>
 {
   public fromEntity(
     entity: ContractDelta<DataEntityType>
@@ -33,8 +33,7 @@ export class {{pascalCase contract}}DeltaMongoMapper
       {{/each}}
     }
 
-    return {
-      _id: new MongoDB.ObjectId(entity.id),
+    const model: {{pascalCase contract}}DeltaMongoModel = {
       block_timestamp: entity.blockTimestamp,
       block_number: new MongoDB.Long(entity.blockNumber),
       code: entity.code,
@@ -45,6 +44,12 @@ export class {{pascalCase contract}}DeltaMongoMapper
       primary_key: new MongoDB.Long(entity.primaryKey),
       present: entity.present,
     };
+
+    if (entity.id && MongoDB.ObjectId.isValid(entity.id)) {
+      model._id =  new MongoDB.ObjectId(entity.id);
+    }
+    
+    return model;
   }
 
   public toEntity(

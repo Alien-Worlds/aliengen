@@ -15,7 +15,7 @@ import {
 {{#each actions}}
 import { {{pascalCase .}}MongoMapper, {{pascalCase .}}RawMapper } from "./{{.}}.mapper";
 {{/each}}
-import { MongoDB } from '@alien-worlds/storage-mongodb';
+import { MongoDB, MongoMapper } from '@alien-worlds/storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
 import { 
   {{pascalCase contract}}ActionMongoModel,
@@ -29,7 +29,7 @@ import { {{pascalCase contract}}ActionName } from '../../domain/enums';
 
 // Mongo Mapper
 export class {{pascalCase contract}}ActionMongoMapper
-  extends MapperImpl<ContractAction<DataEntityType>, {{pascalCase contract}}ActionMongoModel>
+  extends MongoMapper<ContractAction<DataEntityType>, {{pascalCase contract}}ActionMongoModel>
 {
   public fromEntity(
     entity: ContractAction<DataEntityType>
@@ -45,8 +45,7 @@ export class {{pascalCase contract}}ActionMongoMapper
       {{/each}}
     }
 
-    return {
-      _id: new MongoDB.ObjectId(entity.id),
+    const model: {{pascalCase contract}}ActionMongoModel = {
       block_timestamp: entity.blockTimestamp,
       block_number: new MongoDB.Long(entity.blockNumber),
       global_sequence: new MongoDB.Long(entity.globalSequence),
@@ -58,6 +57,12 @@ export class {{pascalCase contract}}ActionMongoMapper
         data: entityData,
       },
     };
+
+    if (entity.id && MongoDB.ObjectId.isValid(entity.id)) {
+      model._id =  new MongoDB.ObjectId(entity.id);
+    }
+
+    return model;
   }
 
   public toEntity(
