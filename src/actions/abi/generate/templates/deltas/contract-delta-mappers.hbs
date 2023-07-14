@@ -17,10 +17,10 @@ import { {{pascalCase .}}MongoMapper, {{pascalCase .}}RawMapper } from "./{{.}}.
 
 // Mongo Mapper
 export class {{pascalCase contract}}DeltaMongoMapper
-  extends MapperImpl<ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>, {{pascalCase contract}}DeltaMongoModel>
+  extends MapperImpl<ContractDelta<DataEntityType>, {{pascalCase contract}}DeltaMongoModel>
 {
   public fromEntity(
-    entity: ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>
+    entity: ContractDelta<DataEntityType>
   ): {{pascalCase contract}}DeltaMongoModel {
     let entityData;
     switch (entity.table) {
@@ -49,7 +49,7 @@ export class {{pascalCase contract}}DeltaMongoMapper
 
   public toEntity(
     mongoModel: {{pascalCase contract}}DeltaMongoModel
-  ): ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel> {
+  ): ContractDelta<DataEntityType> {
     let data;
     switch (mongoModel.table) {
       {{#each deltas}}
@@ -71,7 +71,7 @@ export class {{pascalCase contract}}DeltaMongoMapper
       block_timestamp,
     } = mongoModel;
 
-    return new ContractDelta<DataEntityType, {{pascalCase contract}}DeltaMongoModel>(
+    return new ContractDelta<DataEntityType>(
       _id.toString(),
       parseToBigInt(block_number),
       code,

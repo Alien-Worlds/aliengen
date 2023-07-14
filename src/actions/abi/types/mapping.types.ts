@@ -22,7 +22,18 @@ export const getMappedType = (
     typeKey = typeKey.split("?")[0];
   }
 
-  if (typesMap.has(typeKey)) {
+  if (typeKey.includes("pair_")) {
+    const name = isArray ? "Pair[]" : "Pair"; // getPairTypeName(typeKey);
+
+    return {
+      sourceName: typeKey,
+      name,
+      mappedName: "Pair",
+      requiresImport: true,
+      importRef: "@alien-worlds/eosio-contract-types",
+      isArray,
+    };
+  } else if (typesMap.has(typeKey)) {
     const mappedType = typesMap.get(typeKey);
 
     let defaultValue: string = null;
@@ -35,25 +46,28 @@ export const getMappedType = (
         ? "[]"
         : typescriptDefaults.get(mappedType.typescript[0]);
     }
+    const mappedName = mappedType[targetTechnology].join(` | `);
+    let name = mappedType[targetTechnology].join(`${isArray ? "[]" : ""} | `);
 
-    let typeName = mappedType[targetTechnology].join(
-      `${isArray ? "[]" : ""} | `
-    );
-
-    if (isArray && !typeName.includes("Array")) {
-      typeName += "[]";
+    if (isArray && !name.includes("Array")) {
+      name += "[]";
     }
 
-    return {
+    const item: MappedDatatype = {
       sourceName: sourceType,
-      name: typeName,
+      mappedName,
+      name,
       defaultValue,
       isArray,
     };
-  } else if (commonEosTypes.includes(typeKey)) {
+
+    return item;
+  } else if (commonEosTypesMap.has(typeKey)) {
+    const name = getCommonTypeName(typeKey, artifactType);
     return {
       sourceName: typeKey,
-      name: getCommonTypeName(typeKey, artifactType, isArray),
+      mappedName: name,
+      name: isArray ? `${name}[]` : name,
       requiresImport: true,
       importRef: "@alien-worlds/eosio-contract-types",
       isArray,
@@ -61,14 +75,48 @@ export const getMappedType = (
   }
 };
 
-const getCommonTypeName = (
-  typeKey: string,
-  artifactType: ArtifactType,
-  isArray: boolean
-) => {
-  return `${pascalCase(typeKey)}${
-    artifactType != ArtifactType.Entity ? artifactType : ""
-  }${isArray ? "[]" : ""}`;
+const getPairTypeName = (typeKey: string) => {
+  let typesStr = typeKey.replace("pair_", "");
+  const refs = [
+    ...Array.from(commonEosTypesMap.keys()),
+    ...Array.from(typesMap.keys()),
+  ].sort((a, b) => (a.length > b.length ? -1 : 1));
+  let key;
+  let value;
+
+  for (const ref of refs) {
+    const i = typesStr.indexOf(ref);
+    if (i > 0) {
+      value = ref;
+      typesStr = typesStr.replace(ref, "");
+    } else if (i === 0) {
+      key = ref;
+      typesStr = typesStr.replace(ref, "");
+    }
+  }
+
+  const keyType = commonEosTypesMap.has(key)
+    ? commonEosTypesMap.get(key).typescript
+    : typesMap.has(key)
+    ? typesMap.get(key).typescript
+    : null;
+
+  const valueType = commonEosTypesMap.has(value)
+    ? commonEosTypesMap.get(value).typescript
+    : typesMap.has(value)
+    ? typesMap.get(value).typescript
+    : null;
+
+  return `Pair${
+    keyType && valueType ? "<" + keyType + ", " + valueType + ">" : ""
+  }[]`;
+};
+
+const getCommonTypeName = (typeKey: string, artifactType: ArtifactType) => {
+  const name = `${pascalCase(typeKey)}${
+    artifactType !== ArtifactType.Entity ? artifactType : ""
+  }`;
+  return name;
 };
 
 export const generateCustomTypeName = (
@@ -86,19 +134,21 @@ export const generateCustomTypeName = (
   if (typeKey.endsWith("?")) {
     typeKey = typeKey.split("?")[0];
   }
+  const mappedName = `${pascalCase(typeKey)}${
+    artifactType && artifactType !== ArtifactType.Entity ? artifactType : ""
+  }`;
 
   return {
     sourceName: typeKey,
-    name: `${pascalCase(typeKey)}${artifactType ?? ""}${isArray ? "[]" : ""}`,
+    mappedName,
+    name: `${mappedName}${isArray ? "[]" : ""}`,
     requiresCodeGen: true,
     isArray,
   };
 };
 
 export const typesMap = new Map<string, MappedType>([
-  ["bytes", { typescript: ["Bytes"], mongo: ["Binary"] }],
   ["bool", { typescript: ["boolean"], mongo: ["boolean"] }],
-  ["extension", { typescript: ["Extension"], mongo: ["object"] }],
   ["name", { typescript: ["string"], mongo: ["string"] }],
   ["int8", { typescript: ["number"], mongo: ["number"] }],
   ["int16", { typescript: ["number"], mongo: ["number"] }],
@@ -137,12 +187,20 @@ export const typesMap = new Map<string, MappedType>([
   ["time_point", { typescript: ["Date"], mongo: ["Date"] }],
 ]);
 
-export const commonEosTypes: string[] = [
-  "asset",
-  "extended_asset",
-  "symbol",
-  "extended_symbol",
-];
+export const commonEosTypesMap = new Map<string, MappedType>([
+  ["action", { typescript: ["Action"], mongo: ["object"] }],
+  ["asset", { typescript: ["Asset"], mongo: ["object"] }],
+  ["bytes", { typescript: ["Bytes"], mongo: ["MongoDB.Binary"] }],
+  ["extended_asset", { typescript: ["ExtendedAsset"], mongo: ["object"] }],
+  ["extended_symbol", { typescript: ["ExtendedSymbol"], mongo: ["object"] }],
+  ["extension", { typescript: ["Extension"], mongo: ["object"] }],
+  ["pair", { typescript: ["Pair"], mongo: ["object"] }],
+  ["permission_level", { typescript: ["PermissionLevel"], mongo: ["object"] }],
+  ["symbol", { typescript: ["Symbol"], mongo: ["object"] }],
+  ["time_point", { typescript: ["TimePoint"], mongo: ["Date"] }],
+  ["time_point_sec", { typescript: ["TimePointSec"], mongo: ["Date"] }],
+  ["transaction", { typescript: ["Transaction"], mongo: ["object"] }],
+]);
 
 export const typescriptDefaults = new Map<string, string>([
   ["number", "0"],
@@ -160,6 +218,7 @@ export type MappedType = {
 export type MappedDatatype = {
   name: string;
   sourceName: string;
+  mappedName: string;
   requiresImport?: boolean;
   importRef?: string;
   requiresCodeGen?: boolean;

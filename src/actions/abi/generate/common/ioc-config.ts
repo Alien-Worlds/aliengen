@@ -1,5 +1,5 @@
 import { GeneratedOutput } from "../generate.types";
-import TemplateEngine from "../template-engine";
+import TemplateEngine from "../template-engine/template-engine";
 import Templates from "../templates";
 import path from "path";
 

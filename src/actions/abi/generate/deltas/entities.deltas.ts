@@ -12,7 +12,7 @@ import {
 } from "../../types/mapping.types";
 
 import Logger from "../../../../logger";
-import TemplateEngine from "../template-engine";
+import TemplateEngine from "../template-engine/template-engine";
 import Templates from "../templates";
 import path from "path";
 
@@ -79,7 +79,7 @@ const generateEntityContent = (parsedAction: ParsedAbiComponent): string => {
       if (prop.type.requiresImport) {
         const deps = (
           imports.get(prop.type.importRef) ?? new Set<string>()
-        ).add(prop.type.name);
+        ).add(prop.type.mappedName);
         imports.set(prop.type.importRef, deps);
       }
     });

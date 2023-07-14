@@ -1,7 +1,7 @@
 import { Abi, Table } from "../../types/abi.types";
 
 import { GeneratedOutput } from "../generate.types";
-import TemplateEngine from "../template-engine";
+import TemplateEngine from "../template-engine/template-engine";
 import Templates from "../templates";
 import { paramCase } from "change-case";
 import path from "path";
