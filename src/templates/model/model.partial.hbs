@@ -1,0 +1,9 @@
+/**
+ * @typedef {Object} {{pascalCase name}}{{pascalCase type}}Model
+ */
+export type {{pascalCase name}}{{pascalCase type}}Model = {
+{{#each props}}
+  {{> prop this}}
+{{/each}}
+  [key: string]: unknown;
+};

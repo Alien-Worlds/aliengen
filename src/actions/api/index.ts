@@ -1,1 +1,1 @@
-export * from "./new-endpoint";
+export * from "./new";

@@ -1,0 +1,97 @@
+/**
+ * Represents a `{{name}}` object.
+ *
+ * @class
+ */
+export class {{name}} implements Entity<{{name}}JsonModel> {
+
+  /**
+  * Creates an instance of the `{{name}}` class.
+  *
+  * @static
+  * @public
+  {{#each props}}
+  {{> jsdoc_param this}}
+  {{/each}}
+  * @returns `{{name}}` An instance of the `{{name}}` class.
+  */
+  public static create(
+  {{#each props}}
+    {{> method_prop this}}
+  {{/each}}
+  ): {{name}} {
+    const entity = new {{name}}(
+    {{#each props}}
+      {{> prop this}}
+    {{/each}}
+    );
+
+    {{#each props}}
+      {{#if (eq this.name "rest")}}
+    entity.rest = rest;
+      {{/if}}
+    {{/each}}
+    
+    return entity;
+  }
+  
+  public static getDefault(): {{name}} {
+    return new {{name}}(
+    {{#each props}}
+      {{> arg this}}
+    {{/each}}
+    );
+  }
+
+  /**
+   * Constructs a new instance of the `{{name}}` class.
+   *
+   * @public
+   * @constructor
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   * @param string [id]
+   * @returns `{{name}}` - An instance of the `{{name}}` class.
+   */
+  public constructor(
+  {{#each props}}
+    {{> constructor_prop this}}
+  {{/each}}
+  ) {}
+
+  {{#each props}}
+    {{#if (eq this.name "rest")}}
+  public rest?: UnknownObject;
+    {{/if}}
+  {{/each}}
+
+  /**
+   * Converts the current instance of the `{{name}}` class to a JSON object.
+   * 
+   * @public
+   * @returns {{{name}}}JsonModel The JSON representation of the instance.
+   */
+  public toJSON(): {{name}}JsonModel {
+    const {
+      {{#each props}}
+      {{> prop this}}
+      {{/each}}
+    } = this;
+    const json: {{name}}JsonModel = {
+      {{#each props}}
+      {{> prop this}}
+      {{/each}}
+    };
+
+    {{#each props}}
+    {{#if (eq this.name "rest")}}
+    if (this.rest) {
+      Object.assign(json, this.rest);
+    }
+    {{/if}}
+    {{/each}}
+
+    return json;
+  }
+}

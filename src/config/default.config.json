@@ -1,0 +1,97 @@
+{
+  "rpc": {
+    "chainId": "8be32650b763690b95b7d7e32d7637757a0a7392ad04f1c393872e525a2ce82b",
+    "endpoint": "https://wax.api.eosnation.io"
+  },
+  "source": {
+    "dirname": "src",
+    "structure": {
+      "controller": "{{root}}/endpoints/{{endpoint}}/domain/{{name}}.controller.ts",
+      "controller_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/__tests__/{{name}}.controller.unit.test.ts",
+      "data_source": "{{root}}/endpoints/{{endpoint}}/data/data-sources/{{name}}.{{database}}.data-source.ts",
+      "data_source_unit_test": "{{root}}/endpoints/{{endpoint}}/data/data-sources/__tests__/{{name}}.{{database}}.data-source.unit.test.ts",
+      "endpoint": "{{root}}/endpoints/{{endpoint}}",
+      "entity": "{{root}}/endpoints/{{endpoint}}/domain/entities/{{name}}.ts",
+      "entity_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/entities/__tests__/{{name}}.unit.test.ts",
+      "enums": "{{root}}/endpoints/{{endpoint}}/domain/{{name}}.enums.ts",
+      "input": "{{root}}/endpoints/{{endpoint}}/domain/models/{{name}}.input.ts",
+      "input_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/models/__tests__/{{name}}.input.unit.test.ts",
+      "ioc": "{{root}}/endpoints/{{endpoint}}/ioc.config.ts",
+      "mapper": "{{root}}/endpoints/{{endpoint}}/data/mappers/{{name}}.{{database}}.mapper.ts",
+      "mapper_unit_test": "{{root}}/endpoints/{{endpoint}}/data/mappers/__tests__/{{name}}.{{database}}.mapper.unit.test.ts",
+      "model": "{{root}}/endpoints/{{endpoint}}/data/dtos/{{name}}.dto.ts",
+      "output": "{{root}}/endpoints/{{endpoint}}/domain/models/{{name}}.output.ts",
+      "output_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/models/__tests__/{{name}}.output.unit.test.ts",
+      "query_builder": "{{root}}/endpoints/{{endpoint}}/domain/models/{{name}}.query-builder.ts",
+      "query_builder_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/models/__tests__/{{name}}.query-builder.unit.test.ts",
+      "repository": "{{root}}/endpoints/{{endpoint}}/domain/repositories/{{name}}.repository.ts",
+      "repository_impl": "{{root}}/endpoints/{{endpoint}}/data/repositories/{{name}}.repository-impl.ts",
+      "repository_impl_unit_test": "{{root}}/endpoints/{{endpoint}}/data/repositories/__tests__/{{name}}.repository-impl.unit.test.ts",
+      "route": "{{root}}/endpoints/{{endpoint}}/routes/{{name}}.route.ts",
+      "schemas": "{{root}}/endpoints/{{endpoint}}/schemas/{{name}}.schema.json",
+      "service": "{{root}}/endpoints/{{endpoint}}/domain/services/{{name}}.service.ts",
+      "service_impl_unit_test": "{{root}}/endpoints/{{endpoint}}/data/services/__tests__/{{name}}.service-impl.unit.test.ts",
+      "use_case": "{{root}}/endpoints/{{endpoint}}/domain/use-cases/{{name}}.use-case.ts",
+      "use_case_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/use-cases/__tests__/{{name}}.use-case.unit.test.ts",
+      "utils": "{{root}}/endpoints/{{endpoint}}/domain/{{name}}.utils.ts",
+      "utils_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/__tests__/{{name}}.utils.unit.test.ts"
+    },
+    "imports": {
+      "model": {
+        "mongo": [
+          {
+            "list": [
+              "MongoDB"
+            ],
+            "path": "@alien-worlds/storage-mongodb"
+          }
+        ]
+      },
+      "entity": {
+        "default": [
+          {
+            "list": [
+              "Entity",
+              "UnknownObject"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ]
+      }
+    },
+    "props": {
+      "model": {
+        "mongo": [
+          {
+            "name": "_id",
+            "type": "MongoDB.ObjectId",
+            "import": "mongo",
+            "optional": true
+          }
+        ],
+        "json": [
+          {
+            "name": "id",
+            "type": "string",
+            "optional": true
+          }
+        ]
+      },
+      "entity": [
+        {
+          "access": "public",
+          "default": "\"\"",
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "access": "public",
+          "name": "rest",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    }
+  }
+}

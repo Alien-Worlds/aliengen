@@ -1,0 +1,5 @@
+{{#if optional}}
+{{name}}?: {{#if type}}{{type}}{{else}}unknown{{/if}},
+{{else}}
+{{name}}: {{#if type}}{{type}}{{else}}unknown{{/if}}{{#if default}} = {{{default}}}{{/if}},
+{{/if}}

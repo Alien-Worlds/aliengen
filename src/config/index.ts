@@ -1,4 +1,4 @@
 export default {
-    downloadsDir: './downloads',
-    templatesDir: '/src/actions/abi/generate/templates',
+  downloadsDir: "./downloads",
+  templatesDir: "/src/actions/abi/generate/templates",
 };

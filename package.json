@@ -18,12 +18,16 @@
   "homepage": "https://github.com/Alien-Worlds/aliengen#readme",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "yarn clean && tsc && pkg ./build/src/aliengen.js --out-path ./bin --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --public",
+    "build": "yarn clean && tsc && make build-all",
+    "build:mac": "yarn clean && tsc && make build-mac",
+    "build:linux": "yarn clean && tsc && make build-linux",
+    "build:win": "yarn clean && tsc && make build-win",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "change-case": "^4.1.2",
     "commander": "^10.0.0",
+    "enquirer": "^2.3.6",
     "eosjs": "^22.1.0",
     "handlebars": "^4.7.7",
     "node-fetch": "2.6.9"
@@ -31,6 +35,9 @@
   "devDependencies": {
     "@types/handlebars": "^4.1.0",
     "@types/node": "^18.14.1",
+    "glob": "^10.3.3",
+    "pkg": "^5.8.1",
+    "pkg-assets": "^0.1.0",
     "typescript": "^4.5.4"
   }
 }

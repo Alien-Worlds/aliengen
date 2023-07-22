@@ -1,7 +1,11 @@
 export declare abstract class Transport {
-    abstract writeOutput(data: string, options?: TransportOptions): Promise<boolean> | boolean | void;
+  abstract writeOutput(
+    data: string,
+    options?: TransportOptions
+  ): Promise<boolean> | boolean | void;
 }
 
 export type TransportOptions = {
-    caller?: string,
+  caller?: string;
+  [key: string]: unknown;
 };

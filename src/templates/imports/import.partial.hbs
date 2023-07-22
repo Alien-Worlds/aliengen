@@ -1,0 +1,10 @@
+{{! partial template for import }}
+{{#if alias}}
+import * as {{alias}} from '{{relative path relativeTo}}';
+{{else if (all_defined default list)}}
+import {{default}}, { {{join list ", "}} } from '{{relative path relativeTo}}';
+{{else if default}}
+import {{default}} from '{{relative path relativeTo}}';
+{{else if list}}
+import { {{join list ", "}} } from '{{relative path relativeTo}}';
+{{/if}}

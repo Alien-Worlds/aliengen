@@ -1,0 +1,39 @@
+{{> imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+const model = {{this.name}}JsonModel = {
+{{#each props}}
+  {{> prop this}}
+{{/each}}
+};
+/*__fixture__*/
+
+describe('{{this.name}} unit tests', () => {
+  /*__stub__*/
+
+  it('{{this.name}}.create should return {{this.name}} object based on the provided data', async () => {
+    const entity = {{this.name}}.create(
+    {{#each this.props}}
+      {{> arg this}}
+    {{/each}}
+    );
+
+    expect(entity).toBeInstanceOf({{this.name}});
+  });
+
+  it('"toJSON" should return a json model based on entity', async () => {
+    const entity = {{this.name}}.create(
+    {{#each this.props}}
+      {{> arg this}}
+    {{/each}}
+    );
+
+    expect(entity.toJSON()).toEqual(model);
+  });
+
+  /*__unit_test__*/
+});
+/*__group__*/
+{{/each}}
