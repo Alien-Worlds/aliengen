@@ -1,0 +1,12 @@
+{{#if list}}
+jest.mock('{{relative this.path relativeTo}}', () => ({
+  {{#each list}}
+  {{this}}: jest.fn().mockImplementation(() => ({
+    /* mock implementation if required */
+    /* If it is not needed or must not be mocked, remove it */
+  })),
+  {{/each}}
+}));
+{{else}}
+jest.mock('{{relative this.path relativeTo}}', () => jest.fn());
+{{/if}}

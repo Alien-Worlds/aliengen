@@ -1,0 +1,40 @@
+{{>imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+
+/*__fixture__*/
+
+describe('{{this.name}}ServiceImpl', () => {
+  
+  beforeEach(() => {
+    service = new {{this.name}}ServiceImpl();
+  });
+
+  {{#each this.methods}}
+  it('"{{this.name}}" should ... successfully', async () => {
+    {{#each this.props}}
+    const {{this.name}} = null;
+    {{/each}}
+    const result = {{#if this.async}}await {{/if}}service.{{this.name}}({{join this.props ", "}});
+    
+    expect(result.content).toBeTruthy();
+    expect(result.failure).toBeFalsy();
+  });
+
+  it('"{{this.name}}" should handle failure when ...', async () => {
+    {{#each this.props}}
+    const {{this.name}} = null;
+    {{/each}}
+    const result = {{#if this.async}}await {{/if}}service.{{this.name}}({{join this.props ", "}});
+    
+    expect(result.content).toBeFalsy();
+    expect(result.failure).toBeInstanceOf(Failure);
+  });
+  
+  {{/each}}
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

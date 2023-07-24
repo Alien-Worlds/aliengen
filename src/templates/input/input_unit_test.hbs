@@ -1,0 +1,22 @@
+{{> imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+describe('{{pascal_case name}}Input', () => {
+  describe('fromRequest', () => {
+    it('should create a {{pascal_case name}}Input instance with the correct parameters', () => {
+      const request = {
+        params: { success: true },
+      };
+
+      const input = {{pascal_case name}}Input.fromRequest(request as any);
+
+      expect(input.success).toBe(true);
+    });
+  });
+
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

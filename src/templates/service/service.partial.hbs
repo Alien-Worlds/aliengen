@@ -1,0 +1,16 @@
+/**
+ * Abstract class representing a service for ...
+ *
+ * @abstract
+ * @class {{pascal_case name}}Service
+ */
+{{#if injectable}}
+@injectable()
+{{/if}}
+export abstract class {{pascal_case name}}Service {
+  public static Token = '{{constant_case name}}_SERVICE';
+
+  {{#each methods}}
+  {{> abstract_method this}}
+  {{/each}}
+}

@@ -1,0 +1,30 @@
+/**
+ * Factory class for creating and initializing the {{pascal_case name}}Service and its dependencies.
+ *
+ * @class {{pascal_case name}}ServiceFactory
+ */
+export class {{pascal_case name}}ServiceFactory {
+  /**
+   * Create and initialize a new instance of the {{pascal_case name}}Service.
+   *
+   * @static
+   * @async
+   * @param { Container } [container] - Optional IoC container to register the service.
+   * @returns { Promise<{{pascal_case name}}Service> } A Promise that resolves to the initialized {{pascal_case name}}Service instance.
+   * @memberof {{pascal_case name}}ServiceFactory
+   */
+  public static async create(
+    container?: Container
+  ) {
+    const service = new {{pascal_case name}}ServiceImpl();
+
+    if (container) {
+      container
+        .bind<{{pascal_case name}}Service>({{pascal_case name}}Service.Token)
+        .toConstantValue(service);
+    }
+
+    return service;
+  }
+}
+/*__service_factory__*/

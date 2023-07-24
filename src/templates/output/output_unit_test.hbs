@@ -1,0 +1,41 @@
+{{> imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+describe('{{pascal_case name}}Output', () => {
+  describe('create', () => {
+    it('should create a {{pascal_case name}}Output instance with the correct parameters', () => {
+      
+      const result = Result.withContent([]);
+      const output = {{pascal_case name}}Output.create(result);
+
+      expect(output.result).toBeInstanceOf(Result);
+      expect(output.result.content).toEqual([]);
+    });
+  });
+
+  describe('toResponse', () => {
+    it('should return a response object with status 200 when provided result is not a failure', () => {
+      
+      const result = Result.withContent([]);
+      const output = {{pascal_case name}}Output.create(result);
+
+      expect(output.toResponse()).toEqual({ status: 200, body: {} });
+      expect(output.result.content).toEqual([]);
+    });
+
+    it('should return a response object with status 500 when provided result is a failure', () => {
+    
+      const result = Result.withFailure(Failure.withMessage('Fatal error'));
+      const output = {{pascal_case name}}Output.create(result);
+    
+      expect(output.toResponse())
+			  .toEqual({ status: 500, body: { status: 'FAIL', error: 'Fatal error' } });
+    });
+  });
+
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

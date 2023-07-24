@@ -1,19 +1,23 @@
-import { NewModelOptions } from "./types";
-import { Config, validateConfig } from "../../../config";
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
+import { Config, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { NewOutputOptions } from "./types";
 
-export const newModel = async (options: NewModelOptions) => {
+export const newOutput = async (options: NewOutputOptions) => {
+  if (!options.skipTests) {
+    options.include = [ComponentType.OutputUnitTest];
+  }
+
   const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Model, validateNewModelOptions);
+  builder.build(ComponentType.Output, validateNewOutputOptions);
 };
 
-export const validateNewModelOptions = async (
+export const validateNewOutputOptions = async (
   config: Config,
-  options: NewModelOptions
+  options: NewOutputOptions
 ) => {
-  const { failure } = validateConfig(config, ComponentType.Model);
+  const { failure } = validateConfig(config, ComponentType.Output);
 
   if (failure) {
     if (failure.error.issues.missingSourceDirname && options.here === false) {

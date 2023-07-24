@@ -1,19 +1,28 @@
-import { NewModelOptions } from "./types";
-import { Config, validateConfig } from "../../../config";
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
+import { Config, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { NewServiceOptions } from "./types";
 
-export const newModel = async (options: NewModelOptions) => {
+export const newService = async (options: NewServiceOptions) => {
+  options.include = [ComponentType.ServiceFactory, ComponentType.ServiceImpl];
+
+  if (!options.skipTests) {
+    options.include.push(
+      ComponentType.ServiceImplUnitTest,
+      ComponentType.ServiceFactoryUnitTest
+    );
+  }
+
   const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Model, validateNewModelOptions);
+  builder.build(ComponentType.Service, validateNewServiceOptions);
 };
 
-export const validateNewModelOptions = async (
+export const validateNewServiceOptions = async (
   config: Config,
-  options: NewModelOptions
+  options: NewServiceOptions
 ) => {
-  const { failure } = validateConfig(config, ComponentType.Model);
+  const { failure } = validateConfig(config, ComponentType.Service);
 
   if (failure) {
     if (failure.error.issues.missingSourceDirname && options.here === false) {

@@ -1,0 +1,24 @@
+{{> imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+describe('{{pascal_case name}}{{pascal_case type}}QueryBuilder', () => {
+  describe('build', () => {
+    it('should create a Query type object', () => {
+      const queryBuilder = {{pascal_case name}}{{pascal_case type}}QueryBuilder();
+      /*
+
+      queryBuilder.with({ key1: 'lorem', key2: 'ipsum' });
+      
+      */
+      const query = queryBuilder.build();
+
+      expect(query).toBe({});
+    });
+  });
+
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

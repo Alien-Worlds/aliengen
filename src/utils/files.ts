@@ -109,5 +109,9 @@ export const importRelativePath = (
     includeBasename ? join(importDirname, importName) : importDirname
   );
 
+  if (/^\.+\//.test(relativePath) === false) {
+    return `./${relativePath}`;
+  }
+
   return relativePath;
 };

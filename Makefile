@@ -3,7 +3,6 @@ copy-assets:
 	@mkdir -p ./build/src/templates/controller/
 	@mkdir -p ./build/src/templates/data-source/
 	@mkdir -p ./build/src/templates/entity/
-	@mkdir -p ./build/src/templates/imports/
 	@mkdir -p ./build/src/templates/input/
 	@mkdir -p ./build/src/templates/mapper/
 	@mkdir -p ./build/src/templates/model/
@@ -17,7 +16,6 @@ copy-assets:
 	@cp -R ./src/templates/controller/*.hbs ./build/src/templates/controller/
 	@cp -R ./src/templates/data-source/*.hbs ./build/src/templates/data-source/
 	@cp -R ./src/templates/entity/*.hbs ./build/src/templates/entity/
-	@cp -R ./src/templates/imports/*.hbs ./build/src/templates/imports/
 	@cp -R ./src/templates/input/*.hbs ./build/src/templates/input/
 	@cp -R ./src/templates/mapper/*.hbs ./build/src/templates/mapper/
 	@cp -R ./src/templates/model/*.hbs ./build/src/templates/model/

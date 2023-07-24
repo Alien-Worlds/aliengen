@@ -1,0 +1,11 @@
+{{> imports imports}}
+
+type UnknownBody = unknown;
+type UnknownParams = unknown;
+type UnknownQuery = unknown;
+
+{{#each models}}
+{{> input this}}
+
+{{/each}}
+/*__input__*/

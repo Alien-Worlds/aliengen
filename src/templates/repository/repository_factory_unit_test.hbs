@@ -1,0 +1,25 @@
+{{>imports imports}}
+
+/*__mock__*/
+{{#each imports}}
+{{> mock_import this}}
+
+{{/each}}
+const containerMock = {
+  bind: jest.fn(),
+} as any;
+{{#each models}}
+describe('{{pascal_case name}}RepositoryFactory', () => {
+  it('should create and initialize {{pascal_case name}}Repository', async () => {    
+    const databaseMock = {};
+    const repository = await {{pascal_case name}}RepositoryFactory.create(databaseMock, containerMock);
+
+    expect(repository).toBeInstanceOf({{pascal_case name}}Repository);
+    expect(containerMock.bind).toHaveBeenCalledTimes(1);
+  });
+  /*__unit_test__*/
+
+});
+
+{{/each}}
+/*__group__*/

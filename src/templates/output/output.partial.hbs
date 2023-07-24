@@ -1,0 +1,78 @@
+/**
+ * Output model for representing the response of ...
+ *
+ * @class {{pascal_case name}}Output
+ */
+export class {{pascal_case name}}Output {
+  /**
+   * Create a new instance of GetCustodiansOutput with the provided custodian profiles.
+   *
+   * @static
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   * @returns { {{pascal_case name}}Output } A new instance of {{pascal_case name}}Output initialized with the provided profiles.
+   */
+  public static create(
+    {{#each props}}
+    {{> method_prop this}}
+    {{/each}}
+  ): {{pascal_case name}}Output {
+    return new {{pascal_case name}}Output(
+      {{#each props}}
+      {{> arg this}}
+      {{/each}}
+    );
+  }
+
+  /**
+   * Create a new instance of {{pascal_case name}}Output.
+   *
+   * @constructor
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   */
+  constructor(
+    {{#each props}}
+    {{> constructor_prop this}}
+    {{/each}}
+  ) {}
+
+  /**
+   * Convert ...
+   *
+   * @public
+   * @returns response object representing the ...
+   */
+  public toResponse() {
+    const {
+      {{#each props}}
+      {{this.name}},
+      {{/each}}
+    } = this;
+
+    if (result.isFailure) {
+      const {
+        failure: { error },
+      } = result;
+      if (error) {
+        return {
+          status: 500,
+          body: {
+            status: 'FAIL',
+            error: error.message,
+          },
+        };
+      }
+    }
+
+    const { content } = result;
+    const body = {};
+
+    return {
+      status: 200,
+      body,
+    };
+  }
+}

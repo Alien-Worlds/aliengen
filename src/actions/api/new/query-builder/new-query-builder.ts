@@ -1,19 +1,23 @@
-import { NewModelOptions } from "./types";
-import { Config, validateConfig } from "../../../config";
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
+import { Config, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { NewQueryBuilderOptions } from "./types";
 
-export const newModel = async (options: NewModelOptions) => {
+export const newQueryBuilder = async (options: NewQueryBuilderOptions) => {
+  if (!options.skipTests) {
+    options.include = [ComponentType.QueryBuilderUnitTest];
+  }
+
   const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Model, validateNewModelOptions);
+  builder.build(ComponentType.QueryBuilder, validateNewQueryBuilderOptions);
 };
 
-export const validateNewModelOptions = async (
+export const validateNewQueryBuilderOptions = async (
   config: Config,
-  options: NewModelOptions
+  options: NewQueryBuilderOptions
 ) => {
-  const { failure } = validateConfig(config, ComponentType.Model);
+  const { failure } = validateConfig(config, ComponentType.QueryBuilder);
 
   if (failure) {
     if (failure.error.issues.missingSourceDirname && options.here === false) {

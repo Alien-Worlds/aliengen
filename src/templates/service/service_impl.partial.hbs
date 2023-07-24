@@ -1,0 +1,27 @@
+/**
+ * A service class for ...
+ *
+ * @class {{pascal_case name}}ServiceImpl
+ * @implements { {{pascal_case name}}Service }
+ */
+export class {{pascal_case name}}ServiceImpl implements {{pascal_case name}}Service {
+  {{#if (not_empty props)}}
+  /**
+   * Creates an instance of {{pascal_case name}}ServiceImpl.
+   *
+   * @constructor
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   */
+  constructor(
+    {{#each props}}
+    {{> constructor_prop this}}
+    {{/each}}
+  ) {}
+  {{/if}}
+
+  {{#each methods}}
+  {{> method this}}
+  {{/each}}
+}

@@ -1,0 +1,58 @@
+/**
+ * Input model for ...
+ *
+ * @class {{pascal_case name}}Input
+ */
+export class {{pascal_case name}}Input {
+  /**
+   * Create a new instance of {{pascal_case name}}Input from an HTTP request object.
+   * 
+   * @param { Request } request
+   * @returns { {{pascal_case name}}Input }
+   */
+  public static fromRequest(
+    request: Request<{{#if (not_empty requestBody)}}{{requestBody}}{{else}}UnknownBody{{/if}}, {{#if (not_empty requestParams)}}{{requestParams}}{{else}}UnknownParams{{/if}}, {{#if (not_empty requestQuery)}}{{requestQuery}}{{else}}UnknownQuery{{/if}}>
+  ): {{pascal_case name}}Input {
+    {{#if (not_empty requestBody)}}
+    const {
+      {{#each requestBody}}
+      {{this.name}},
+      {{/each}}
+    } = request.body;
+    {{/if}}
+    {{#if (not_empty requestParams)}}
+    const {
+      {{#each requestParams}}
+      {{this.name}},
+      {{/each}}
+    } = request.params;
+    {{/if}}
+    {{#if (not_empty requestQuery)}}
+    const {
+      {{#each requestQuery}}
+      {{this.name}},
+      {{/each}}
+    } = request.query;
+    {{/if}}
+
+    return new {{pascal_case name}}Input(
+      {{#each props}}
+      {{this.name}},
+      {{/each}}
+    );
+  }
+
+  /**
+   * Create a new instance of {{pascal_case name}}Input.
+   * 
+   * @constructor
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   */
+  constructor(
+    {{#each props}}
+    {{> constructor_prop this}}
+    {{/each}}
+  ) {}
+}
