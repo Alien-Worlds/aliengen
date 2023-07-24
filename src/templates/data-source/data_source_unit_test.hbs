@@ -1,0 +1,60 @@
+{{>imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+/*__fixture__*/
+
+describe('{{pascal_case this.name}}{{pascal_case this.type}}Collection', () => {
+  
+  const collection = {
+    find: jest.fn(),
+    bulkWrite: jest.fn(),
+    countDocuments: jest.fn(),
+    aggregate: jest.fn(),
+    updateMany: jest.fn(),
+    insertMany: jest.fn(),
+    deleteMany: jest.fn(),
+    listIndexes: jest.fn(),
+    createIndexes: jest.fn(),
+  } as any;
+
+  const dataSourceMock = {
+    database: {
+      collection: jest.fn().mockReturnValue(collection),
+      createCollection: jest.fn(),
+    },
+    client: {
+      startSession: jest.fn().mockReturnValue({
+        startTransaction: jest.fn(),
+        commitTransaction: jest.fn(),
+        abortTransaction: jest.fn(),
+      }),
+      endSession: jest.fn(),
+    },
+  };
+
+  const name = 'test'
+
+  const {{camel_case this.name}}Collection = new {{pascal_case this.name}}{{pascal_case this.type}}Collection<any>(dataSourceMock, name);
+
+  beforeEach(() => {
+    // Clear mock calls and set default behavior if needed
+    // dataSourceMock.<function>.mockClear();
+  });
+
+  {{#each this.methods}}
+  it('"{{this.name}}" should ...', async () => {
+    {{#each this.props}}
+    const {{this.name}} = null;
+    {{/each}}
+    const result = {{#if this.async}}await {{/if}}{{camel_case ../name}}Collection.{{this.name}}({{join this.props ", "}});
+
+    expect(true).toBe(true);
+  });
+
+  {{/each}}
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

@@ -1,0 +1,43 @@
+/**
+* Represents a collection of ... stored in a {{type}} collection.
+* Extends the {{pascal_case type}}CollectionSource class to provide database operations.
+*/
+export class {{pascal_case name}}{{pascal_case type}}Collection extends Collection{{pascal_case type}}Source<{{#if model}}{{pascal_case model}}{{pascal_case type}}Model{{else}}unknown{{/if}}> {
+  /**
+  * Constructs a new instance of the {{pascal_case name}}{{pascal_case type}}Collection class.
+  *
+  * @constructor
+  {{#each props}}
+  {{> jsdoc_param this}}
+  {{/each}}
+  */
+  constructor(
+    {{#each props}}
+    {{> constructor_prop this}}
+    {{/each}}
+    /*__constructor__*/
+  ) {
+    super(
+      {{#each props}}
+      {{this.name}},
+      {{/each}}
+      /*
+      {
+        indexes: [{
+          key: {
+            <your_prop_name>: 1,
+          },
+          unique: true,
+          background: true,
+        }],
+      }
+      */
+    );
+  }
+
+  {{#each methods}}
+  {{> method this}}
+  
+  {{/each}}
+}
+

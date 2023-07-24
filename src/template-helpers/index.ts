@@ -25,6 +25,16 @@ export class CurlyBracesHelper {
   }
 }
 
+export class NotEmptyHelper {
+  public static Token = "not_empty";
+
+  public static fn(arg: unknown) {
+    return (
+      ((typeof arg === "string" || Array.isArray(arg)) && arg.length > 0) ||
+      (typeof arg === "object" && Object.keys(arg).length > 0)
+    );
+  }
+}
 export class AllDefinedHelper {
   public static Token = "all_defined";
 
@@ -37,7 +47,7 @@ export class JoinHelper {
   public static Token = "join";
 
   public static fn(array: string[], separator: string) {
-    return array.join(separator);
+    return Array.isArray(array) ? array.join(separator) : "";
   }
 }
 

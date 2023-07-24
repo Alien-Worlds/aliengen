@@ -1,0 +1,50 @@
+/**
+ * Represents the {{name}}UseCase use case.
+ * This use case ...
+ *
+ * @class
+ */
+{{#if injectable}}
+@injectable()
+{{/if}}
+export class {{name}}UseCase implements UseCase<void> {
+  public static Token = '{{constant_case name}}_USE_CASE';
+
+  /**
+   * Creates an instance of the {{name}}UseCase class.
+   *
+   * @constructor
+  {{#if injections}}
+  {{#each injections}}
+  {{> jsdoc_param this}}
+  {{/each}}
+  {{else}}
+  {{#each props}}
+  {{> jsdoc_param this}}
+  {{/each}}
+  {{/if}}
+   */
+  constructor(
+    {{#if injections}}
+    {{#each injections}}
+    {{> inject this}}
+    {{/each}}
+    {{else}}
+    {{#each props}}
+    {{> constructor_prop this}}
+    {{/each}}
+    {{/if}}
+    /*__constructor__*/
+  ) { }
+
+  /**
+  * Executes the {{name}}UseCase to ...
+  *
+  * @async
+  * @returns {Promise<Result<void>>}
+  */
+  public async execute(): Promise<Result<void>> {
+    // ...
+    return Result.withoutContent();
+  }
+}

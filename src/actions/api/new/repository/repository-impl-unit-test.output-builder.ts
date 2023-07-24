@@ -1,12 +1,12 @@
-import { EntityComponentModel } from "./types";
+import { RepositoryComponentModel } from "./types";
 import { ComponentType } from "../../../../enums";
 import { PartialName } from "../../../../templates";
 import { pascalCase } from "change-case";
-import { EntityOutputBuilder } from "./entity.output-builder";
+import { RepositoryImplOutputBuilder } from "./repository-impl.output-builder";
 
-export class EntityUnitTestOutputBuilder extends EntityOutputBuilder {
+export class RepositoryImplUnitTestOutputBuilder extends RepositoryImplOutputBuilder {
   constructor() {
-    super(ComponentType.EntityUnitTest);
+    super(ComponentType.RepositoryImplUnitTest);
   }
 
   public registerTemplates() {
@@ -15,10 +15,10 @@ export class EntityUnitTestOutputBuilder extends EntityOutputBuilder {
       .registerPartialTemplate(PartialName.Imports)
       .registerPartialTemplate(PartialName.Prop)
       .registerPartialTemplate(PartialName.Arg)
-      .registerComponentTemplate(ComponentType.EntityUnitTest);
+      .registerComponentTemplate(ComponentType.RepositoryImplUnitTest);
   }
 
-  public async buildTemplateModels(): Promise<EntityComponentModel[]> {
+  public async buildTemplateModels(): Promise<RepositoryComponentModel[]> {
     const models = await super.buildTemplateModels();
 
     const { options } = this;
@@ -27,8 +27,9 @@ export class EntityUnitTestOutputBuilder extends EntityOutputBuilder {
 
     for (const model of models) {
       model.imports.push({
-        list: [pascalCaseName],
-        path: this.fileStructure.generatePath(ComponentType.Entity, name).path,
+        list: [`${pascalCaseName}Repository`],
+        path: this.fileStructure.generatePath(ComponentType.Repository, name)
+          .path,
       });
     }
 

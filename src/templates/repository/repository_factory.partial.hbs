@@ -1,0 +1,46 @@
+/**
+ * Factory class for creating and initializing the {{pascal_case name}}Repository and its dependencies.
+ *
+ * @class {{pascal_case name}}RepositoryFactory
+ */
+export class {{pascal_case name}}RepositoryFactory {
+  /**
+   * Create and initialize a new instance of the {{pascal_case name}}Repository.
+   *
+   * @static
+   * @async
+   * @param { {{pascal_case database}}Source | {{pascal_case database}}Config } database - The {{database}} data source or configuration to use.
+   * @param { Container } [container] - Optional IoC container to register the repository.
+   * @returns { Promise<{{pascal_case name}}Repository> } A Promise that resolves to the initialized {{pascal_case name}}Repository instance.
+   * @memberof {{pascal_case name}}RepositoryFactory
+   */
+  public static async create(
+    database: {{pascal_case database}}Source | {{pascal_case database}}Config,
+    container?: Container
+  ) {
+    let dataSource: {{pascal_case database}}Source;
+    if (database instanceof {{pascal_case database}}Source) {
+      dataSource = database;
+    } else {
+      dataSource = await {{pascal_case database}}Source.create(database);
+    }
+
+    const repository = new {{#if requireImpl}}{{pascal_case name}}{{/if}}RepositoryImpl(
+      new {{pascal_case database}}CollectionSource<{{#if model}}{{pascal_case model}}{{pascal_case database}}Model{{else}}unknown{{/if}}>(
+        dataSource,
+        '{{snake_case name}}'
+      ),
+      new {{pascal_case name}}{{pascal_case database}}Mapper(),
+      new {{pascal_case database}}QueryBuilders()
+    );
+
+    if (container) {
+      container
+        .bind<{{pascal_case name}}Repository>({{pascal_case name}}Repository.Token)
+        .toConstantValue(repository);
+    }
+
+    return repository;
+  }
+}
+/*__repository_factory__*/

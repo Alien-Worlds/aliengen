@@ -1,16 +1,16 @@
 import { OutputBuilder } from "../../../../core";
-import { EntityComponentModel, NewEntityOptions } from "./types";
+import { NewUseCaseOptions, UseCaseComponentModel } from "./types";
 import { ComponentType } from "../../../../enums";
 import { PartialName } from "../../../../templates";
-import { Import, Prop } from "../../../../types";
+import { Import, Injection, Prop } from "../../../../types";
 import { fetchData } from "../../../../utils/files";
 import { pascalCase } from "change-case";
 
-export class EntityOutputBuilder extends OutputBuilder<
-  NewEntityOptions,
-  EntityComponentModel
+export class UseCaseOutputBuilder extends OutputBuilder<
+  NewUseCaseOptions,
+  UseCaseComponentModel
 > {
-  constructor(type = ComponentType.Entity) {
+  constructor(type = ComponentType.UseCase) {
     super(type);
   }
 
@@ -20,14 +20,14 @@ export class EntityOutputBuilder extends OutputBuilder<
       .registerPartialTemplate(PartialName.Imports)
       .registerPartialTemplate(PartialName.Prop)
       .registerPartialTemplate(PartialName.Arg)
+      .registerPartialTemplate(PartialName.Inject)
       .registerPartialTemplate(PartialName.JsdocParam)
       .registerPartialTemplate(PartialName.ConstructorProp)
-      .registerPartialTemplate(PartialName.MethodProp)
-      .registerPartialTemplate(PartialName.Entity)
-      .registerComponentTemplate(ComponentType.Entity);
+      .registerPartialTemplate(PartialName.UseCase)
+      .registerComponentTemplate(ComponentType.UseCase);
   }
 
-  public async buildTemplateModels(): Promise<EntityComponentModel[]> {
+  public async buildTemplateModels(): Promise<UseCaseComponentModel[]> {
     const { options, config } = this;
     const { name, json } = options;
     const pascalCaseName = pascalCase(name);
@@ -36,28 +36,34 @@ export class EntityOutputBuilder extends OutputBuilder<
      */
     const props = new Set<Prop>();
 
-    if (Array.isArray(config.source?.defaults?.entity?.props)) {
-      config.source.defaults.entity.props.forEach((p) => props.add(p));
+    if (Array.isArray(config.source?.defaults?.use_case?.props)) {
+      config.source.defaults.use_case.props.forEach((p) => props.add(p));
+    }
+
+    /**
+     * Injections
+     */
+    const injections = new Set<Injection>();
+
+    if (Array.isArray(config.source?.defaults?.use_case?.injections)) {
+      config.source.defaults.use_case.injections.forEach((i) =>
+        injections.add(i)
+      );
     }
 
     /*
      * Imports
      */
-    const defaultImports = config.source?.defaults?.entity?.imports || [];
+    const defaultImports = config.source?.defaults?.use_case?.imports || [];
     const imports = new Set<Import>();
 
     defaultImports.forEach((i) => imports.add(i));
-
-    imports.add({
-      list: [`${pascalCaseName}JsonModel`],
-      path: this.fileStructure.generatePath(ComponentType.Model, name).path,
-    });
 
     /**
      * Config
      */
     if (json) {
-      const config = await fetchData<EntityComponentModel>(json);
+      const config = await fetchData<UseCaseComponentModel>(json);
       if (config.imports) {
         config.imports.forEach((i) => imports.add(i));
       }
@@ -81,6 +87,8 @@ export class EntityOutputBuilder extends OutputBuilder<
 
     return [
       {
+        injections: Array.from(injections),
+        injectable: true,
         name: pascalCaseName,
         imports: Array.from(imports),
         props: Array.from(props),

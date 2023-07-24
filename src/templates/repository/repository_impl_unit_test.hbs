@@ -1,0 +1,62 @@
+{{>imports imports}}
+
+/*__mock__*/
+
+{{#each models}}
+const dataSource = {
+  find: jest.fn();
+  count: jest.fn();
+  aggregate: jest.fn();
+  update: jest.fn();
+  insert: jest.fn();
+  remove: jest.fn();
+  startTransaction: jest.fn();
+  commitTransaction: jest.fn();
+  rollbackTransaction: jest.fn();
+}
+const queryBuilders = {
+  buildFindQuery: jest.fn();
+  buildCountQuery: jest.fn();
+  buildUpdateQuery:jest.fn();
+  buildRemoveQuery: jest.fn();
+  buildAggregationQuery: jest.fn();
+}
+const mapper = {
+  toEntity: jest.fn();
+  fromEntity: jest.fn();
+  getEntityKeyMapping: jest.fn();
+}
+/*__fixture__*/
+
+describe('{{this.name}}RepositoryImpl', () => {
+  
+  beforeEach(() => {
+    repository = new {{this.name}}RepositoryImpl(dataSource, mapper, queryBuilders);
+  });
+
+  {{#each this.methods}}
+  it('"{{this.name}}" should ... successfully', async () => {
+    {{#each this.props}}
+    const {{this.name}} = null;
+    {{/each}}
+    const result = {{#if this.async}}await {{/if}}repository.{{this.name}}({{join this.props ", "}});
+    
+    expect(result.content).toBeTruthy();
+    expect(result.failure).toBeFalsy();
+  });
+
+  it('"{{this.name}}" should handle failure when ...', async () => {
+    {{#each this.props}}
+    const {{this.name}} = null;
+    {{/each}}
+    const result = {{#if this.async}}await {{/if}}repository.{{this.name}}({{join this.props ", "}});
+    
+    expect(result.content).toBeFalsy();
+    expect(result.failure).toBeInstanceOf(Failure);
+  });
+  
+  {{/each}}
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

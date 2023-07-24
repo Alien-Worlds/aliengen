@@ -1,4 +1,4 @@
-import { Import, Prop } from "../../types";
+import { Import, Injection, Method, Prop } from "../../types";
 
 export type SetConfigOptions = {
   path?: string;
@@ -11,72 +11,6 @@ export type SetConfigOptions = {
 export type GetConfigOptions = {
   key?: string;
   global?: boolean;
-};
-
-export type PropsConfig = {
-  model: {
-    [type: string]: Prop[];
-  };
-  mapper: {
-    [type: string]: Prop[];
-  };
-  data_source: {
-    [type: string]: Prop[];
-  };
-  query_builder: {
-    [type: string]: Prop[];
-  };
-  entity: Prop[];
-  repository: Prop[];
-  service: Prop[];
-  controller: Prop[];
-  use_case: Prop[];
-  input: Prop[];
-  output: Prop[];
-  utils: Prop[];
-  rout: Prop[];
-};
-
-export type ImportsConfig = {
-  model: {
-    [type: string]: Import[];
-  };
-  mapper: {
-    [type: string]: Import[];
-  };
-  data_source: {
-    [type: string]: Import[];
-  };
-  repository: {
-    [type: string]: Import[];
-  };
-  service: {
-    [type: string]: Import[];
-  };
-  query_builder: {
-    [type: string]: Import[];
-  };
-  controller: {
-    [type: string]: Import[];
-  };
-  use_case: {
-    [type: string]: Import[];
-  };
-  entity: {
-    [type: string]: Import[];
-  };
-  input: {
-    [type: string]: Import[];
-  };
-  output: {
-    [type: string]: Import[];
-  };
-  route: {
-    [type: string]: Import[];
-  };
-  [key: string]: {
-    [key: string]: Import[];
-  };
 };
 
 export type FileStructureConfig = {
@@ -113,11 +47,49 @@ export type FileStructureConfig = {
   [key: string]: string;
 };
 
+export type ComponentDefaultConfig = {
+  imports?: Import[];
+  injections?: Injection[];
+  props?: Prop[];
+  methods?: Method[];
+  [key: string]: unknown;
+};
+
+export type RepositoryDefaultConfig = ComponentDefaultConfig & {
+  entity?: string;
+};
+
+export type DefaultsConfig = {
+  data_source?: {
+    [database: string]: ComponentDefaultConfig;
+  };
+  entity?: ComponentDefaultConfig;
+  model?: {
+    [database: string]: ComponentDefaultConfig;
+  };
+  mapper?: {
+    [database: string]: ComponentDefaultConfig;
+  };
+  use_case?: ComponentDefaultConfig;
+  repository?: RepositoryDefaultConfig;
+  repository_factory?: {
+    [database: string]: RepositoryDefaultConfig;
+  };
+  query_builder?: {
+    [type: string]: ComponentDefaultConfig;
+  };
+  controller?: ComponentDefaultConfig;
+  service?: ComponentDefaultConfig;
+  service_factory?: ComponentDefaultConfig;
+  input?: ComponentDefaultConfig;
+  output?: ComponentDefaultConfig;
+  route?: ComponentDefaultConfig;
+};
+
 export type SourceConfig = {
   dirname?: string;
   structure?: FileStructureConfig;
-  imports?: ImportsConfig;
-  props?: PropsConfig;
+  defaults?: DefaultsConfig;
 };
 
 export type RpcConfig = {

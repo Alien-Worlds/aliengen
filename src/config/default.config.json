@@ -25,30 +25,55 @@
       "query_builder": "{{root}}/endpoints/{{endpoint}}/domain/models/{{name}}.query-builder.ts",
       "query_builder_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/models/__tests__/{{name}}.query-builder.unit.test.ts",
       "repository": "{{root}}/endpoints/{{endpoint}}/domain/repositories/{{name}}.repository.ts",
+      "repository_factory": "{{root}}/endpoints/{{endpoint}}/data/repositories/{{name}}.repository-factory.ts",
+      "repository_factory_unit_test": "{{root}}/endpoints/{{endpoint}}/data/repositories/__tests__/{{name}}.repository-factory.unit.test.ts",
       "repository_impl": "{{root}}/endpoints/{{endpoint}}/data/repositories/{{name}}.repository-impl.ts",
       "repository_impl_unit_test": "{{root}}/endpoints/{{endpoint}}/data/repositories/__tests__/{{name}}.repository-impl.unit.test.ts",
       "route": "{{root}}/endpoints/{{endpoint}}/routes/{{name}}.route.ts",
       "schemas": "{{root}}/endpoints/{{endpoint}}/schemas/{{name}}.schema.json",
       "service": "{{root}}/endpoints/{{endpoint}}/domain/services/{{name}}.service.ts",
+      "service_factory": "{{root}}/endpoints/{{endpoint}}/data/services/{{name}}.service-factory.ts",
+      "service_factory_unit_test": "{{root}}/endpoints/{{endpoint}}/data/services/__tests__/{{name}}.service-factory.unit.test.ts",
+      "service_impl": "{{root}}/endpoints/{{endpoint}}/data/services/{{name}}.service-impl.ts",
       "service_impl_unit_test": "{{root}}/endpoints/{{endpoint}}/data/services/__tests__/{{name}}.service-impl.unit.test.ts",
       "use_case": "{{root}}/endpoints/{{endpoint}}/domain/use-cases/{{name}}.use-case.ts",
       "use_case_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/use-cases/__tests__/{{name}}.use-case.unit.test.ts",
       "utils": "{{root}}/endpoints/{{endpoint}}/domain/{{name}}.utils.ts",
       "utils_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/__tests__/{{name}}.utils.unit.test.ts"
     },
-    "imports": {
+    "defaults": {
       "model": {
-        "mongo": [
-          {
-            "list": [
-              "MongoDB"
-            ],
-            "path": "@alien-worlds/storage-mongodb"
-          }
-        ]
+        "mongo": {
+          "imports": [
+            {
+              "list": [
+                "MongoDB"
+              ],
+              "path": "@alien-worlds/storage-mongodb"
+            }
+          ],
+          "props": [
+            {
+              "name": "_id",
+              "type": "MongoDB.ObjectId",
+              "import": "mongo",
+              "optional": true
+            }
+          ]
+        },
+        "json": {
+          "imports": [],
+          "props": [
+            {
+              "name": "id",
+              "type": "string",
+              "optional": true
+            }
+          ]
+        }
       },
       "entity": {
-        "default": [
+        "imports": [
           {
             "list": [
               "Entity",
@@ -56,42 +81,189 @@
             ],
             "path": "@alien-worlds/api-core"
           }
-        ]
-      }
-    },
-    "props": {
-      "model": {
-        "mongo": [
-          {
-            "name": "_id",
-            "type": "MongoDB.ObjectId",
-            "import": "mongo",
-            "optional": true
-          }
         ],
-        "json": [
+        "props": [
           {
+            "access": "public",
+            "default": "\"\"",
             "name": "id",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "access": "public",
+            "name": "rest",
             "type": "string",
             "optional": true
           }
         ]
       },
-      "entity": [
-        {
-          "access": "public",
-          "default": "\"\"",
-          "name": "id",
-          "type": "string",
-          "optional": false
-        },
-        {
-          "access": "public",
-          "name": "rest",
-          "type": "string",
-          "optional": true
+      "use_case": {
+        "imports": [
+          {
+            "list": [
+              "injectable",
+              "inject",
+              "UseCase",
+              "Result",
+              "Failure"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": [],
+        "injections": []
+      },
+      "data_source": {
+        "mongo": {
+          "imports": [
+            {
+              "list": [
+                "MongoDB",
+                "CollectionMongoSource",
+                "MongoSource"
+              ],
+              "path": "@alien-worlds/storage-mongodb"
+            }
+          ],
+          "props": [
+            {
+              "name": "mongoSource",
+              "type": "MongoSource",
+              "optional": false
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "optional": false
+            }
+          ]
         }
-      ]
+      },
+      "repository": {
+        "imports": [
+          {
+            "list": [
+              "Repository",
+              "RepositoryImpl",
+              "injectable"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": []
+      },
+      "repository_factory": {
+        "mongo": {
+          "imports": [
+            {
+              "list": [
+                "MongoCollectionSource",
+                "MongoConfig",
+                "MongoQueryBuilders",
+                "MongoSource"
+              ],
+              "path": "@alien-worlds/storage-mongodb"
+            },
+            {
+              "list": [
+                "RepositoryImpl",
+                "Container"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        }
+      },
+      "mapper": {
+        "mongo": {
+          "imports": [],
+          "props": []
+        }
+      },
+      "service": {
+        "imports": [
+          {
+            "list": [
+              "injectable"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": []
+      },
+      "service_factory": {
+        "imports": [
+          {
+            "list": [
+              "Container"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": []
+      },
+      "controller": {
+        "imports": [],
+        "props": []
+      },
+      "query_builder": {
+        "mongo": {
+          "imports": [
+            {
+              "list": [
+                "MongoDB"
+              ],
+              "path": "@alien-worlds/storage-mongodb"
+            },
+            {
+              "list": [
+                "Query",
+                "QueryBuilder"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        }
+      },
+      "input": {
+        "imports": [
+          {
+            "list": [
+              "Request"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": []
+      },
+      "output": {
+        "imports": [
+          {
+            "list": [
+              "UnknownObject",
+              "Result",
+              "Failure"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": [
+          {
+            "name": "result",
+            "type": "Result",
+            "optional": false,
+            "access": "public",
+            "readonly": true
+          }
+        ]
+      },
+      "route": {
+        "imports": [],
+        "props": []
+      }
     }
   }
 }

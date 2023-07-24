@@ -3,7 +3,13 @@ import { readFileSync } from "fs";
 import path from "path";
 import { walk } from "../utils/files";
 import { Config } from "../actions/config";
-import { camelCase, constantCase, paramCase, pascalCase } from "change-case";
+import {
+  camelCase,
+  constantCase,
+  paramCase,
+  pascalCase,
+  snakeCase,
+} from "change-case";
 import { ComponentTemplateModel, TemplateModel } from "../types";
 import { ComponentType, WriteMethod } from "../enums";
 import {
@@ -16,6 +22,7 @@ import {
   JoinHelper,
   LtHelper,
   LteHelper,
+  NotEmptyHelper,
   NotHelper,
   RelativePathHelper,
 } from "../template-helpers";
@@ -29,13 +36,15 @@ export class TemplateEngine {
   protected templates = new Map<string, Handlebars.TemplateDelegate>();
   constructor(protected config: Config) {
     Handlebars.registerHelper({
-      camelCase,
-      paramCase,
-      pascalCase,
-      constantCase,
+      camel_case: camelCase,
+      param_case: paramCase,
+      pascal_case: pascalCase,
+      constant_case: constantCase,
+      snake_case: snakeCase,
     });
     Handlebars.registerHelper(RelativePathHelper.Token, RelativePathHelper.fn);
     Handlebars.registerHelper(CurlyBracesHelper.Token, CurlyBracesHelper.fn);
+    Handlebars.registerHelper(NotEmptyHelper.Token, NotEmptyHelper.fn);
     Handlebars.registerHelper(AllDefinedHelper.Token, AllDefinedHelper.fn);
     Handlebars.registerHelper(JoinHelper.Token, JoinHelper.fn);
     Handlebars.registerHelper(IncludesHelper.Token, IncludesHelper.fn);

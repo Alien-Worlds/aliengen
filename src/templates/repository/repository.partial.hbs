@@ -1,0 +1,16 @@
+/**
+ * This class manages {{pascal_case name}} entities, providing CRUD operations and additional functionalities.
+ *
+ * @abstract
+ * @class
+ */
+{{#if injectable}}
+@injectable()
+{{/if}}
+export abstract class {{pascal_case name}}Repository extends Repository<{{#if entity}}{{entity}}{{else}}unknown{{/if}}, {{#if model}}{{pascal_case model}}{{pascal_case database}}Model{{else}}unknown{{/if}}> {
+  public static Token = '{{constant_case name}}_REPOSITORY';
+
+  {{#each methods}}
+  {{> abstract_method this}}
+  {{/each}}
+}

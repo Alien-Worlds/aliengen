@@ -1,0 +1,9 @@
+{{#if (not_empty props)}}
+{{#if access}}{{access}} {{/if}}abstract {{camel_case name}}(
+  {{#each props}}
+  {{> method_prop this}}
+  {{/each}}
+){{#if returns}}: {{returns}}{{/if}};
+{{else}}
+{{#if access}}{{access}} {{/if}}abstract {{camel_case name}}(){{#if returns}}: {{returns}}{{/if}};
+{{/if}}

@@ -22,8 +22,8 @@ export abstract class OutputBuilder<
 
   constructor(protected type: ComponentType) {}
 
-  protected abstract registerTemplates(): void;
   protected abstract buildTemplateModels(): Promise<TemplateModelType[]>;
+  public abstract registerTemplates(): void;
 
   protected combineImports(models: TemplateModelType[], relativeTo: string) {
     const imports = new Set<RelativeImport>();
@@ -45,8 +45,6 @@ export abstract class OutputBuilder<
     this.options = options;
     this.templateEngine = templateEngine;
     this.fileStructure = fileStructure;
-
-    this.registerTemplates();
   }
 
   public async build(): Promise<GeneratedOutput[]> {
@@ -74,6 +72,7 @@ export abstract class OutputBuilder<
             {
               imports: this.combineImports(models, path),
               models,
+              path,
             },
             writeMethod,
             path,

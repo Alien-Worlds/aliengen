@@ -1,0 +1,13 @@
+{{#if (not_empty props)}}
+{{#if access}}{{access}} {{/if}}{{#if async}}async {{/if}}{{camel_case name}}(
+  {{#each props}}
+  {{> method_prop this}}
+  {{/each}}
+){{#if returns}}: {{returns}}{{/if}} {
+  // ...
+}
+{{else}}
+{{#if access}}{{access}} {{/if}}{{#if async}}async {{/if}}{{camel_case name}}() {
+  // ...
+}
+{{/if}}

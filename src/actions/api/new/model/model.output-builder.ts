@@ -13,17 +13,6 @@ export class ModelOutputBuilder extends OutputBuilder<
     super(ComponentType.Model);
   }
 
-  protected registerTemplates() {
-    this.templateEngine
-      .registerPartialTemplate(PartialName.Import)
-      .registerPartialTemplate(PartialName.Imports)
-      .registerPartialTemplate(PartialName.Prop)
-      .registerPartialTemplate(PartialName.Arg)
-      .registerPartialTemplate(PartialName.JsdocParam)
-      .registerPartialTemplate(PartialName.Model)
-      .registerComponentTemplate(ComponentType.Model);
-  }
-
   protected async buildModelDataByType(type: string) {
     const { options, config } = this;
     const { name, json } = options;
@@ -32,14 +21,15 @@ export class ModelOutputBuilder extends OutputBuilder<
      */
     const props = new Set<Prop>();
 
-    if (Array.isArray(config.source?.props?.model?.[type])) {
-      config.source.props.model[type].forEach((p) => props.add(p));
+    if (Array.isArray(config.source?.defaults?.model?.[type]?.props)) {
+      config.source.defaults.model[type].props.forEach((p) => props.add(p));
     }
 
     /*
      * Imports
      */
-    const defaultImports = config.source?.imports?.Model?.[type] || [];
+    const defaultImports =
+      config.source?.defaults?.model?.[type]?.imports || [];
 
     const imports = new Set<Import>();
     defaultImports.forEach((i) => imports.add(i));
@@ -76,6 +66,17 @@ export class ModelOutputBuilder extends OutputBuilder<
       imports: Array.from(imports),
       props: Array.from(props),
     };
+  }
+
+  public registerTemplates() {
+    this.templateEngine
+      .registerPartialTemplate(PartialName.Import)
+      .registerPartialTemplate(PartialName.Imports)
+      .registerPartialTemplate(PartialName.Prop)
+      .registerPartialTemplate(PartialName.Arg)
+      .registerPartialTemplate(PartialName.JsdocParam)
+      .registerPartialTemplate(PartialName.Model)
+      .registerComponentTemplate(ComponentType.Model);
   }
 
   public async buildTemplateModels(): Promise<ModelComponentModel[]> {

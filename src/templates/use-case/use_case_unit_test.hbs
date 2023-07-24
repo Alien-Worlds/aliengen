@@ -1,0 +1,59 @@
+{{>imports imports}}
+
+/*__mock__*/
+/*
+jest.mock('<path_to_injected_dependency>', () => ({
+  <class_name>: {
+    Token: '<class_name>_TOKEN',
+  },
+}));
+*/
+
+{{#each models}}
+/*__fixture__*/
+
+describe('{{this.name}}UseCase', () => {
+  /*
+  const <injected_component>Mock = {
+    <function>: jest.fn(),
+  };
+  */
+  const {{camel_case this.name}}UseCase = new {{this.name}}UseCase(/*<mocks>*/);
+
+  beforeEach(() => {
+    // Clear mock calls and set default behavior if needed
+    // <injected_component>Mock.<function>.mockClear();
+  });
+
+  it('should ... successfully', async () => {
+    /*
+    const expectedResult = Result.withContent(...);
+    const mockResult = ... ;
+    <injected_component>Mock.<function>.mockResolvedValue(mockResult);
+    */
+
+    const result = await {{camel_case this.name}}UseCase.execute();
+
+    // expect(<injected_component>Mock.<function>).toHaveBeenCalled();
+    // expect(result.content).toEqual(expectedResult);
+    expect(result.isFailure()).toBe(false);
+  });
+
+  it('should handle failure when ...', async () => {
+    /*
+    const expectedResult = Result.withFailure(...);
+    <injected_component>Mock.<function>.mockRejectedValue(
+      new Error('Unknown error')
+    );
+    */
+
+    const result = await {{camel_case this.name}}UseCase.execute();
+
+    // expect(<injected_component>Mock.<function>).toHaveBeenCalled();
+    expect(result.content).toBeFalsy();
+    expect(result.isFailure()).toBe(true);
+  });
+  /*__unit_test__*/
+});
+{{/each}}
+/*__group__*/

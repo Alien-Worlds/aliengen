@@ -125,17 +125,114 @@ newComponent
   .option("-n, --name <value>", "Name of the entity")
   .option("-e, --endpoint <value>", "Name of the endpoint")
   .option("-s, --json <path>", "config")
-  .option("-u, --unit-tests", "Include unit tests", true)
   .option(
     "-i, --include [values...]",
     "Include all related components: repository, data source, model, mapper or all",
-    false
+    []
   )
   .option("-f, --force", "", false)
   .option("-h, --here", "", false)
   .option("-p, --props [values...]", "prop1:string prop2:number")
   .description("Creates new entity file based on provided data.")
   .action((options) => Actions.Api.newEntity(options));
+
+newComponent
+  .command("use-case")
+  .option("-n, --name <value>", "Name of the entity")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option(
+    "-i, --include [values...]",
+    "Include all related components: repository, data source, model, mapper or all",
+    []
+  )
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .option("-j, --inject [classNames...]", "SomeRepository SomeUseCase")
+  .description("Creates new use case file based on provided data.")
+  .action((options) => Actions.Api.newUseCase(options));
+
+newComponent
+  .command("data-source")
+  .option("-n, --name <value>", "Name of the entity")
+  .option("-t, --type <value>", "Name of the database", "mongo")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option(
+    "-i, --include [values...]",
+    "Include all related components: repository, mapper or all",
+    []
+  )
+  .option("-l, --model <name>", "")
+  .option("-m, --methods [names...]", "findUserBy updateListWith")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new use case file based on provided data.")
+  .action((options) => Actions.Api.newDataSource(options));
+
+newComponent
+  .command("repository")
+  .option("-n, --name <value>", "Name of the repository")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option("-d, --database <name>", "mongo")
+  .option("-l, --model <name>", "")
+  .option(
+    "-i, --include [values...]",
+    "Include all related components: , mapper or all",
+    []
+  )
+  .option("-m, --methods [names...]", "findUserBy updateListWith")
+  .option("--impl", "", false)
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new repository file based on provided data.")
+  .action((options) => Actions.Api.newRepository(options));
+
+newComponent
+  .command("service")
+  .option("-n, --name <value>", "Name of the service")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option("-m, --methods [names...]", "findUserBy updateListWith")
+  .option("-p, --props [names...]", "prop1:type prop2:type")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new service file based on provided data.")
+  .action((options) => Actions.Api.newService(options));
+
+newComponent
+  .command("input")
+  .option("-n, --name <value>", "Name of the input")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option("-p, --props [names...]", "prop1:type prop2:type")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new input file based on provided data.")
+  .action((options) => Actions.Api.newInput(options));
+
+newComponent
+  .command("output")
+  .option("-n, --name <value>", "Name of the input")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option("-p, --props [names...]", "prop1:type prop2:type")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new output file based on provided data.")
+  .action((options) => Actions.Api.newOutput(options));
+
+newComponent
+  .command("query-builder")
+  .option("-n, --name <value>", "Name of the input")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --type <name>", "mongo", "mongo")
+  .option("-s, --json <path>", "config")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new query builder file based on provided data.")
+  .action((options) => Actions.Api.newQueryBuilder(options));
 
 /**
  * Config

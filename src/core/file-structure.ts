@@ -1,6 +1,6 @@
 import { join } from "path";
 import { paramCase } from "change-case";
-import { GeneratedPath } from "../types";
+import { DefaultOptions, GeneratedPath } from "../types";
 import { getSourcePath } from "../utils/files";
 import { SourceConfig } from "../actions/config";
 

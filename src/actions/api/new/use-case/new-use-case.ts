@@ -2,24 +2,24 @@ import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
 import { Config, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
-import { NewEntityOptions } from "./types";
+import { NewUseCaseOptions } from "./types";
 
-export const newEntity = async (options: NewEntityOptions) => {
+export const newUseCase = async (options: NewUseCaseOptions) => {
   if (Array.isArray(options.include)) {
-    options.include.push(ComponentType.EntityUnitTest);
+    options.include.push(ComponentType.UseCaseUnitTest);
   } else {
-    options.include = [ComponentType.EntityUnitTest];
+    options.include = [ComponentType.UseCaseUnitTest];
   }
 
   const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Entity, validateNewEntityOptions);
+  builder.build(ComponentType.UseCase, validateNewUseCaseOptions);
 };
 
-export const validateNewEntityOptions = async (
+export const validateNewUseCaseOptions = async (
   config: Config,
-  options: NewEntityOptions
+  options: NewUseCaseOptions
 ) => {
-  const { failure } = validateConfig(config, ComponentType.Entity);
+  const { failure } = validateConfig(config, ComponentType.UseCase);
 
   if (failure) {
     if (failure.error.issues.missingSourceDirname && options.here === false) {

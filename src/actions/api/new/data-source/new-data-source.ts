@@ -2,24 +2,26 @@ import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
 import { Config, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
-import { NewEntityOptions } from "./types";
+import { NewDataSourceOptions } from "./types";
 
-export const newEntity = async (options: NewEntityOptions) => {
-  if (Array.isArray(options.include)) {
-    options.include.push(ComponentType.EntityUnitTest);
-  } else {
-    options.include = [ComponentType.EntityUnitTest];
+export const newDataSource = async (options: NewDataSourceOptions) => {
+  if (Array.isArray(options.methods) && options.methods.length > 0) {
+    if (Array.isArray(options.include)) {
+      options.include.push(ComponentType.DataSourceUnitTest);
+    } else {
+      options.include = [ComponentType.DataSourceUnitTest];
+    }
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Entity, validateNewEntityOptions);
+  const builder = new ComponentBuilder({ database: options.type, ...options });
+  builder.build(ComponentType.DataSource, validateNewDataSourceOptions);
 };
 
-export const validateNewEntityOptions = async (
+export const validateNewDataSourceOptions = async (
   config: Config,
-  options: NewEntityOptions
+  options: NewDataSourceOptions
 ) => {
-  const { failure } = validateConfig(config, ComponentType.Entity);
+  const { failure } = validateConfig(config, ComponentType.DataSource);
 
   if (failure) {
     if (failure.error.issues.missingSourceDirname && options.here === false) {

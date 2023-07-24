@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/Alien-Worlds/aliengen#readme",
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./build",
     "build": "yarn clean && tsc && make build-all",
     "build:mac": "yarn clean && tsc && make build-mac",
     "build:linux": "yarn clean && tsc && make build-linux",

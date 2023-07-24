@@ -3,6 +3,7 @@ import { ComponentType } from "../enums";
 export type TemplateModel<ComponentModelType extends ComponentTemplateModel> = {
   models: ComponentModelType[];
   imports: RelativeImport[];
+  path: string;
   [key: string]: unknown;
 };
 
@@ -28,6 +29,21 @@ export type Prop = {
   optional?: boolean;
 };
 
+export type Injection = {
+  name: string;
+  access?: string;
+  import?: string;
+};
+
+export type Method = {
+  name: string;
+  access?: string;
+  returns?: string;
+  async?: boolean;
+  static?: boolean;
+  props?: Prop[];
+};
+
 export type Import = {
   path: string;
   alias?: string;
@@ -43,6 +59,7 @@ export type DefaultOptions = {
   name: string;
   unitTests?: boolean;
   endpoint?: string;
+  database?: string;
   include?: string[];
   json?: string;
   force?: boolean;
