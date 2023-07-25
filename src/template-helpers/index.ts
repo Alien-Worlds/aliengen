@@ -4,6 +4,11 @@ export class RelativePathHelper {
   public static Token = "relative";
 
   public static fn(importPath: string, sourcePath?: string) {
+
+    if (!importPath) {
+      return `/* could not generate relative path */`;
+    }
+
     // has namespace or is one word or no source path provided
     if (importPath.startsWith("@") || /^\w+$/.test(importPath) || !sourcePath) {
       return importPath;
@@ -54,8 +59,16 @@ export class JoinHelper {
 export class IncludesHelper {
   public static Token = "includes";
 
-  public static fn(array: string[], separator: string) {
-    return array.includes(separator);
+  public static fn(value: unknown, separator: string) {
+    if (Array.isArray(value) || typeof value === "string") {
+      return value.includes(separator);
+    }
+
+    if (typeof value === "object") {
+      return Object.keys(value).includes(separator);
+    }
+
+    return false;
   }
 }
 

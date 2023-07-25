@@ -10,6 +10,7 @@ export type TemplateModel<ComponentModelType extends ComponentTemplateModel> = {
 export type ComponentTemplateModel = {
   imports: Import[];
   name: string;
+  injections?: Injection[];
   type?: string;
   [key: string]: unknown;
 };
@@ -32,7 +33,8 @@ export type Prop = {
 export type Injection = {
   name: string;
   access?: string;
-  import?: string;
+  type?: string;
+  import?: Import;
 };
 
 export type Method = {
@@ -52,6 +54,10 @@ export type Import = {
 };
 
 export type RelativeImport = Import & {
+  relativeTo: string;
+};
+
+export type RelativeInjection = Injection & {
   relativeTo: string;
 };
 

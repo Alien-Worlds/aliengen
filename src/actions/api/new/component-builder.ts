@@ -9,6 +9,10 @@ import { ComponentType } from "../../../enums";
 import { FileTransport } from "../../../transport/file.transport";
 import { DefaultOptions } from "../../../types";
 import { getConfig, Config } from "../../config";
+import {
+  ControllerOutputBuilder,
+  ControllerUnitTestOutputBuilder,
+} from "./controller";
 import { DataSourceOutputBuilder } from "./data-source";
 import { DataSourceUnitTestOutputBuilder } from "./data-source/data-source-unit-test.output-builder";
 import { EntityOutputBuilder } from "./entity";
@@ -29,6 +33,7 @@ import {
   RepositoryOutputBuilder,
 } from "./repository";
 import { RepositoryFactoryUnitTestOutputBuilder } from "./repository/repository-factory-unit-test.output-builder";
+import { RouteOutputBuilder, RouteUnitTestOutputBuilder } from "./route";
 import {
   ServiceFactoryOutputBuilder,
   ServiceImplOutputBuilder,
@@ -53,8 +58,8 @@ export class ComponentBuilder {
     [ComponentType.EntityUnitTest, new EntityUnitTestOutputBuilder()],
     [ComponentType.UseCase, new UseCaseOutputBuilder()],
     [ComponentType.UseCaseUnitTest, new UseCaseUnitTestOutputBuilder()],
-    // [ComponentType.Controller, new ControllerOutputBuilder()],
-    // [ComponentType.ControllerUnitTest, new ControllerUnitTestOutputBuilder()],
+    [ComponentType.Controller, new ControllerOutputBuilder()],
+    [ComponentType.ControllerUnitTest, new ControllerUnitTestOutputBuilder()],
     [ComponentType.Repository, new RepositoryOutputBuilder()],
     [ComponentType.RepositoryFactory, new RepositoryFactoryOutputBuilder()],
     [
@@ -85,8 +90,8 @@ export class ComponentBuilder {
     [ComponentType.InputUnitTest, new InputUnitTestOutputBuilder()],
     [ComponentType.Output, new OutputOutputBuilder()],
     [ComponentType.OutputUnitTest, new OutputUnitTestOutputBuilder()],
-    // [ComponentType.Route, new RouteOutputBuilder()],
-    // [ComponentType.RouteUnitTest, new RouteUnitTestOutputBuilder()],
+    [ComponentType.Route, new RouteOutputBuilder()],
+    [ComponentType.RouteUnitTest, new RouteUnitTestOutputBuilder()],
   ]);
 
   constructor(protected options: DefaultOptions) {

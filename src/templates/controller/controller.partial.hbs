@@ -1,0 +1,32 @@
+/**
+ * Controller class for handling ... related operations.
+ *
+ * @class {{pascal_case name}}Controller
+ */
+{{#if injectable}}
+@injectable()
+{{/if}}
+export class {{pascal_case name}}Controller {
+  public static Token = '{{constant_case name}}_CONTROLLER';
+
+  /**
+   * Create a new instance of {{pascal_case name}}Controller.
+   *
+   * @constructor
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   */
+  constructor(
+    {{#each injections}}
+    {{> inject this}}
+    {{/each}}
+    /*__constructor__*/
+  ) {}
+
+  {{#each methods}}
+  {{> endpoint_method this}}
+
+  {{/each}}
+  /*__method__*/
+}

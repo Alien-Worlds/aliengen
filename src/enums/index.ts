@@ -1,5 +1,6 @@
 export enum ComponentType {
   Controller = "controller",
+  ControllerUnitTest = "controller_unit_test",
   DataSource = "data_source",
   DataSourceUnitTest = "data_source_unit_test",
   Endpoint = "endpoint",
@@ -22,6 +23,7 @@ export enum ComponentType {
   RepositoryFactoryUnitTest = "repository_factory_unit_test",
   RepositoryImplUnitTest = "repository_impl_unit_test",
   Route = "route",
+  RouteUnitTest = "route_unit_test",
   Schema = "schema",
   Service = "service",
   ServiceImpl = "service_impl",

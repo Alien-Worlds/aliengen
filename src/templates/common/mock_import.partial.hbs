@@ -1,11 +1,30 @@
 {{#if list}}
 jest.mock('{{relative this.path relativeTo}}', () => ({
   {{#each list}}
+  {{#if (includes this "UseCase")}}
+  {{this}}: jest.fn().mockImplementation(() => ({
+    execute: jest.fn().mockResolvedValue(/* mock the result */),
+  })),
+  {{else}}
   {{this}}: jest.fn().mockImplementation(() => ({
     /* mock implementation if required */
     /* If it is not needed or must not be mocked, remove it */
   })),
+  {{/if}}
   {{/each}}
+}));
+{{else if name}}
+jest.mock('{{relative this.path relativeTo}}', () => ({
+{{#if (includes this.name "UseCase")}}
+  {{pascal_case this.name}}: jest.fn().mockImplementation(() => ({
+    execute: jest.fn().mockResolvedValue(/* mock the result */),
+  })),
+{{else}}
+  {{pascal_case this.name}}: jest.fn().mockImplementation(() => ({
+    /* mock implementation if required */
+    /* If it is not needed or must not be mocked, remove it */
+  })),
+{{/if}}
 }));
 {{else}}
 jest.mock('{{relative this.path relativeTo}}', () => jest.fn());

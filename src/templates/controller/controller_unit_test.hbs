@@ -1,0 +1,45 @@
+{{> imports imports}}
+
+{{#each injections}}
+{{> mock_import this}}
+
+{{/each}}
+
+/*__mock__*/
+{{#each models}}
+
+describe('{{name}}Controller', () => {
+  let controller: {{name}}Controller;
+  {{#each injections}}
+  let {{camel_case this.name}}Mock: jest.Mocked<{{pascal_case this.name}}>;
+  {{/each}}
+
+  beforeEach(() => {
+    {{#each injections}}
+      let {{camel_case this.name}}Mock = new {{pascal_case this.name}}() as jest.Mocked<{{pascal_case this.name}}>;
+    {{/each}}
+    controller = new {{name}}Controller(
+      {{#each injections}}
+      {{camel_case this.name}}Mock,
+      {{/each}}
+    );
+  });
+
+  {{#each methods}}
+  it('should ...', async () => {
+    /*
+    const mockResult = Result.withContent(...);
+    your_use_caseMock.execute.mockResolvedValue(mockResult);
+    */
+    const output = await controller.{{this.name}}();
+
+    expect(useCaseMock.execute).toHaveBeenCalledTimes(1);
+    // expect(output).toBe(/* expected output based on the mockResult */);
+  });
+
+  {{/each}}
+  /*__unit_test__*/
+});
+
+{{/each}}
+/*__group__*/

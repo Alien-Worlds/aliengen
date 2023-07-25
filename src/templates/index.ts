@@ -18,6 +18,8 @@ export enum PartialName {
   QueryBuilder = "query_builder",
   Entity = "entity",
   UseCase = "use_case",
+  Controller = "controller",
+  EndpointMethod = "endpoint_method",
   Repository = "repository",
   RepositoryImpl = "repository_impl",
   RepositoryFactory = "repository_factory",
@@ -28,6 +30,10 @@ export enum PartialName {
   UnitTest = "unit_test",
   UnitTestGroup = "unit_test_group",
   Prop = "prop",
+  Route = "route",
+  RouteValidators = "route_validators",
+  RouteHooks = "route_hooks",
+  RouteAuth = "route_auth",
 }
 
 export class PartialTemplatePaths {
@@ -89,6 +95,14 @@ export class PartialTemplatePaths {
       PartialName.UseCase,
       path.join(__dirname, "use-case", "use_case.partial.hbs"),
     ],
+    [
+      PartialName.Controller,
+      path.join(__dirname, "controller", "controller.partial.hbs"),
+    ],
+    [
+      PartialName.EndpointMethod,
+      path.join(__dirname, "controller", "endpoint_method.partial.hbs"),
+    ],
     [PartialName.Arg, path.join(__dirname, "common", "arg.partial.hbs")],
     [
       PartialName.ConstructorProp,
@@ -109,6 +123,19 @@ export class PartialTemplatePaths {
       path.join(__dirname, "common", "abstract_method.partial.hbs"),
     ],
     [PartialName.Prop, path.join(__dirname, "common", "prop.partial.hbs")],
+    [PartialName.Route, path.join(__dirname, "route", "route.partial.hbs")],
+    [
+      PartialName.RouteValidators,
+      path.join(__dirname, "route", "route_validators.partial.hbs"),
+    ],
+    [
+      PartialName.RouteHooks,
+      path.join(__dirname, "route", "route_hooks.partial.hbs"),
+    ],
+    [
+      PartialName.RouteAuth,
+      path.join(__dirname, "route", "route_auth.partial.hbs"),
+    ],
   ]);
 
   public static getPath(label: PartialName): string {
@@ -127,6 +154,10 @@ export class ComponentTemplatePaths {
     [
       ComponentType.Controller,
       path.join(__dirname, "controller", "controller.hbs"),
+    ],
+    [
+      ComponentType.ControllerUnitTest,
+      path.join(__dirname, "controller", "controller_unit_test.hbs"),
     ],
     [
       ComponentType.DataSource,
@@ -201,6 +232,8 @@ export class ComponentTemplatePaths {
       ComponentType.UseCaseUnitTest,
       path.join(__dirname, "use-case", "use_case_unit_test.hbs"),
     ],
+    [ComponentType.Route, path.join(__dirname, "route", "route.hbs")],
+    [ComponentType.RouteUnitTest, path.join(__dirname, "route", "route_unit_test.hbs")],
     [ComponentType.Util, path.join(__dirname, "util", "util.hbs")],
   ]);
 

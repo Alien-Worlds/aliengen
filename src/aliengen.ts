@@ -225,14 +225,51 @@ newComponent
 
 newComponent
   .command("query-builder")
-  .option("-n, --name <value>", "Name of the input")
+  .option("-n, --name <value>", "Name of the query builder")
   .option("-e, --endpoint <value>", "Name of the endpoint")
-  .option("-s, --type <name>", "mongo", "mongo")
+  .option("-t, --type <name>", "mongo", "mongo")
   .option("-s, --json <path>", "config")
   .option("-f, --force", "", false)
   .option("-h, --here", "", false)
   .description("Creates new query builder file based on provided data.")
   .action((options) => Actions.Api.newQueryBuilder(options));
+
+newComponent
+  .command("controller")
+  .option("-n, --name <value>", "Name of the controller")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option(
+    "-i, --include [values...]",
+    "Include all related components: , mapper or all",
+    []
+  )
+  .option("-m, --methods [names...]", "findUserBy updateListWith")
+  .option("--inject [names...]", "findUserBy updateListWith")
+  .option("-s, --json <path>", "config")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new controller file based on provided data.")
+  .action((options) => Actions.Api.newController(options));
+
+newComponent
+  .command("route")
+  .option("-n, --name <value>", "Name of the route")
+  .option("-p, --path <value>", "")
+  .option("-t, --type <value>", "Get, Post, Put, Patch, Delete")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option(
+    "-i, --include [values...]",
+    "Include all related components: , mapper or all",
+    []
+  )
+  .option("-h, --hooks [hooks...]", "pre, post")
+  .option("-v, --validators [hooks...]", "request")
+  .option("-a, --auth <type>", "jwt")
+  .option("-s, --json <path>", "config")
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new route file based on provided data.")
+  .action((options) => Actions.Api.newRoute(options));
 
 /**
  * Config

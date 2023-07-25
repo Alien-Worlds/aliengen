@@ -1,0 +1,12 @@
+public async {{camel_case name}}(
+  {{#each props}}
+  {{> method_prop this}}
+  {{/each}}
+): Promise<{{output}}Output> {
+  const result = Result.withContent('OK');
+  /*
+  or
+  const result = await this.your_use_case.execute(your_input);
+  */
+  return {{output}}Output.create(result);
+}

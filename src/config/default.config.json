@@ -30,6 +30,7 @@
       "repository_impl": "{{root}}/endpoints/{{endpoint}}/data/repositories/{{name}}.repository-impl.ts",
       "repository_impl_unit_test": "{{root}}/endpoints/{{endpoint}}/data/repositories/__tests__/{{name}}.repository-impl.unit.test.ts",
       "route": "{{root}}/endpoints/{{endpoint}}/routes/{{name}}.route.ts",
+      "route_unit_test": "{{root}}/endpoints/{{endpoint}}/routes/__tests__/{{name}}.route.unit.test.ts",
       "schemas": "{{root}}/endpoints/{{endpoint}}/schemas/{{name}}.schema.json",
       "service": "{{root}}/endpoints/{{endpoint}}/domain/services/{{name}}.service.ts",
       "service_factory": "{{root}}/endpoints/{{endpoint}}/data/services/{{name}}.service-factory.ts",
@@ -205,7 +206,15 @@
         "props": []
       },
       "controller": {
-        "imports": [],
+        "imports": [
+          {
+            "list": [
+              "injectable",
+              "inject"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
         "props": []
       },
       "query_builder": {
@@ -261,8 +270,71 @@
         ]
       },
       "route": {
-        "imports": [],
-        "props": []
+        "get": {
+          "imports": [
+            {
+              "list": [
+                "UnknownObject",
+                "GetRoute",
+                "RouteHandler"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        },
+        "post": {
+          "imports": [
+            {
+              "list": [
+                "UnknownObject",
+                "PostRoute",
+                "RouteHandler"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        },
+        "put": {
+          "imports": [
+            {
+              "list": [
+                "UnknownObject",
+                "PutRoute",
+                "RouteHandler"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        },
+        "patch": {
+          "imports": [
+            {
+              "list": [
+                "UnknownObject",
+                "PatchRoute",
+                "RouteHandler"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        },
+        "delete": {
+          "imports": [
+            {
+              "list": [
+                "UnknownObject",
+                "DeleteRoute",
+                "RouteHandler"
+              ],
+              "path": "@alien-worlds/api-core"
+            }
+          ],
+          "props": []
+        }
       }
     }
   }
