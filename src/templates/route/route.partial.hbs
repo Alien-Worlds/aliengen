@@ -1,0 +1,41 @@
+/**
+ * `{{pascal_case name}}Route` is a HTTP {{constant_case type}} route that connects the HTTP request and the controller input.
+ * This class acts as a bridge between the incoming HTTP request and the controller input, ensuring the
+ * input is validated and the necessary hooks are called before and after the controller handles the request.
+ *
+ * @class
+ * @extends { {{pascal_case type}}Route }
+ */
+export class {{pascal_case name}}Route extends {{pascal_case type}}Route {
+
+  /**
+   * Static method to create an instance of the `{{pascal_case name}}Route` class.
+   *
+   * @param {RouteHandler} handler - The route handler.
+   * @param {ApiConfig} config - API configuration.
+   * @returns { {{pascal_case name}}Route } - An instance of the `{{pascal_case name}}Route` class.
+   */
+  public static create(handler: RouteHandler, config: ApiConfig) {
+    return new {{pascal_case name}}Route(handler, config);
+  }
+
+  private constructor(handler: RouteHandler, config: ApiConfig) {
+    super(`/{{path}}`, handler, {
+      {{#if authorization}}
+      authorization: request => {
+        {{> route_auth authorization}}
+      },
+      {{/if}}
+      {{#if validators}}
+      validators: {
+        {{> route_validators validators}}
+      },
+      {{/if}}
+      {{#if hooks}}
+      hooks: {
+        {{> route_hooks hooks}}
+      },
+      {{/if}}
+    });
+  }
+}

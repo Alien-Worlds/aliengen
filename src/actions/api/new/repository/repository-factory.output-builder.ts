@@ -51,7 +51,7 @@ export class RepositoryFactoryOutputBuilder extends RepositoryOutputBuilder {
         });
       }
     }
-    console.log("::", JSON.stringify(models, null, 2));
+
     return models;
   }
 }

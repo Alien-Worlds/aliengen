@@ -1,0 +1,13 @@
+{{#if request}}
+request: (request: Request<unknown>) => {
+  let valid = true;
+  
+  // ...
+
+  return {
+    valid,
+    message: !valid ? 'bad request' : '',
+    errors: [],
+  };
+},
+{{/if}}

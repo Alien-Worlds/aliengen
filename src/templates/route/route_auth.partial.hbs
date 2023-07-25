@@ -1,0 +1,19 @@
+{{#if (eq type "jwt")}}
+if (!config.secretKey) {
+  return false;
+}
+
+if (config.secretKey && !request.headers['authorization']) {
+  return false;
+}
+
+const token = request.headers['authorization'].split(' ')[1];
+const decodedToken = jwt.verify(token, config.secretKey, {
+  maxAge: config.expirationTime,
+});
+
+return !!decodedToken;
+{{else}}
+// :)
+return true;
+{{/if}}

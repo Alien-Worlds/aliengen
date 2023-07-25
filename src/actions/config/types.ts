@@ -83,7 +83,9 @@ export type DefaultsConfig = {
   service_factory?: ComponentDefaultConfig;
   input?: ComponentDefaultConfig;
   output?: ComponentDefaultConfig;
-  route?: ComponentDefaultConfig;
+  route?: {
+    [type: string]: ComponentDefaultConfig;
+  };
 };
 
 export type SourceConfig = {

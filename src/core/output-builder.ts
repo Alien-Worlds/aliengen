@@ -7,6 +7,7 @@ import {
   DefaultOptions,
   GeneratedOutput,
   RelativeImport,
+  RelativeInjection,
 } from "../types";
 import { existsSync } from "fs";
 import { ComponentTemplatePaths } from "../templates";
@@ -33,6 +34,18 @@ export abstract class OutputBuilder<
       }
     }
     return Array.from(imports);
+  }
+
+  protected combineInjections(models: TemplateModelType[], relativeTo: string) {
+    const injections = new Set<RelativeInjection>();
+    for (const model of models) {
+      if (model.injections) {
+        for (const i of model.injections) {
+          injections.add({ ...i, relativeTo });
+        }
+      }
+    }
+    return Array.from(injections);
   }
 
   public inititalize(
@@ -70,6 +83,7 @@ export abstract class OutputBuilder<
           content: templateEngine.generateOutput(
             ComponentTemplatePaths.getPath(type),
             {
+              injections: this.combineInjections(models, path),
               imports: this.combineImports(models, path),
               models,
               path,

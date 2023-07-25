@@ -1,0 +1,68 @@
+{{> imports imports}}
+
+{{#each imports}}
+{{> mock_import this}}
+
+{{/each}}
+/*__mock__*/
+
+{{#each models}}
+describe('{{pascal_case name}}Route', () => {
+  let routeHandler: any;
+  let config: any = {};
+
+  beforeEach(() => {
+    routeHandler = jest.fn();
+  });
+
+  it('should create a new {{pascal_case name}}Route instance', () => {
+    const instance = {{pascal_case name}}Route.create(routeHandler, config);
+    expect(instance).toBeInstanceOf({{pascal_case name}}Route);
+  });
+
+  it('should call {{pascal_case type}}Route constructor with correct route', () => {
+    {{pascal_case name}}Route.create(`/lorem/ipsum`, config);
+    expect({{pascal_case type}}Route).toHaveBeenCalled();
+  });
+  {{#if hooks}}
+
+  {{#if hooks.pre}}
+  it('should have pre hook', () => {
+    {{pascal_case name}}Route.create(routeHandler, config);
+    const hook = ({{pascal_case type}}Route as jest.Mock).mock.calls[0][2].hooks.pre;
+    expect(hook).toBeDefined();
+  });
+  {{/if}}
+
+  {{#if hooks.post}}
+  it('should have post hook', () => {
+    {{pascal_case name}}Route.create(routeHandler, config);
+    const hook = ({{pascal_case type}}Route as jest.Mock).mock.calls[0][2].hooks.post;
+    expect(hook).toBeDefined();
+  });
+  {{/if}}
+  {{/if}}
+  {{#if validators}}
+
+  {{#if validators.request}}
+  it('should have request validator', () => {
+    {{pascal_case name}}Route.create(routeHandler, config);
+    const validator = ({{pascal_case type}}Route as jest.Mock).mock.calls[0][2].validators.request;
+    expect(validator).toBeDefined();
+  });
+  {{/if}}
+  {{/if}}
+  {{#if authorization}}
+  
+  it('should have authorization', () => {
+    {{pascal_case name}}Route.create(routeHandler, config);
+    const auth = ({{pascal_case type}}Route as jest.Mock).mock.calls[0][2].authorization;
+    expect(auth).toBeDefined();
+  });
+  {{/if}}
+
+  /*__unit_test__*/
+});
+
+{{/each}}
+/*__group__*/

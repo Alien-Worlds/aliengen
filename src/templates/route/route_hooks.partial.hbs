@@ -1,0 +1,6 @@
+{{#if pre}}
+pre: {{pascal_case name}}Input.fromRequest,
+{{/if}}
+{{#if post}}
+post: (output: {{pascal_case name}}Output) => output.toResponse(),
+{{/if}}
