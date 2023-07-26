@@ -1,15 +1,19 @@
+{{#if print_jsdocs}}
 /**
  * Input model for ...
  *
  * @class {{pascal_case name}}Input
  */
+{{/if}}
 export class {{pascal_case name}}Input {
+  {{#if print_jsdocs}}
   /**
    * Create a new instance of {{pascal_case name}}Input from an HTTP request object.
    * 
    * @param { Request } request
    * @returns { {{pascal_case name}}Input }
    */
+  {{/if}}
   public static fromRequest(
     request: Request<{{#if (not_empty requestBody)}}{{requestBody}}{{else}}UnknownBody{{/if}}, {{#if (not_empty requestParams)}}{{requestParams}}{{else}}UnknownParams{{/if}}, {{#if (not_empty requestQuery)}}{{requestQuery}}{{else}}UnknownQuery{{/if}}>
   ): {{pascal_case name}}Input {
@@ -42,6 +46,7 @@ export class {{pascal_case name}}Input {
     );
   }
 
+  {{#if print_jsdocs}}
   /**
    * Create a new instance of {{pascal_case name}}Input.
    * 
@@ -50,6 +55,7 @@ export class {{pascal_case name}}Input {
    {{> jsdoc_param this}}
    {{/each}}
    */
+  {{/if}}
   constructor(
     {{#each props}}
     {{> constructor_prop this}}

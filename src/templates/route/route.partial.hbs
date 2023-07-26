@@ -1,3 +1,4 @@
+{{#if print_jsdocs}}
 /**
  * `{{pascal_case name}}Route` is a HTTP {{constant_case type}} route that connects the HTTP request and the controller input.
  * This class acts as a bridge between the incoming HTTP request and the controller input, ensuring the
@@ -6,8 +7,10 @@
  * @class
  * @extends { {{pascal_case type}}Route }
  */
+ {{/if}}
 export class {{pascal_case name}}Route extends {{pascal_case type}}Route {
 
+  {{#if print_jsdocs}}
   /**
    * Static method to create an instance of the `{{pascal_case name}}Route` class.
    *
@@ -15,6 +18,7 @@ export class {{pascal_case name}}Route extends {{pascal_case type}}Route {
    * @param {ApiConfig} config - API configuration.
    * @returns { {{pascal_case name}}Route } - An instance of the `{{pascal_case name}}Route` class.
    */
+   {{/if}}
   public static create(handler: RouteHandler, config: ApiConfig) {
     return new {{pascal_case name}}Route(handler, config);
   }

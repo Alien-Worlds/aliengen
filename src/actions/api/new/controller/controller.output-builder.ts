@@ -107,20 +107,10 @@ export class ControllerOutputBuilder extends OutputBuilder<
         });
       });
     }
-    console.log(
-      "::::",
-      JSON.stringify({
-        injectable: true,
-        name: pascalCaseName,
-        imports: Array.from(imports),
-        props: Array.from(props),
-        methods: Array.from(methods),
-        injections: Array.from(injections),
-      }, null, 2)
-    );
+
     return [
       {
-        injectable: true,
+        ...this.buildConfigOutput(),
         name: pascalCaseName,
         imports: Array.from(imports),
         props: Array.from(props),

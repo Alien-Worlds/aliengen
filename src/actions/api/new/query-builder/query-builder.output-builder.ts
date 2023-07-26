@@ -62,6 +62,7 @@ export class QueryBuilderOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         name: pascalCaseName,
         imports: Array.from(imports),
         type,

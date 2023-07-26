@@ -88,6 +88,7 @@ export class ServiceOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         injectable: true,
         name: pascalCaseName,
         methods: Array.from(methods),

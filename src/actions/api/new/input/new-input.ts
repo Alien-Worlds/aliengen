@@ -1,16 +1,23 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { InputUnitTestOutputBuilder } from "./input-unit-test.output-builder";
+import { InputOutputBuilder } from "./input.output-builder";
 import { NewInputOptions } from "./types";
 
 export const newInput = async (options: NewInputOptions) => {
-  if (!options.skipTests) {
-    options.include = [ComponentType.InputUnitTest];
+  const config = getConfig();
+  const builder = new ComponentBuilder(ComponentType.Input, config, options);
+
+  if (!options.skipTests && !config.source.skip_tests) {
+    builder.includeRelated(
+      ComponentType.InputUnitTest,
+      new InputUnitTestOutputBuilder()
+    );
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Input, validateNewInputOptions);
+  builder.useValidator(validateNewInputOptions).build(new InputOutputBuilder());
 };
 
 export const validateNewInputOptions = async (

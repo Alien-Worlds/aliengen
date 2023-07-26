@@ -1,15 +1,16 @@
-import { ComponentTemplateModel, Method } from "../../../../types";
+import { ComponentTemplateModel, DefaultOptions, Method } from "../../../../types";
 
 export type NewDataSourceOptions = {
   name: string;
-  type: string;
-  model: string;
+  skipTests?: boolean;
   endpoint?: string;
-  json?: string;
+  type?: string;
   include?: string[];
-  methods?: string[];
+  json?: string;
   force?: boolean;
   here?: boolean;
+  model: string;
+  methods?: string[];
 };
 
 export type DataSourceComponentModel = ComponentTemplateModel & {

@@ -87,6 +87,7 @@ export class DataSourceOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         name: pascalCaseName,
         model,
         type,

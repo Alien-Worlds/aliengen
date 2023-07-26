@@ -1,9 +1,12 @@
+{{#if print_jsdocs}}
 /**
  * Factory class for creating and initializing the {{pascal_case name}}Service and its dependencies.
  *
  * @class {{pascal_case name}}ServiceFactory
  */
+ {{/if}}
 export class {{pascal_case name}}ServiceFactory {
+  {{#if print_jsdocs}}
   /**
    * Create and initialize a new instance of the {{pascal_case name}}Service.
    *
@@ -13,6 +16,7 @@ export class {{pascal_case name}}ServiceFactory {
    * @returns { Promise<{{pascal_case name}}Service> } A Promise that resolves to the initialized {{pascal_case name}}Service instance.
    * @memberof {{pascal_case name}}ServiceFactory
    */
+   {{/if}}
   public static async create(
     container?: Container
   ) {
@@ -27,4 +31,4 @@ export class {{pascal_case name}}ServiceFactory {
     return service;
   }
 }
-/*__service_factory__*/
+{{#if print_markers}}/*__service_factory__*/{{/if}}

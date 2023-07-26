@@ -1,6 +1,6 @@
 {{>imports imports}}
 
-/*__mock__*/
+{{#if print_markers}}/*__mock__*/{{/if}}
 {{#each imports}}
 {{> mock_import this}}
 
@@ -17,9 +17,9 @@ describe('{{pascal_case name}}RepositoryFactory', () => {
     expect(repository).toBeInstanceOf({{pascal_case name}}Repository);
     expect(containerMock.bind).toHaveBeenCalledTimes(1);
   });
-  /*__unit_test__*/
+  {{#if print_markers}}/*__unit_test__*/{{/if}}
 
 });
 
 {{/each}}
-/*__group__*/
+{{#if print_markers}}/*__group__*/{{/if}}

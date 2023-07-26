@@ -1,16 +1,29 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { QueryBuilderUnitTestOutputBuilder } from "./query-builder-unit-test.output-builder";
+import { QueryBuilderOutputBuilder } from "./query-builder.output-builder";
 import { NewQueryBuilderOptions } from "./types";
 
 export const newQueryBuilder = async (options: NewQueryBuilderOptions) => {
-  if (!options.skipTests) {
-    options.include = [ComponentType.QueryBuilderUnitTest];
+  const config = getConfig();
+  const builder = new ComponentBuilder(
+    ComponentType.QueryBuilder,
+    config,
+    options
+  );
+
+  if (!options.skipTests && !config.source.skip_tests) {
+    builder.includeRelated(
+      ComponentType.QueryBuilderUnitTest,
+      new QueryBuilderUnitTestOutputBuilder()
+    );
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.QueryBuilder, validateNewQueryBuilderOptions);
+  builder
+    .useValidator(validateNewQueryBuilderOptions)
+    .build(new QueryBuilderOutputBuilder());
 };
 
 export const validateNewQueryBuilderOptions = async (

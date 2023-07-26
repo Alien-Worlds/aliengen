@@ -1,9 +1,12 @@
+{{#if print_jsdocs}}
 /**
  * Factory class for creating and initializing the {{pascal_case name}}Repository and its dependencies.
  *
  * @class {{pascal_case name}}RepositoryFactory
  */
+ {{/if}}
 export class {{pascal_case name}}RepositoryFactory {
+  {{#if print_jsdocs}}
   /**
    * Create and initialize a new instance of the {{pascal_case name}}Repository.
    *
@@ -14,6 +17,7 @@ export class {{pascal_case name}}RepositoryFactory {
    * @returns { Promise<{{pascal_case name}}Repository> } A Promise that resolves to the initialized {{pascal_case name}}Repository instance.
    * @memberof {{pascal_case name}}RepositoryFactory
    */
+   {{/if}}
   public static async create(
     database: {{pascal_case database}}Source | {{pascal_case database}}Config,
     container?: Container
@@ -43,4 +47,4 @@ export class {{pascal_case name}}RepositoryFactory {
     return repository;
   }
 }
-/*__repository_factory__*/
+{{#if print_markers}}/*__repository_factory__*/{{/if}}

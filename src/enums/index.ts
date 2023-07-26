@@ -1,4 +1,6 @@
 export enum ComponentType {
+  RootDependencyInjector = "root_dependency_injector",
+  DependencyInjector = "dependency_injector",
   Controller = "controller",
   ControllerUnitTest = "controller_unit_test",
   DataSource = "data_source",

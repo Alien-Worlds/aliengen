@@ -1,7 +1,7 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 {{#each models}}
 {{> use_case this}}
 
 {{/each}}
-/*__use_case__*/
+{{#if print_markers}}/*__use_case__*/{{/if}}

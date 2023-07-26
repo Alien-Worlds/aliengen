@@ -1,18 +1,29 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { EntityUnitTestOutputBuilder } from "./entity-unit-test.output-builder";
+import { EntityOutputBuilder } from "./entity.output-builder";
 import { NewEntityOptions } from "./types";
 
 export const newEntity = async (options: NewEntityOptions) => {
-  if (Array.isArray(options.include)) {
-    options.include.push(ComponentType.EntityUnitTest);
-  } else {
-    options.include = [ComponentType.EntityUnitTest];
+  const config = getConfig();
+  const builder = new ComponentBuilder(ComponentType.Entity, config, options);
+
+  if (Array.isArray(options.include) && options.include.includes("all")) {
+    // include all related components
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Entity, validateNewEntityOptions);
+  if (!options.skipTests && !config.source.skip_tests) {
+    builder.includeRelated(
+      ComponentType.EntityUnitTest,
+      new EntityUnitTestOutputBuilder()
+    );
+  }
+
+  builder
+    .useValidator(validateNewEntityOptions)
+    .build(new EntityOutputBuilder());
 };
 
 export const validateNewEntityOptions = async (

@@ -1,18 +1,33 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { ControllerUnitTestOutputBuilder } from "./controller-unit-test.output-builder";
+import { ControllerOutputBuilder } from "./controller.output-builder";
 import { NewControllerOptions } from "./types";
 
 export const newController = async (options: NewControllerOptions) => {
-  if (Array.isArray(options.include)) {
-    options.include.push(ComponentType.ControllerUnitTest);
-  } else {
-    options.include = [ComponentType.ControllerUnitTest];
+  const config = getConfig();
+  const builder = new ComponentBuilder(
+    ComponentType.Controller,
+    config,
+    options
+  );
+
+  if (Array.isArray(options.include) && options.include.includes("all")) {
+    // include all related components
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Controller, validateNewControllerOptions);
+  if (!options.skipTests && !config.source.skip_tests) {
+    builder.includeRelated(
+      ComponentType.ControllerUnitTest,
+      new ControllerUnitTestOutputBuilder()
+    );
+  }
+
+  builder
+    .useValidator(validateNewControllerOptions)
+    .build(new ControllerOutputBuilder());
 };
 
 export const validateNewControllerOptions = async (

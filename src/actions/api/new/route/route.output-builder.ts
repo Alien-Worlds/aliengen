@@ -81,6 +81,7 @@ export class RouteOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         authorization,
         validators,
         hooks,

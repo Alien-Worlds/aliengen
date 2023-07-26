@@ -1,15 +1,18 @@
+{{#if print_jsdocs}}
 /**
  * Represents the {{name}}UseCase use case.
  * This use case ...
  *
  * @class
  */
-{{#if injectable}}
+ {{/if}}
+{{#if use_ioc}}
 @injectable()
 {{/if}}
 export class {{name}}UseCase implements UseCase<void> {
   public static Token = '{{constant_case name}}_USE_CASE';
 
+  {{#if print_jsdocs}}
   /**
    * Creates an instance of the {{name}}UseCase class.
    *
@@ -24,6 +27,7 @@ export class {{name}}UseCase implements UseCase<void> {
   {{/each}}
   {{/if}}
    */
+   {{/if}}
   constructor(
     {{#if injections}}
     {{#each injections}}
@@ -34,15 +38,16 @@ export class {{name}}UseCase implements UseCase<void> {
     {{> constructor_prop this}}
     {{/each}}
     {{/if}}
-    /*__constructor__*/
+    {{#if print_markers}}/*__constructor__*/{{/if}}
   ) { }
-
+  {{#if print_jsdocs}}
   /**
   * Executes the {{name}}UseCase to ...
   *
   * @async
   * @returns {Promise<Result<void>>}
   */
+  {{/if}}
   public async execute(): Promise<Result<void>> {
     // ...
     return Result.withoutContent();

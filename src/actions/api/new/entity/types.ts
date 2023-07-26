@@ -1,4 +1,4 @@
-import { ComponentTemplateModel, Prop } from "../../../../types";
+import { ComponentTemplateModel, DefaultOptions, Prop } from "../../../../types";
 
 export type NewEntityOptions = {
   name: string;
@@ -8,6 +8,7 @@ export type NewEntityOptions = {
   props?: string[];
   force?: boolean;
   here?: boolean;
+  skipTests?: boolean;
 };
 
 export type EntityComponentModel = ComponentTemplateModel & {

@@ -271,6 +271,34 @@ newComponent
   .description("Creates new route file based on provided data.")
   .action((options) => Actions.Api.newRoute(options));
 
+newComponent
+  .command("injector")
+  .option("-n, --name <value>", "Name of the route")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option("-f, --force", "", false)
+  .option("-r, --root", "", false)
+  .option("-h, --here", "", false)
+  .description("Creates new dependency injector file based on provided data.")
+  .action((options) => Actions.Api.newDependencyInjector(options));
+
+newComponent
+  .command("mapper")
+  .option("-n, --name <value>", "Name of the mapper")
+  .option("-t, --type <value>", "Type of the mapper")
+  .option("-e, --endpoint <value>", "Name of the endpoint")
+  .option("-s, --json <path>", "config")
+  .option(
+    "-i, --include [values...]",
+    "Include all related components: repository, data source, model, mapper or all",
+    []
+  )
+  .option("-f, --force", "", false)
+  .option("-h, --here", "", false)
+  .option("-p, --props [values...]", "prop1:string prop2:number")
+  .description("Creates new mapper file based on provided data.")
+  .action((options) => Actions.Api.newMapper(options));
+
 /**
  * Config
  */

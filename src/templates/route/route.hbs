@@ -1,4 +1,4 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 type ApiConfig = UnknownObject;
 
@@ -6,4 +6,4 @@ type ApiConfig = UnknownObject;
 {{> route this}}
 
 {{/each}}
-/*__route__*/
+{{#if print_markers}}/*__route__*/{{/if}}

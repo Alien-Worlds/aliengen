@@ -1,0 +1,7 @@
+{{render "imports" imports print_markers=print_markers}}
+
+{{#each models}}
+{{> mapper this}}
+
+{{/each}}
+{{#if print_markers}}/*__mapper__*/{{/if}}

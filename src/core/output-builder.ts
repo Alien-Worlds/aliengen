@@ -26,6 +26,16 @@ export abstract class OutputBuilder<
   protected abstract buildTemplateModels(): Promise<TemplateModelType[]>;
   public abstract registerTemplates(): void;
 
+  protected buildConfigOutput() {
+    const {
+      config: {
+        source: { print_jsdocs, print_markers, use_ioc, print_examples },
+      },
+    } = this;
+
+    return { print_jsdocs, print_markers, use_ioc, print_examples };
+  }
+
   protected combineImports(models: TemplateModelType[], relativeTo: string) {
     const imports = new Set<RelativeImport>();
     for (const model of models) {
@@ -83,6 +93,7 @@ export abstract class OutputBuilder<
           content: templateEngine.generateOutput(
             ComponentTemplatePaths.getPath(type),
             {
+              ...this.buildConfigOutput(),
               injections: this.combineInjections(models, path),
               imports: this.combineImports(models, path),
               models,

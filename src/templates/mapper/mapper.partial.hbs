@@ -1,0 +1,50 @@
+{{#if print_jsdocs}}
+/**
+ * Class representing a {{pascal_case name}}{{pascal_case type}}Mapper
+ * This class extends the {{pascal_case type}}Mapper to provide {{pascal_case type}}-specific mappings for {{pascal_case name}}.
+ *
+ * @class
+ */
+{{/if}}
+export class {{pascal_case name}}{{pascal_case type}}Mapper extends {{pascal_case type}}Mapper<
+  {{pascal_case name}},
+  {{pascal_case name}}{{pascal_case type}}Model
+> {
+  {{#if print_jsdocs}}
+  /**
+   * Creates a new instance of {{pascal_case name}}{{pascal_case type}}Mapper and sets up the mappings.
+   * This class extends the {{pascal_case type}}Mapper to provide {{pascal_case type}}-specific mappings for {{pascal_casename}}.
+   *
+   * @constructor
+   */
+  {{/if}}
+  constructor() {
+    super();
+    {{#each props}}
+    {{> mapping_from_entity this}}
+    {{/each}}
+    {{#if print_markers}}/*__mapping__*/{{/if}}
+  }
+
+  {{#if print_jsdocs}}
+  /**
+   * Converts a {{pascal_case type}} model of {{pascal_case name}}{{pascal_case type}}Model to a {{pascal_case name}} entity.
+   *
+   * @param { {{pascal_case name}}{{pascal_case type}}Model } model - The {{pascal_case type}} document.
+   * @returns { {{pascal_case name}} } The {{pascal_case name}} entity.
+   */
+   {{/if}}
+  public toEntity(model: {{pascal_case name}}{{pascal_case type}}Model): {{pascal_case name}} {
+    const {
+      {{#each props}}
+      {{snake_case this.name}},
+      {{/each}}
+    } = model;
+    
+    return new {{pascal_case name}}(
+      {{#each props}}
+      {{> arg this}}
+      {{/each}}
+    );
+  }
+}

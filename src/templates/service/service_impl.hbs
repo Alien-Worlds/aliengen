@@ -1,7 +1,7 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 {{#each models}}
 {{> service_impl this}}
 
 {{/each}}
-/*__service_impl__*/
+{{#if print_markers}}/*__service_impl__*/{{/if}}

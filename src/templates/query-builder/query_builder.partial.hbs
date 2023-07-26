@@ -1,10 +1,13 @@
+{{#if print_jsdocs}}
 /**
  * Query builder class for constructing a query to ...
  *
  * @class {{pascal_case name}}{{pascal_case type}}QueryBuilder
  * @extends {QueryBuilder}
  */
+ {{/if}}
 export class {{pascal_case name}}{{pascal_case type}}QueryBuilder extends QueryBuilder {
+  {{#if print_jsdocs}}
   /**
    * Build the query to ...
    *
@@ -12,6 +15,7 @@ export class {{pascal_case name}}{{pascal_case type}}QueryBuilder extends QueryB
    * @override
    * @returns {Query} The constructed ... query.
    */
+   {{/if}}
   public build(): Query {
     return {};
   }

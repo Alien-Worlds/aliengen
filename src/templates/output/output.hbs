@@ -1,7 +1,7 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 {{#each models}}
 {{> output this}}
 
 {{/each}}
-/*__output__*/
+{{#if print_markers}}/*__output__*/{{/if}}

@@ -9,6 +9,7 @@ export type NewUseCaseOptions = {
   injections?: string[];
   force?: boolean;
   here?: boolean;
+  skipTests?: boolean;
 };
 
 export type UseCaseComponentModel = ComponentTemplateModel & {

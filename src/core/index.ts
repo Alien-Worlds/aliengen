@@ -1,4 +1,3 @@
-export * from "./eosjs.rpc.source";
 export * from "./failure";
 export * from "./file-structure";
 export * from "./interaction-prompts";

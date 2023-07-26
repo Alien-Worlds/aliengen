@@ -1,6 +1,8 @@
+{{#if print_jsdocs}}
 /**
  * @typedef {Object} {{pascal_case name}}{{pascal_case type}}Model
  */
+{{/if}}
 export type {{pascal_case name}}{{pascal_case type}}Model = {
 {{#each props}}
   {{> prop this}}

@@ -1,6 +1,6 @@
 {{>imports imports}}
 
-/*__mock__*/
+{{#if print_markers}}/*__mock__*/{{/if}}
 /*
 jest.mock('<path_to_injected_dependency>', () => ({
   <class_name>: {
@@ -10,7 +10,7 @@ jest.mock('<path_to_injected_dependency>', () => ({
 */
 
 {{#each models}}
-/*__fixture__*/
+{{#if print_markers}}/*__fixture__*/{{/if}}
 
 describe('{{this.name}}UseCase', () => {
   /*
@@ -53,7 +53,7 @@ describe('{{this.name}}UseCase', () => {
     expect(result.content).toBeFalsy();
     expect(result.isFailure()).toBe(true);
   });
-  /*__unit_test__*/
+  {{#if print_markers}}/*__unit_test__*/{{/if}}
 });
 {{/each}}
-/*__group__*/
+{{#if print_markers}}/*__group__*/{{/if}}

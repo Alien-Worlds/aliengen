@@ -1,0 +1,40 @@
+{{#if print_jsdocs}}
+/**
+ * Class representing a custom Dependency Injector for the {{pascal_case name}}.
+ * This class extends the base DependencyInjector class to provide custom setup for {{pascal_case name}}'s dependencies.
+ *
+ * @class
+ * @extends {DependencyInjector}
+ */
+{{/if}}
+export class {{pascal_case name}}DependencyInjector extends DependencyInjector {
+  {{#if print_examples}}
+  /*
+  constructor(protected config: Config, container: Container) {
+    super(container);
+  }
+  */
+  {{/if}}
+
+  {{#if print_jsdocs}}
+  /**
+   * Sets up the dependency injection container for the {{pascal_case name}}.
+   * This method is called to configure and bind the required dependencies for the component.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
+  {{/if}}
+  public async setup(): Promise<void> {
+    {{#if print_examples}}
+    /*
+    const { config, container} = this;
+    const mongoSource = await MongoSource(config.mongo);
+    const loremRepository = await LoremRepositoryFactory.create(mongoSource, container);
+
+    container.bind<LoremUseCase>(LoremUseCase.Token).to(LoremUseCase);
+    container.bind<IpsumService>(IpsumService.Token).toConstantValue(new IpsumService());
+    */
+    {{/if}}
+  }
+}

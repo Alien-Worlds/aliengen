@@ -1,7 +1,7 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 {{#each models}}
 {{> query_builder this}}
 
 {{/each}}
-/*__query_builder__*/
+{{#if print_markers}}/*__query_builder__*/{{/if}}

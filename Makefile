@@ -2,6 +2,7 @@ copy-assets:
 	@mkdir -p ./build/src/templates/common/
 	@mkdir -p ./build/src/templates/controller/
 	@mkdir -p ./build/src/templates/data-source/
+	@mkdir -p ./build/src/templates/dependency-injector/
 	@mkdir -p ./build/src/templates/entity/
 	@mkdir -p ./build/src/templates/input/
 	@mkdir -p ./build/src/templates/mapper/
@@ -15,6 +16,7 @@ copy-assets:
 	@cp -R ./src/templates/common/*.hbs ./build/src/templates/common/
 	@cp -R ./src/templates/controller/*.hbs ./build/src/templates/controller/
 	@cp -R ./src/templates/data-source/*.hbs ./build/src/templates/data-source/
+	@cp -R ./src/templates/dependency-injector/*.hbs ./build/src/templates/dependency-injector/
 	@cp -R ./src/templates/entity/*.hbs ./build/src/templates/entity/
 	@cp -R ./src/templates/input/*.hbs ./build/src/templates/input/
 	@cp -R ./src/templates/mapper/*.hbs ./build/src/templates/mapper/

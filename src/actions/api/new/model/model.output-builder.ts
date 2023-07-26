@@ -61,6 +61,7 @@ export class ModelOutputBuilder extends OutputBuilder<
     }
 
     return {
+      ...this.buildConfigOutput(),
       name,
       type,
       imports: Array.from(imports),

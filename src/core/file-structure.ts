@@ -1,6 +1,6 @@
 import { join } from "path";
 import { paramCase } from "change-case";
-import { DefaultOptions, GeneratedPath } from "../types";
+import { GeneratedPath } from "../types";
 import { getSourcePath } from "../utils/files";
 import { SourceConfig } from "../actions/config";
 
@@ -10,7 +10,11 @@ export class UndefinedPathPatternError extends Error {
   }
 }
 
-export type FileStructureAddons = { endpoint?: string; database?: string };
+export type FileStructureAddons = {
+  endpoint?: string;
+  type?: string;
+  [key: string]: string;
+};
 
 export class FileStructure {
   protected root: string;
@@ -19,6 +23,9 @@ export class FileStructure {
     protected addons?: FileStructureAddons
   ) {
     this.root = getSourcePath(process.cwd(), config.dirname);
+    if (!addons) {
+      this.addons = {};
+    }
   }
 
   public has(name: string): boolean {
@@ -31,10 +38,9 @@ export class FileStructure {
     name: string,
     here?: boolean
   ): GeneratedPath {
-    const { root } = this;
+    const { root, addons, config } = this;
+    const pattern = config.structure[type];
 
-    const pattern = this.config.structure[type];
-    const { endpoint, database } = this.addons || {};
     if (pattern) {
       const [pathPattern, marker] = pattern.split("#");
       const [rest, ext] = pathPattern.split("{{name}}");
@@ -46,13 +52,16 @@ export class FileStructure {
         parsedPath = pathPattern.replace("{{root}}", root);
         parsedPath = parsedPath.replace("{{name}}", paramCase(name));
 
-        if (endpoint) {
-          parsedPath = parsedPath.replace("{{endpoint}}", paramCase(endpoint));
+        if (addons.endpoint) {
+          parsedPath = parsedPath.replace(
+            "{{endpoint}}",
+            paramCase(addons.endpoint)
+          );
         }
       }
 
-      if (database) {
-        parsedPath = parsedPath.replace("{{database}}", paramCase(database));
+      if (addons.type) {
+        parsedPath = parsedPath.replace("{{type}}", paramCase(addons.type));
       }
 
       return { path: parsedPath, marker };

@@ -13,6 +13,8 @@ export enum PartialName {
   Imports = "imports",
   Import = "import",
   Model = "model",
+  Mapper = "mapper",
+  MappingFromEntity = "mapping_from_entity",
   Input = "input",
   Output = "output",
   QueryBuilder = "query_builder",
@@ -34,6 +36,7 @@ export enum PartialName {
   RouteValidators = "route_validators",
   RouteHooks = "route_hooks",
   RouteAuth = "route_auth",
+  DependencyInjector = "dependency_injector",
 }
 
 export class PartialTemplatePaths {
@@ -55,6 +58,15 @@ export class PartialTemplatePaths {
       path.join(__dirname, "common", "imports.partial.hbs"),
     ],
     [PartialName.Import, path.join(__dirname, "common", "import.partial.hbs")],
+    [
+      PartialName.MappingFromEntity,
+      path.join(
+        __dirname,
+        "mapping_from_entity",
+        "mapping_from_entity.partial.hbs"
+      ),
+    ],
+    [PartialName.Mapper, path.join(__dirname, "mapper", "mapper.partial.hbs")],
     [PartialName.Model, path.join(__dirname, "model", "model.partial.hbs")],
     [PartialName.Input, path.join(__dirname, "input", "input.partial.hbs")],
     [PartialName.Output, path.join(__dirname, "output", "output.partial.hbs")],
@@ -136,6 +148,14 @@ export class PartialTemplatePaths {
       PartialName.RouteAuth,
       path.join(__dirname, "route", "route_auth.partial.hbs"),
     ],
+    [
+      PartialName.DependencyInjector,
+      path.join(
+        __dirname,
+        "dependency-injector",
+        "dependency_injector.partial.hbs"
+      ),
+    ],
   ]);
 
   public static getPath(label: PartialName): string {
@@ -145,6 +165,11 @@ export class PartialTemplatePaths {
 
 export class ComponentTemplatePaths {
   private static paths = new Map<string, string>([
+    [ComponentType.Mapper, path.join(__dirname, "mapper", "mapper.hbs")],
+    [
+      ComponentType.MapperUnitTest,
+      path.join(__dirname, "mapper_unit_test", "mapper_unit_test.hbs"),
+    ],
     [ComponentType.Model, path.join(__dirname, "model", "model.hbs")],
     [ComponentType.Entity, path.join(__dirname, "entity", "entity.hbs")],
     [
@@ -233,8 +258,19 @@ export class ComponentTemplatePaths {
       path.join(__dirname, "use-case", "use_case_unit_test.hbs"),
     ],
     [ComponentType.Route, path.join(__dirname, "route", "route.hbs")],
-    [ComponentType.RouteUnitTest, path.join(__dirname, "route", "route_unit_test.hbs")],
+    [
+      ComponentType.RouteUnitTest,
+      path.join(__dirname, "route", "route_unit_test.hbs"),
+    ],
     [ComponentType.Util, path.join(__dirname, "util", "util.hbs")],
+    [
+      ComponentType.DependencyInjector,
+      path.join(__dirname, "dependency-injector", "dependency_injector.hbs"),
+    ],
+    [
+      ComponentType.RootDependencyInjector,
+      path.join(__dirname, "dependency-injector", "dependency_injector.hbs"),
+    ],
   ]);
 
   public static getPath(label: ComponentType): string {

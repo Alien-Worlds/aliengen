@@ -1,11 +1,14 @@
+{{#if print_jsdocs}}
 /**
  * A service class for ...
  *
  * @class {{pascal_case name}}ServiceImpl
  * @implements { {{pascal_case name}}Service }
  */
+ {{/if}}
 export class {{pascal_case name}}ServiceImpl implements {{pascal_case name}}Service {
   {{#if (not_empty props)}}
+  {{#if print_jsdocs}}
   /**
    * Creates an instance of {{pascal_case name}}ServiceImpl.
    *
@@ -14,6 +17,7 @@ export class {{pascal_case name}}ServiceImpl implements {{pascal_case name}}Serv
    {{> jsdoc_param this}}
    {{/each}}
    */
+   {{/if}}
   constructor(
     {{#each props}}
     {{> constructor_prop this}}

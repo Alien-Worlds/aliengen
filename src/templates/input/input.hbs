@@ -1,4 +1,4 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 type UnknownBody = unknown;
 type UnknownParams = unknown;
@@ -8,4 +8,4 @@ type UnknownQuery = unknown;
 {{> input this}}
 
 {{/each}}
-/*__input__*/
+{{#if print_markers}}/*__input__*/{{/if}}

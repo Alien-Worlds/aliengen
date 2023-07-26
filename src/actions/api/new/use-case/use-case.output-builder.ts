@@ -87,6 +87,7 @@ export class UseCaseOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         injections: Array.from(injections),
         injectable: true,
         name: pascalCaseName,

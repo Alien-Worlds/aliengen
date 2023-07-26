@@ -75,6 +75,7 @@ export class InputOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         name: pascalCaseName,
         imports: Array.from(imports),
         props: Array.from(props),

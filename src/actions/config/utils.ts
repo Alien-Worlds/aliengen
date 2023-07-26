@@ -62,7 +62,7 @@ export const getConfig = (): Config => {
 
   console.warn(`Global config file not found.`);
 
-  return { source: {} };
+  return { headless: false, source: {} };
 };
 
 export const getConfigPath = (global = false): string => {
@@ -108,3 +108,14 @@ export const getConfigValue = (obj: Object, path: string) => {
 
   return currentValue;
 };
+
+export const getDefaultByType = (type: string) => {
+  if (type === 'string') return '';
+  if (type === 'number') return 0;
+  if (type === 'boolean') return false;
+  if (type === 'bigint') return 0n;
+  if (type === 'array') return [];
+  if (type === 'Date') return new Date(0);
+
+  return {};
+}

@@ -1,14 +1,17 @@
+{{#if print_jsdocs}}
 /**
  * Controller class for handling ... related operations.
  *
  * @class {{pascal_case name}}Controller
  */
-{{#if injectable}}
+{{/if}}
+{{#if use_ioc}}
 @injectable()
 {{/if}}
 export class {{pascal_case name}}Controller {
   public static Token = '{{constant_case name}}_CONTROLLER';
 
+  {{#if print_jsdocs}}
   /**
    * Create a new instance of {{pascal_case name}}Controller.
    *
@@ -17,16 +20,17 @@ export class {{pascal_case name}}Controller {
    {{> jsdoc_param this}}
    {{/each}}
    */
+  {{/if}}
   constructor(
     {{#each injections}}
     {{> inject this}}
     {{/each}}
-    /*__constructor__*/
+    {{#if print_markers}}/*__constructor__*/{{/if}}
   ) {}
 
   {{#each methods}}
   {{> endpoint_method this}}
 
   {{/each}}
-  /*__method__*/
+  {{#if print_markers}}/*__method__*/{{/if}}
 }

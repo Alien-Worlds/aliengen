@@ -2,18 +2,18 @@ import { ComponentTemplateModel, Injection, Method, Prop } from "../../../../typ
 
 export type NewControllerOptions = {
   name: string;
+  skipTests?: boolean;
   endpoint?: string;
-  json?: string;
   include?: string[];
   inject?: string[];
-  methods?: string[];
+  json?: string;
   force?: boolean;
   here?: boolean;
+  methods?: string[];
 };
 
 export type ControllerComponentModel = ComponentTemplateModel & {
   props: Prop[];
   injections: Injection[];
   methods: Method[];
-  injectable: boolean;
 };

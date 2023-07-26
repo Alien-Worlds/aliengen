@@ -1,20 +1,23 @@
+{{#if print_jsdocs}}
 /**
  * Represents a `{{name}}` object.
  *
  * @class
  */
+{{/if}}
 export class {{name}} implements Entity<{{name}}JsonModel> {
-
+  {{#if print_jsdocs}}
   /**
-  * Creates an instance of the `{{name}}` class.
-  *
-  * @static
-  * @public
-  {{#each props}}
-  {{> jsdoc_param this}}
-  {{/each}}
-  * @returns `{{name}}` An instance of the `{{name}}` class.
-  */
+   * Creates an instance of the `{{name}}` class.
+   *
+   * @static
+   * @public
+   {{#each props}}
+   {{> jsdoc_param this}}
+   {{/each}}
+   * @returns `{{name}}` An instance of the `{{name}}` class.
+   */
+  {{/if}}
   public static create(
   {{#each props}}
     {{> method_prop this}}
@@ -42,7 +45,8 @@ export class {{name}} implements Entity<{{name}}JsonModel> {
     {{/each}}
     );
   }
-
+  
+  {{#if print_jsdocs}}
   /**
    * Constructs a new instance of the `{{name}}` class.
    *
@@ -54,6 +58,7 @@ export class {{name}} implements Entity<{{name}}JsonModel> {
    * @param string [id]
    * @returns `{{name}}` - An instance of the `{{name}}` class.
    */
+  {{/if}}
   public constructor(
   {{#each props}}
     {{> constructor_prop this}}
@@ -66,12 +71,14 @@ export class {{name}} implements Entity<{{name}}JsonModel> {
     {{/if}}
   {{/each}}
 
+  {{#if print_jsdocs}}
   /**
    * Converts the current instance of the `{{name}}` class to a JSON object.
    * 
    * @public
    * @returns {{{name}}}JsonModel The JSON representation of the instance.
    */
+  {{/if}}
   public toJSON(): {{name}}JsonModel {
     const {
       {{#each props}}

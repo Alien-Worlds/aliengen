@@ -24,7 +24,9 @@ import {
   LteHelper,
   NotEmptyHelper,
   NotHelper,
+  OrHelper,
   RelativePathHelper,
+  RenderHelper,
 } from "../template-helpers";
 import {
   ComponentTemplatePaths,
@@ -42,6 +44,7 @@ export class TemplateEngine {
       constant_case: constantCase,
       snake_case: snakeCase,
     });
+    Handlebars.registerHelper(RenderHelper.Token, RenderHelper.fn);
     Handlebars.registerHelper(RelativePathHelper.Token, RelativePathHelper.fn);
     Handlebars.registerHelper(CurlyBracesHelper.Token, CurlyBracesHelper.fn);
     Handlebars.registerHelper(NotEmptyHelper.Token, NotEmptyHelper.fn);
@@ -54,6 +57,7 @@ export class TemplateEngine {
     Handlebars.registerHelper(LteHelper.Token, LteHelper.fn);
     Handlebars.registerHelper(GtHelper.Token, GtHelper.fn);
     Handlebars.registerHelper(GteHelper.Token, GteHelper.fn);
+    Handlebars.registerHelper(OrHelper.Token, OrHelper.fn);
   }
 
   public generateOutput<ComponentModelType extends ComponentTemplateModel>(

@@ -1,10 +1,12 @@
+{{#if print_jsdocs}}
 /**
  * Abstract class representing a service for ...
  *
  * @abstract
  * @class {{pascal_case name}}Service
  */
-{{#if injectable}}
+{{/if}}
+{{#if use_ioc}}
 @injectable()
 {{/if}}
 export abstract class {{pascal_case name}}Service {

@@ -1,20 +1,38 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { DataSourceUnitTestOutputBuilder } from "./data-source-unit-test.output-builder";
+import { DataSourceOutputBuilder } from "./data-source.output-builder";
 import { NewDataSourceOptions } from "./types";
 
 export const newDataSource = async (options: NewDataSourceOptions) => {
-  if (Array.isArray(options.methods) && options.methods.length > 0) {
-    if (Array.isArray(options.include)) {
-      options.include.push(ComponentType.DataSourceUnitTest);
-    } else {
-      options.include = [ComponentType.DataSourceUnitTest];
-    }
+  const config = getConfig();
+  const builder = new ComponentBuilder(
+    ComponentType.DataSource,
+    config,
+    options
+  );
+
+  if (Array.isArray(options.include) && options.include.includes("all")) {
+    // include all related components
   }
 
-  const builder = new ComponentBuilder({ database: options.type, ...options });
-  builder.build(ComponentType.DataSource, validateNewDataSourceOptions);
+  if (
+    Array.isArray(options.methods) &&
+    options.methods.length > 0 &&
+    !options.skipTests &&
+    !config.source.skip_tests
+  ) {
+    builder.includeRelated(
+      ComponentType.DataSourceUnitTest,
+      new DataSourceUnitTestOutputBuilder()
+    );
+  }
+
+  builder
+    .useValidator(validateNewDataSourceOptions)
+    .build(new DataSourceOutputBuilder());
 };
 
 export const validateNewDataSourceOptions = async (

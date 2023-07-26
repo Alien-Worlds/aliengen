@@ -1,10 +1,10 @@
 {{>imports imports}}
 
-/*__mock__*/
+{{#if print_markers}}/*__mock__*/{{/if}}
 
 {{#each models}}
 
-/*__fixture__*/
+{{#if print_markers}}/*__fixture__*/{{/if}}
 
 describe('{{this.name}}ServiceImpl', () => {
   
@@ -34,7 +34,7 @@ describe('{{this.name}}ServiceImpl', () => {
   });
   
   {{/each}}
-  /*__unit_test__*/
+  {{#if print_markers}}/*__unit_test__*/{{/if}}
 });
 {{/each}}
-/*__group__*/
+{{#if print_markers}}/*__group__*/{{/if}}

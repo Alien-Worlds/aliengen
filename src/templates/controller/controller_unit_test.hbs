@@ -1,11 +1,11 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 {{#each injections}}
 {{> mock_import this}}
 
 {{/each}}
 
-/*__mock__*/
+{{#if print_markers}}/*__mock__*/{{/if}}
 {{#each models}}
 
 describe('{{name}}Controller', () => {
@@ -38,8 +38,8 @@ describe('{{name}}Controller', () => {
   });
 
   {{/each}}
-  /*__unit_test__*/
+  {{#if print_markers}}/*__unit_test__*/{{/if}}
 });
 
 {{/each}}
-/*__group__*/
+{{#if print_markers}}/*__group__*/{{/if}}

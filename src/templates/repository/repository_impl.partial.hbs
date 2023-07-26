@@ -1,9 +1,11 @@
+{{#if print_jsdocs}}
 /**
  * Repository implementation for managing {{name}} objects.
  *
  * @class
  * @extends RepositoryImpl<{{#if entity}}{{entity}}{{else}}unknown{{/if}}, {{#if model}}{{pascal_case model}}{{pascal_case database}}Model{{else}}unknown{{/if}}>
  */
+{{/if}}
 export class {{pascal_case name}}RepositoryImpl 
   extends RepositoryImpl<{{#if entity}}{{entity}}{{else}}unknown{{/if}}, {{#if model}}{{pascal_case model}}{{pascal_case database}}Model{{else}}unknown{{/if}}>
   implements {{pascal_case name}}Repository<{{#if entity}}{{entity}}{{else}}unknown{{/if}}, {{#if model}}{{pascal_case model}}{{pascal_case

@@ -1,44 +1,55 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { RepositoryFactoryUnitTestOutputBuilder } from "./repository-factory-unit-test.output-builder";
+import { RepositoryFactoryOutputBuilder } from "./repository-factory.output-builder";
+import { RepositoryImplUnitTestOutputBuilder } from "./repository-impl-unit-test.output-builder";
+import { RepositoryImplOutputBuilder } from "./repository-impl.output-builder";
+import { RepositoryOutputBuilder } from "./repository.output-builder";
 import { NewRepositoryOptions } from "./types";
 
 export const newRepository = async (options: NewRepositoryOptions) => {
-  console.log(options);
-  if (options.include.includes("all")) {
-    options.include = [
-      ComponentType.RepositoryFactory,
-      ComponentType.Mapper,
-      ComponentType.DataSource,
-    ];
+  const config = getConfig();
+  const builder = new ComponentBuilder(
+    ComponentType.Repository,
+    config,
+    options
+  );
+
+  if (Array.isArray(options.include) && options.include.includes("all")) {
+    // include all related components
+  }
+
+  builder.includeRelated(
+    ComponentType.RepositoryFactory,
+    new RepositoryFactoryOutputBuilder()
+  );
+
+  if (options.impl) {
+    builder.includeRelated(
+      ComponentType.RepositoryImpl,
+      new RepositoryImplOutputBuilder()
+    );
+  }
+
+  if (!options.skipTests && !config.source.skip_tests) {
+    builder.includeRelated(
+      ComponentType.RepositoryFactoryUnitTest,
+      new RepositoryFactoryUnitTestOutputBuilder()
+    );
 
     if (options.impl) {
-      options.include.push(ComponentType.RepositoryImpl);
-
-      if (!options.skipTests) {
-        options.include.push(ComponentType.RepositoryImplUnitTest);
-        options.include.push(ComponentType.RepositoryFactoryUnitTest);
-      }
-    }
-  } else {
-    options.include.push(ComponentType.RepositoryFactory);
-
-    if (!options.skipTests) {
-      options.include.push(ComponentType.RepositoryFactoryUnitTest);
-    }
-
-    if (options.impl) {
-      options.include.push(ComponentType.RepositoryImpl);
-
-      if (!options.skipTests) {
-        options.include.push(ComponentType.RepositoryImplUnitTest);
-      }
+      builder.includeRelated(
+        ComponentType.RepositoryImplUnitTest,
+        new RepositoryImplUnitTestOutputBuilder()
+      );
     }
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Repository, validateNewRepositoryOptions);
+  builder
+    .useValidator(validateNewRepositoryOptions)
+    .build(new RepositoryOutputBuilder());
 };
 
 export const validateNewRepositoryOptions = async (

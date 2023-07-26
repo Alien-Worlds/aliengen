@@ -97,6 +97,7 @@ export class RepositoryOutputBuilder extends OutputBuilder<
 
     return [
       {
+        ...this.buildConfigOutput(),
         injectable: true,
         requireImpl: impl,
         model,

@@ -1,10 +1,28 @@
+import Handlebars from "handlebars";
 import { importRelativePath } from "../utils/files";
+
+export class RenderHelper {
+  public static Token = "render";
+
+  public static fn(
+    partialName: string,
+    context: unknown,
+    options: Handlebars.HelperOptions
+  ) {
+    var partial = Handlebars.partials[partialName];
+    if (!partial) {
+      console.error("Could not find partial: " + partialName);
+    } else {
+      var newContext = Object.assign({}, this, context, options.hash);
+      return new Handlebars.SafeString(partial(newContext));
+    }
+  }
+}
 
 export class RelativePathHelper {
   public static Token = "relative";
 
   public static fn(importPath: string, sourcePath?: string) {
-
     if (!importPath) {
       return `/* could not generate relative path */`;
     }
@@ -117,5 +135,12 @@ export class LteHelper {
 
   public static fn(a: unknown, b: unknown) {
     return a <= b;
+  }
+}
+export class OrHelper {
+  public static Token = "or";
+
+  public static fn(a: unknown, b: unknown) {
+    return a || b;
   }
 }

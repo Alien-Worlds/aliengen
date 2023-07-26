@@ -1,9 +1,12 @@
+{{#if print_jsdocs}}
 /**
  * Output model for representing the response of ...
  *
  * @class {{pascal_case name}}Output
  */
+ {{/if}}
 export class {{pascal_case name}}Output {
+  {{#if print_jsdocs}}
   /**
    * Create a new instance of GetCustodiansOutput with the provided custodian profiles.
    *
@@ -13,6 +16,7 @@ export class {{pascal_case name}}Output {
    {{/each}}
    * @returns { {{pascal_case name}}Output } A new instance of {{pascal_case name}}Output initialized with the provided profiles.
    */
+   {{/if}}
   public static create(
     {{#each props}}
     {{> method_prop this}}
@@ -25,6 +29,7 @@ export class {{pascal_case name}}Output {
     );
   }
 
+  {{#if print_jsdocs}}
   /**
    * Create a new instance of {{pascal_case name}}Output.
    *
@@ -33,18 +38,21 @@ export class {{pascal_case name}}Output {
    {{> jsdoc_param this}}
    {{/each}}
    */
+   {{/if}}
   constructor(
     {{#each props}}
     {{> constructor_prop this}}
     {{/each}}
   ) {}
 
+  {{#if print_jsdocs}}
   /**
    * Convert ...
    *
    * @public
    * @returns response object representing the ...
    */
+   {{/if}}
   public toResponse() {
     const {
       {{#each props}}

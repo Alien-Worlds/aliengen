@@ -1,7 +1,7 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
 {{#each models}}
 {{> repository_factory this}}
 
 {{/each}}
-/*__repository_factory__*/
+{{#if print_makers}}/*__repository_factory__*/{{/if}}

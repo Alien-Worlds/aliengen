@@ -1,15 +1,20 @@
 {
-  "rpc": {
-    "chainId": "8be32650b763690b95b7d7e32d7637757a0a7392ad04f1c393872e525a2ce82b",
-    "endpoint": "https://wax.api.eosnation.io"
-  },
+  "headless": false,
   "source": {
     "dirname": "src",
+    "overwrite": false,
+    "skip_tests": false,
+    "print_jsdocs": true,
+    "print_markers": true,
+    "print_examples": true,
+    "use_ioc": true,
     "structure": {
       "controller": "{{root}}/endpoints/{{endpoint}}/domain/{{name}}.controller.ts",
       "controller_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/__tests__/{{name}}.controller.unit.test.ts",
-      "data_source": "{{root}}/endpoints/{{endpoint}}/data/data-sources/{{name}}.{{database}}.data-source.ts",
-      "data_source_unit_test": "{{root}}/endpoints/{{endpoint}}/data/data-sources/__tests__/{{name}}.{{database}}.data-source.unit.test.ts",
+      "data_source": "{{root}}/endpoints/{{endpoint}}/data/data-sources/{{name}}.{{type}}.data-source.ts",
+      "data_source_unit_test": "{{root}}/endpoints/{{endpoint}}/data/data-sources/__tests__/{{name}}.{{type}}.data-source.unit.test.ts",
+      "dependency_injector": "{{root}}/endpoints/{{endpoint}}/ioc/{{name}}.ioc.ts",
+      "root_dependency_injector": "{{root}}/ioc/ioc.ts",
       "endpoint": "{{root}}/endpoints/{{endpoint}}",
       "entity": "{{root}}/endpoints/{{endpoint}}/domain/entities/{{name}}.ts",
       "entity_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/entities/__tests__/{{name}}.unit.test.ts",
@@ -17,8 +22,8 @@
       "input": "{{root}}/endpoints/{{endpoint}}/domain/models/{{name}}.input.ts",
       "input_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/models/__tests__/{{name}}.input.unit.test.ts",
       "ioc": "{{root}}/endpoints/{{endpoint}}/ioc.config.ts",
-      "mapper": "{{root}}/endpoints/{{endpoint}}/data/mappers/{{name}}.{{database}}.mapper.ts",
-      "mapper_unit_test": "{{root}}/endpoints/{{endpoint}}/data/mappers/__tests__/{{name}}.{{database}}.mapper.unit.test.ts",
+      "mapper": "{{root}}/endpoints/{{endpoint}}/data/mappers/{{name}}.{{type}}.mapper.ts",
+      "mapper_unit_test": "{{root}}/endpoints/{{endpoint}}/data/mappers/__tests__/{{name}}.{{type}}.mapper.unit.test.ts",
       "model": "{{root}}/endpoints/{{endpoint}}/data/dtos/{{name}}.dto.ts",
       "output": "{{root}}/endpoints/{{endpoint}}/domain/models/{{name}}.output.ts",
       "output_unit_test": "{{root}}/endpoints/{{endpoint}}/domain/models/__tests__/{{name}}.output.unit.test.ts",
@@ -179,7 +184,15 @@
       },
       "mapper": {
         "mongo": {
-          "imports": [],
+          "imports": [
+            {
+              "list": [
+                "MongoDB",
+                "MongoMapper"
+              ],
+              "path": "@alien-worlds/storage-mongodb"
+            }
+          ],
           "props": []
         }
       },
@@ -335,6 +348,18 @@
           ],
           "props": []
         }
+      },
+      "dependency_injector": {
+        "imports": [
+          {
+            "list": [
+              "Container",
+              "DependencyInjector"
+            ],
+            "path": "@alien-worlds/api-core"
+          }
+        ],
+        "props": []
       }
     }
   }

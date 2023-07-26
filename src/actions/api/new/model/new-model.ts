@@ -1,12 +1,15 @@
 import { NewModelOptions } from "./types";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
 import { ComponentBuilder } from "../component-builder";
+import { ModelOutputBuilder } from "./model.output-builder";
 
 export const newModel = async (options: NewModelOptions) => {
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Model, validateNewModelOptions);
+  const config = getConfig();
+  const builder = new ComponentBuilder(ComponentType.Model, config, options);
+
+  builder.useValidator(validateNewModelOptions).build(new ModelOutputBuilder());
 };
 
 export const validateNewModelOptions = async (

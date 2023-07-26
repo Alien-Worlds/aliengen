@@ -1,8 +1,11 @@
+{{#if print_jsdocs}}
 /**
 * Represents a collection of ... stored in a {{type}} collection.
 * Extends the {{pascal_case type}}CollectionSource class to provide database operations.
 */
+{{/if}}
 export class {{pascal_case name}}{{pascal_case type}}Collection extends Collection{{pascal_case type}}Source<{{#if model}}{{pascal_case model}}{{pascal_case type}}Model{{else}}unknown{{/if}}> {
+  {{#if print_jsdocs}}
   /**
   * Constructs a new instance of the {{pascal_case name}}{{pascal_case type}}Collection class.
   *
@@ -11,11 +14,12 @@ export class {{pascal_case name}}{{pascal_case type}}Collection extends Collecti
   {{> jsdoc_param this}}
   {{/each}}
   */
+  {{/if}}
   constructor(
     {{#each props}}
     {{> constructor_prop this}}
     {{/each}}
-    /*__constructor__*/
+    {{#if print_markers}}/*__constructor__*/{{/if}}
   ) {
     super(
       {{#each props}}

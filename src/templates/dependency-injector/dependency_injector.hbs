@@ -1,0 +1,7 @@
+{{render "imports" imports print_markers=print_markers}}
+
+{{#each models}}
+{{render "dependency_injector" this print_markers=print_markers print_examples=print_examples print_jsdocs=print_jsdocs}}
+
+{{/each}}
+{{#if print_markers}}/*__dependency_injector__*/{{/if}}

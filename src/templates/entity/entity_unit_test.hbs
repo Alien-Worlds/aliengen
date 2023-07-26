@@ -1,6 +1,6 @@
-{{> imports imports}}
+{{render "imports" imports print_markers=print_markers}}
 
-/*__mock__*/
+{{#if print_markers}}/*__mock__*/{{/if}}
 
 {{#each models}}
 const model = {{this.name}}JsonModel = {
@@ -8,10 +8,10 @@ const model = {{this.name}}JsonModel = {
   {{> prop this}}
 {{/each}}
 };
-/*__fixture__*/
+{{#if print_markers}}/*__fixture__*/{{/if}}
 
 describe('{{this.name}} unit tests', () => {
-  /*__stub__*/
+  {{#if print_markers}}/*__stub__*/{{/if}}
 
   it('{{this.name}}.create should return {{this.name}} object based on the provided data', async () => {
     const entity = {{this.name}}.create(
@@ -33,7 +33,7 @@ describe('{{this.name}} unit tests', () => {
     expect(entity.toJSON()).toEqual(model);
   });
 
-  /*__unit_test__*/
+  {{#if print_markers}}/*__unit_test__*/{{/if}}
 });
 {{/each}}
-/*__group__*/
+{{#if print_markers}}/*__group__*/{{/if}}

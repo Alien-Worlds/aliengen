@@ -14,6 +14,7 @@ export type GetConfigOptions = {
 };
 
 export type FileStructureConfig = {
+  dependency_injector: string;
   endpoint: string;
   ioc: string;
   route: string;
@@ -63,6 +64,7 @@ export type DefaultsConfig = {
   data_source?: {
     [database: string]: ComponentDefaultConfig;
   };
+  dependency_injector?: ComponentDefaultConfig;
   entity?: ComponentDefaultConfig;
   model?: {
     [database: string]: ComponentDefaultConfig;
@@ -90,19 +92,17 @@ export type DefaultsConfig = {
 
 export type SourceConfig = {
   dirname?: string;
+  skip_tests?: boolean;
+  print_jsdocs?: boolean;
+  print_markers?: boolean;
+  print_examples?: boolean;
+  use_ioc?: boolean;
   structure?: FileStructureConfig;
   defaults?: DefaultsConfig;
 };
 
-export type RpcConfig = {
-  chainId?: string;
-  endpoint?: string;
-  [key: string]: unknown;
-};
-
 export type Config = {
+  headless: boolean;
   source: SourceConfig;
-  rpc?: RpcConfig;
-  overwrite?: boolean;
   [key: string]: unknown;
 };

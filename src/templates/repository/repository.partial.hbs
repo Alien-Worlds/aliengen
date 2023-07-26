@@ -1,10 +1,12 @@
+{{#if print_jsdocs}}
 /**
  * This class manages {{pascal_case name}} entities, providing CRUD operations and additional functionalities.
  *
  * @abstract
  * @class
  */
-{{#if injectable}}
+{{/if}}
+{{#if use_ioc}}
 @injectable()
 {{/if}}
 export abstract class {{pascal_case name}}Repository extends Repository<{{#if entity}}{{entity}}{{else}}unknown{{/if}}, {{#if model}}{{pascal_case model}}{{pascal_case database}}Model{{else}}unknown{{/if}}> {

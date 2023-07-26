@@ -1,16 +1,27 @@
 import { Failure, InteractionPrompts, Result } from "../../../../core";
 import { ComponentType } from "../../../../enums";
-import { Config, validateConfig } from "../../../config";
+import { Config, getConfig, validateConfig } from "../../../config";
 import { ComponentBuilder } from "../component-builder";
+import { RouteUnitTestOutputBuilder } from "./route-unit-test.output-builder";
+import { RouteOutputBuilder } from "./route.output-builder";
 import { NewRouteOptions } from "./types";
 
 export const newRoute = async (options: NewRouteOptions) => {
-  if (!options.skipTests) {
-    options.include = [ComponentType.RouteUnitTest];
+  const config = getConfig();
+  const builder = new ComponentBuilder(ComponentType.Route, config, options);
+
+  if (Array.isArray(options.include) && options.include.includes("all")) {
+    // include all related components
   }
 
-  const builder = new ComponentBuilder(options);
-  builder.build(ComponentType.Route, validateNewRouteOptions);
+  if (!options.skipTests && !config.source.skip_tests) {
+    builder.includeRelated(
+      ComponentType.RouteUnitTest,
+      new RouteUnitTestOutputBuilder()
+    );
+  }
+
+  builder.useValidator(validateNewRouteOptions).build(new RouteOutputBuilder());
 };
 
 export const validateNewRouteOptions = async (

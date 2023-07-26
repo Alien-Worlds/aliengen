@@ -8,10 +8,15 @@ export type TemplateModel<ComponentModelType extends ComponentTemplateModel> = {
 };
 
 export type ComponentTemplateModel = {
+  print_jsdocs: boolean;
+  print_markers: boolean;
+  print_examples: boolean;
+  use_ioc: boolean;
   imports: Import[];
   name: string;
   injections?: Injection[];
   type?: string;
+  props?: Prop[];
   [key: string]: unknown;
 };
 
@@ -63,9 +68,8 @@ export type RelativeInjection = Injection & {
 
 export type DefaultOptions = {
   name: string;
-  unitTests?: boolean;
+  skipTests?: boolean;
   endpoint?: string;
-  database?: string;
   include?: string[];
   json?: string;
   force?: boolean;
