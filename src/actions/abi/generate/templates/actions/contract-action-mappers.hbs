@@ -10,12 +10,12 @@ import {
   ContractAction, 
   MapperImpl, 
   parseToBigInt 
-} from '@alien-worlds/api-core';
+} from '@alien-worlds/aw-core';
 
 {{#each actions}}
 import { {{pascalCase .}}MongoMapper, {{pascalCase .}}RawMapper } from "./{{.}}.mapper";
 {{/each}}
-import { MongoDB, MongoMapper } from '@alien-worlds/storage-mongodb';
+import { MongoDB, MongoMapper } from '@alien-worlds/aw-storage-mongodb';
 import { DataEntityType } from '../../domain/entities/{{paramCase contract}}-action';
 import { 
   {{pascalCase contract}}ActionMongoModel,

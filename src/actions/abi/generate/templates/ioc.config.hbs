@@ -1,11 +1,11 @@
 {{! template for action/delta/service IOC config e.g. src/contracts/dao-worlds/ioc.config.ts }}
 {{> warn-do-not-edit}}
-import { Container, RepositoryImpl } from '@alien-worlds/api-core';
+import { Container, RepositoryImpl } from '@alien-worlds/aw-core';
 import { 
   MongoConfig,
   MongoQueryBuilders, 
   MongoSource,
-} from '@alien-worlds/storage-mongodb';
+} from '@alien-worlds/aw-storage-mongodb';
 
 import { {{pascalCase contract}}ActionMongoMapper } from './actions/data/mappers';
 import { {{pascalCase contract}}ActionMongoSource } from './actions/data/data-sources';
@@ -15,7 +15,7 @@ import { {{pascalCase contract}}ContractServiceImpl } from "./services/{{paramCa
 import { {{pascalCase contract}}DeltaMongoMapper } from './deltas/data/mappers';
 import { {{pascalCase contract}}DeltaMongoSource } from './deltas/data/data-sources';
 import { {{pascalCase contract}}DeltaRepository } from './deltas/domain/repositories';
-import { EosRpcSourceImpl } from '@alien-worlds/eos';
+import { AntelopeRpcSourceImpl } from '@alien-worlds/aw-antelope';
 
 export const setup{{pascalCase contract}}ActionRepository = async (
   mongo: MongoSource | MongoConfig,
@@ -74,12 +74,12 @@ export const setup{{pascalCase contract}}DeltaRepository = async (
 };
 
 export const setup{{pascalCase contract}}ContractService = (
-  eosRpcSourceImpl: EosRpcSourceImpl,
+  antelopeRpcSourceImpl: AntelopeRpcSourceImpl,
   serviceUrl: string,
   container?: Container
 ): {{pascalCase contract}}ContractService => {
   const service = new {{pascalCase contract}}ContractServiceImpl(
-    eosRpcSourceImpl,
+    antelopeRpcSourceImpl,
     serviceUrl
   );
 

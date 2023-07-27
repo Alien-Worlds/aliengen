@@ -30,7 +30,7 @@ export const getMappedType = (
       name,
       mappedName: "Pair",
       requiresImport: true,
-      importRef: "@alien-worlds/eosio-contract-types",
+      importRef: "@alien-worlds/aw-antelope",
       isArray,
     };
   } else if (typesMap.has(typeKey)) {
@@ -62,14 +62,14 @@ export const getMappedType = (
     };
 
     return item;
-  } else if (commonEosTypesMap.has(typeKey)) {
+  } else if (commonAntelopeTypesMap.has(typeKey)) {
     const name = getCommonTypeName(typeKey, artifactType);
     return {
       sourceName: typeKey,
       mappedName: name,
       name: isArray ? `${name}[]` : name,
       requiresImport: true,
-      importRef: "@alien-worlds/eosio-contract-types",
+      importRef: "@alien-worlds/aw-antelope",
       isArray,
     };
   }
@@ -78,7 +78,7 @@ export const getMappedType = (
 const getPairTypeName = (typeKey: string) => {
   let typesStr = typeKey.replace("pair_", "");
   const refs = [
-    ...Array.from(commonEosTypesMap.keys()),
+    ...Array.from(commonAntelopeTypesMap.keys()),
     ...Array.from(typesMap.keys()),
   ].sort((a, b) => (a.length > b.length ? -1 : 1));
   let key;
@@ -95,14 +95,14 @@ const getPairTypeName = (typeKey: string) => {
     }
   }
 
-  const keyType = commonEosTypesMap.has(key)
-    ? commonEosTypesMap.get(key).typescript
+  const keyType = commonAntelopeTypesMap.has(key)
+    ? commonAntelopeTypesMap.get(key).typescript
     : typesMap.has(key)
     ? typesMap.get(key).typescript
     : null;
 
-  const valueType = commonEosTypesMap.has(value)
-    ? commonEosTypesMap.get(value).typescript
+  const valueType = commonAntelopeTypesMap.has(value)
+    ? commonAntelopeTypesMap.get(value).typescript
     : typesMap.has(value)
     ? typesMap.get(value).typescript
     : null;
@@ -187,7 +187,7 @@ export const typesMap = new Map<string, MappedType>([
   ["time_point", { typescript: ["Date"], mongo: ["Date"] }],
 ]);
 
-export const commonEosTypesMap = new Map<string, MappedType>([
+export const commonAntelopeTypesMap = new Map<string, MappedType>([
   ["action", { typescript: ["Action"], mongo: ["object"] }],
   ["asset", { typescript: ["Asset"], mongo: ["object"] }],
   ["bytes", { typescript: ["Bytes"], mongo: ["MongoDB.Binary"] }],

@@ -1,7 +1,7 @@
 {{! template for action mapper e.g. src/contracts/dao-worlds/actions/data/mappers/dao-worlds-action.mapper.ts }}
 {{> warn-do-not-edit}}
-import { MapperImpl } from '@alien-worlds/api-core';
-import { MongoDB, MongoMapper } from '@alien-worlds/storage-mongodb';
+import { MapperImpl } from '@alien-worlds/aw-core';
+import { MongoDB, MongoMapper } from '@alien-worlds/aw-storage-mongodb';
 {{> imports}}
 import { {{#each entities}}{{pascalCase this.name}}{{#unless @last}}, {{/unless}} {{/each}} } from "../../domain/entities";
 import { {{#each entities}}{{pascalCase this.name}}MongoModel, {{pascalCase this.name}}RawModel{{#unless @last}}, {{/unless}} {{/each}} } from "../dtos/{{name}}.dto";
